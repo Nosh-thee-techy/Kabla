@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { ClauseHighlight } from "../components/ClauseHighlight";
 import { EmptyGate } from "../components/EmptyGate";
+import { HowTo } from "../components/HowTo";
 import { NextStamp } from "../components/NextStamp";
 import { Room } from "../components/Room";
 import { TrailBody, TrailDrawer } from "../components/TrailDrawer";
@@ -29,8 +30,9 @@ export function ClauseMap({ lang }: { lang: Lang }) {
           </p>
         </div>
       </div>
+      <HowTo lang={lang} page="map" />
 
-      <div className="mt-8 grid lg:grid-cols-[minmax(0,1fr)_28rem] gap-8 items-start">
+      <div className="mt-2 grid lg:grid-cols-[minmax(0,1fr)_28rem] gap-8 items-start">
         <ClauseHighlight text={contract.text} analysis={analysis} selected={n} onPick={setN} />
         <aside className="panel hidden lg:block sticky top-4 p-5 min-h-[60vh]">
           {flag ? (

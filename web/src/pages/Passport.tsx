@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { BadgeShelf } from "../components/BadgeShelf";
+import { HowTo } from "../components/HowTo";
 import { NextStamp } from "../components/NextStamp";
 import { Room } from "../components/Room";
 import { ScoreRing } from "../components/ScoreRing";
@@ -33,6 +34,7 @@ export function Passport({ lang }: { lang: Lang }) {
       <p className="text-[11px] uppercase tracking-[0.2em] text-gold">{t(lang, "booklet")}</p>
       <h1 className="font-display italic text-4xl mt-2">{t(lang, "passport")}</h1>
       <p className="mt-2 text-sm opacity-80">Evidence of agreed terms — not a legal instrument. SYNTHETIC.</p>
+      <HowTo lang={lang} page="passport" />
       <label className="mt-6 flex items-center gap-2 text-sm">
         <input type="checkbox" checked={sell} onChange={(e) => setSell(e.target.checked)} />
         {t(lang, "sell")}

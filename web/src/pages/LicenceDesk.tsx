@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { api, type Preset } from "../api";
+import { HowTo } from "../components/HowTo";
 import { NextStamp } from "../components/NextStamp";
 import { Room } from "../components/Room";
 import { t, type Lang } from "../i18n";
@@ -31,6 +32,7 @@ export function LicenceDesk({ lang }: { lang: Lang }) {
     <Room>
       <h1 className="font-display italic text-4xl">{t(lang, "licence")}</h1>
       <p className="mt-2 text-sm opacity-80">Three envelopes for “Asali ya Jioni” (SYNTHETIC).</p>
+      <HowTo lang={lang} page="licence" />
       {presets.length === 0 && !err && (
         <p className="mt-6 text-sm opacity-60">{t(lang, "sortingEnvelopes")}</p>
       )}

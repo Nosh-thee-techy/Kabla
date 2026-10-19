@@ -56,6 +56,7 @@ const ui = {
     metta: "MeTTa trail",
     openingDrawers: "Opening the drawers…",
     sortingEnvelopes: "Sorting the envelopes…",
+    howTo: "How to use this room",
   },
   sw: {
     tagline: "Jua unachosaini. Thibitisha unachomiliki.",
@@ -113,6 +114,7 @@ const ui = {
     metta: "Njia ya MeTTa",
     openingDrawers: "Inafungua droo…",
     sortingEnvelopes: "Inapanga bahasha…",
+    howTo: "Jinsi ya kutumia chumba hiki",
   },
 } as const;
 

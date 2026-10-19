@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { api } from "../api";
+import { HowTo } from "../components/HowTo";
 import { Room } from "../components/Room";
 import { t, type Lang } from "../i18n";
 import { useKabla } from "../state";
@@ -50,6 +51,7 @@ export function Verify({ lang }: { lang: Lang }) {
     <Room>
       <p className="text-[11px] uppercase tracking-[0.2em] text-gold">{t(lang, "customs")}</p>
       <h1 className="font-display italic text-4xl mt-2">{t(lang, "verify")}</h1>
+      <HowTo lang={lang} page="verify" />
       <div className="mt-8 flex items-center gap-6">
         <div className={`lamp ${lamp}`} aria-hidden="true" />
         <p className="text-sm opacity-70">{t(lang, "tray")}</p>

@@ -27,3 +27,5 @@ Every use of AI in this project is logged here, append-only. Entries are never r
 | 2026-10-19 | Cursor agent (Grok 4.6) | Fixed passport `never` vs licence vocabulary; setuptools README path; clean-clone gate | Reviewed by team; `verify_clean_clone` green |
 | 2026-10-19 | Cursor agent (Grok 4.6) | Production Dockerfile + FastAPI SPA/`/api` prefix so the demo can be hosted (Railway) | Reviewed by team |
 | 2026-10-19 | Cursor agent (Grok 4.6) | Expanded README: product story, seven-screen desk, MeTTa decision path, and a detailed Kabla-vs-Claude (LLM chatbot) section | Reviewed by team |
+| 2026-10-19 | Cursor agent (Grok 4.6) | Night Desk UI: design tokens, journey rail, redesigned seven rooms, empty states, favicon/OG | Reviewed by team |
+| 2026-10-19 | Cursor agent (Grok 4.6) | Full-bleed rooms, clearer dark mode, and per-page how-to guidelines (EN/SW) | Reviewed by team |

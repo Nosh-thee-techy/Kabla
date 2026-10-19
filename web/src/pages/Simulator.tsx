@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { api, type Simulation } from "../api";
 import { EmptyGate } from "../components/EmptyGate";
+import { HowTo } from "../components/HowTo";
 import { NextStamp } from "../components/NextStamp";
 import { Room } from "../components/Room";
 import { money, streams as fmt } from "../lib/format";
@@ -25,6 +26,7 @@ export function Simulator({ lang }: { lang: Lang }) {
     <Room>
       <p className="sticker">{t(lang, "illustrate")}</p>
       <h1 className="font-display italic text-4xl mt-6">{t(lang, "sim")}</h1>
+      <HowTo lang={lang} page="sim" />
       <label className="block mt-8 text-sm">
         {fmt(n)} streams
         <input

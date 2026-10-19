@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { api, type Sample } from "../api";
+import { HowTo } from "../components/HowTo";
 import { Room } from "../components/Room";
 import { t, type Lang } from "../i18n";
 import { useKabla } from "../state";
@@ -46,8 +47,9 @@ export function Desk({ lang }: { lang: Lang }) {
         <h1 className="font-display italic text-5xl md:text-7xl mt-6 leading-[1.05]">Kabla</h1>
         <p className="mt-4 text-xl opacity-80">{t(lang, "tagline")}</p>
       </div>
+      <HowTo lang={lang} page="desk" />
 
-      <h2 className="mt-14 font-display text-2xl">{t(lang, "pick")}</h2>
+      <h2 className="mt-8 font-display text-2xl">{t(lang, "pick")}</h2>
       {samples.length === 0 && !err && (
         <p className="mt-6 text-sm opacity-60">{t(lang, "openingDrawers")}</p>
       )}

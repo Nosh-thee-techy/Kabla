@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { api } from "../api";
 import { EmptyGate } from "../components/EmptyGate";
+import { HowTo } from "../components/HowTo";
 import { NextStamp } from "../components/NextStamp";
 import { Room } from "../components/Room";
 import { RoundCard } from "../components/RoundCard";
@@ -52,7 +53,8 @@ export function Theater({ lang }: { lang: Lang }) {
           </p>
         )}
       </header>
-      <p className="mt-4 text-sm opacity-80">Kabla never agrees for you. Stamp every concession.</p>
+      <HowTo lang={lang} page="theater" />
+      <p className="text-sm opacity-80">Kabla never agrees for you. Stamp every concession.</p>
 
       {!nego && (
         <button type="button" onClick={begin} disabled={busy} className="stamp stamp-savanna mt-8">
