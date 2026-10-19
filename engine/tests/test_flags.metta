@@ -11,3 +11,16 @@
 !(check-has grant02-positive (collapse (flags-of t-grant2-pos))
    (flag t-grant2-pos 4 R-GRANT-02 amber (clause t-grant2-pos 4 grant master perpetual kenya non-exclusive)))
 !(check grant02-not-on-exclusive (size-atom (collapse (flags-of t-grant-pos))) 1)
+
+; ── R-AI-01 / R-AI-02 ──
+(clause t-ai-pos 7 ai-training granted no-opt-in)
+(clause t-ai-vague 8 ai-training vague)
+(clause t-ai-optin 6 ai-training opt-in-paid)
+(clause t-ai-none 6 ai-training prohibited)
+
+!(check-has ai01-positive (collapse (flags-of t-ai-pos))
+   (flag t-ai-pos 7 R-AI-01 red (clause t-ai-pos 7 ai-training granted no-opt-in)))
+!(check-has ai02-positive (collapse (flags-of t-ai-vague))
+   (flag t-ai-vague 8 R-AI-02 amber (clause t-ai-vague 8 ai-training vague)))
+!(check ai-negative-opt-in (collapse (flags-of t-ai-optin)) ())
+!(check ai-negative-prohibited (collapse (flags-of t-ai-none)) ())

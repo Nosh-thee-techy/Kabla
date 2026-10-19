@@ -16,3 +16,13 @@
 (= (flags-of $c)
    (match &self (clause $c $n grant $right perpetual $terr non-exclusive)
       (flag $c $n R-GRANT-02 amber (clause $c $n grant $right perpetual $terr non-exclusive))))
+
+; R-AI-01: AI training granted without opt-in
+(= (flags-of $c)
+   (match &self (clause $c $n ai-training granted no-opt-in)
+      (flag $c $n R-AI-01 red (clause $c $n ai-training granted no-opt-in))))
+
+; R-AI-02: AI / machine-learning use in vague wording
+(= (flags-of $c)
+   (match &self (clause $c $n ai-training vague)
+      (flag $c $n R-AI-02 amber (clause $c $n ai-training vague))))
