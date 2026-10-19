@@ -1,0 +1,3 @@
+PLACEHOLDER — SYNTHETIC work file for the Kabla demo.
+Stands in for the master recording of "Asali ya Jioni" by Zawadi (both invented).
+No real audio. Kabla hashes these bytes (SHA-256) to bind the certificate to a file.

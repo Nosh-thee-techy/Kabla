@@ -1,0 +1,14 @@
+{
+  "_banner": "SYNTHETIC — invented person for the Kabla demo.",
+  "id": "zawadi",
+  "name": "Zawadi",
+  "role": "singer-songwriter",
+  "home": "Nairobi, Kenya",
+  "language": "sw",
+  "redlines": [
+    {"kind": "ai-training", "value": "never", "set_on": "2026-10-19",
+     "said": "Never let anyone train AI on my voice or my recordings."},
+    {"kind": "term-max-years", "value": 7, "set_on": "2026-10-19",
+     "said": "I won't tie my music up for more than seven years."}
+  ]
+}

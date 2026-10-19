@@ -1,0 +1,25 @@
+{
+  "_banner": "SYNTHETIC — invented work for the Kabla demo. No real audio exists; the work file is placeholder bytes.",
+  "id": "w-asali",
+  "title": "Asali ya Jioni",
+  "artist": "zawadi",
+  "placeholder_file": "asali_ya_jioni.PLACEHOLDER.txt",
+  "collaborators": ["baraka"],
+  "ai_tools": ["none"],
+  "original_location": "held by artist",
+  "owners": [
+    {"right": "master", "person": "zawadi", "share": 100},
+    {"right": "composition", "person": "zawadi", "share": 60},
+    {"right": "composition", "person": "baraka", "share": 40}
+  ],
+  "split_confirmations": [
+    {"person": "zawadi", "date": "2026-10-19"},
+    {"person": "baraka", "date": "2026-10-19"}
+  ],
+  "consents": [
+    {"person": "zawadi", "use_family": "sync", "territory": "WW", "date": "2026-10-19"},
+    {"person": "zawadi", "use_family": "live", "territory": "WW", "date": "2026-10-19"},
+    {"person": "baraka", "use_family": "sync", "territory": "KE", "date": "2026-10-01"}
+  ],
+  "max_licence_months": 12
+}
