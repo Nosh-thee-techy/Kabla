@@ -1,10 +1,12 @@
 import { useState } from "react";
-import { api, type VerifyResult } from "../api";
+import { api } from "../api";
+import { Room } from "../components/Room";
 import { t, type Lang } from "../i18n";
+import { useKabla } from "../state";
 
 export function Verify({ lang }: { lang: Lang }) {
+  const { verify: result, setVerify, passport } = useKabla();
   const [text, setText] = useState("");
-  const [result, setResult] = useState<VerifyResult | null>(null);
   const [err, setErr] = useState<string | null>(null);
 
   function parse(): object | null {
@@ -15,41 +17,63 @@ export function Verify({ lang }: { lang: Lang }) {
     const cert = parse();
     if (!cert) { setErr("Paste a certificate JSON first."); return; }
     setErr(null);
-    try { setResult(await api.verify({ certificate: cert })); }
+    try { setVerify(await api.verify({ certificate: cert })); }
     catch (e) { setErr(String(e)); }
   }
 
   async function tamper() {
     let cert = parse();
     if (!cert) {
-      const p = await api.getPassport("zawadi");
-      const c = p.certificate || p.certificates?.[0];
-      if (!c) { setErr("Issue a passport first, or paste JSON."); return; }
-      cert = c;
-      setText(JSON.stringify(c, null, 2));
+      const existing = passport?.certificate || passport?.certificates?.[0];
+      if (existing) {
+        cert = existing;
+        setText(JSON.stringify(existing, null, 2));
+      } else {
+        try {
+          const p = await api.getPassport("zawadi");
+          const c = p.certificate || p.certificates?.[0];
+          if (!c) { setErr("Issue a passport first, or paste JSON."); return; }
+          cert = c;
+          setText(JSON.stringify(c, null, 2));
+        } catch (e) { setErr(String(e)); return; }
+      }
     }
     setErr(null);
-    try { setResult(await api.tamperDemo(cert)); }
+    try { setVerify(await api.tamperDemo(cert)); }
     catch (e) { setErr(String(e)); }
   }
 
   const ok = result?.intact;
+  const lamp = result == null ? "lamp-idle" : ok ? "lamp-green" : "lamp-red";
+
   return (
-    <main className="max-w-3xl mx-auto px-6 py-8">
-      <h1 className="font-display text-4xl">{t(lang, "verify")}</h1>
-      <textarea className="mt-6 w-full min-h-48 rounded-xl border border-ink/15 p-3 font-mono text-xs" value={text}
-        onChange={(e) => setText(e.target.value)} aria-label="Certificate JSON" />
-      <div className="mt-3 flex gap-3">
-        <button type="button" onClick={run} className="bg-savanna text-paper px-4 py-2 rounded-lg">Verify</button>
-        <button type="button" onClick={tamper} className="bg-flag-red text-paper px-4 py-2 rounded-lg">{t(lang, "tamper")}</button>
+    <Room>
+      <p className="text-[11px] uppercase tracking-[0.2em] text-gold">{t(lang, "customs")}</p>
+      <h1 className="font-display italic text-4xl mt-2">{t(lang, "verify")}</h1>
+      <div className="mt-8 flex items-center gap-6">
+        <div className={`lamp ${lamp}`} aria-hidden="true" />
+        <p className="text-sm opacity-70">{t(lang, "tray")}</p>
+      </div>
+      <textarea
+        className="mt-6 w-full min-h-[40vh] rounded-sm border border-current/15 bg-dusk-2/80 p-3 font-mono text-xs text-lamp"
+        value={text}
+        onChange={(e) => setText(e.target.value)}
+        aria-label="Certificate JSON"
+      />
+      <div className="mt-4 flex flex-wrap gap-3">
+        <button type="button" onClick={run} className="stamp stamp-savanna">Verify</button>
+        <button type="button" onClick={tamper} className="stamp stamp-red">{t(lang, "tamper")}</button>
       </div>
       {result && (
-        <p className={`mt-8 font-display text-5xl ${ok ? "text-savanna" : "text-flag-red"}`} role="status">
-          {ok ? "● " + t(lang, "intact") : "▲ " + t(lang, "tampered")}
-          <span className="block text-lg font-sans mt-2">{result.reason}</span>
+        <p className={`mt-10 font-display italic text-6xl ${ok ? "text-savanna" : "text-flag-red"}`} role="status">
+          {ok ? t(lang, "intact") : t(lang, "tampered")}
+          <span className="block text-lg font-sans not-italic mt-3 opacity-80">
+            {ok ? t(lang, "mayPass") : t(lang, "brokenRecord")}
+            {result.reason ? ` — ${result.reason}` : ""}
+          </span>
         </p>
       )}
-      {err && <p className="text-flag-red mt-4">{err}</p>}
-    </main>
+      {err && <p className="text-flag-red mt-4" role="alert">{err}</p>}
+    </Room>
   );
 }

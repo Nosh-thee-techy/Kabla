@@ -1,8 +1,15 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { api, type Sample } from "../api";
+import { Room } from "../components/Room";
 import { t, type Lang } from "../i18n";
 import { useKabla } from "../state";
+
+function folder(id: string): { tone: string; tag: "folderTrap" | "folderMixed" | "folderFair" } {
+  if (id === "c001") return { tone: "bg-[#f3d4c4] border-terracotta", tag: "folderTrap" };
+  if (id === "c002") return { tone: "bg-[#f3e4c0] border-flag-amber", tag: "folderMixed" };
+  return { tone: "bg-[#d7e4db] border-savanna", tag: "folderFair" };
+}
 
 export function Desk({ lang }: { lang: Lang }) {
   const { setContract, setAnalysis } = useKabla();
@@ -13,6 +20,13 @@ export function Desk({ lang }: { lang: Lang }) {
   const nav = useNavigate();
 
   useEffect(() => { api.samples().then((s) => setSamples(s.contracts)).catch((e) => setErr(String(e))); }, []);
+
+  useEffect(() => {
+    const q = new URLSearchParams(window.location.search).get("sample");
+    if (q === "c001" || q === "c002" || q === "c003") run({ sample_id: q });
+    // demo deep-link for the video / verify
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   async function run(body: { sample_id?: string; text?: string }) {
     setBusy(true); setErr(null);
@@ -26,31 +40,57 @@ export function Desk({ lang }: { lang: Lang }) {
   }
 
   return (
-    <main className="max-w-5xl mx-auto px-6 py-12">
-      <h1 className="font-display text-5xl md:text-6xl">Kabla</h1>
-      <p className="mt-3 text-xl text-ink/80 dark:text-paper/80">{t(lang, "tagline")}</p>
-      <h2 className="mt-12 font-display text-2xl">{t(lang, "pick")}</h2>
-      <ul className="mt-6 grid md:grid-cols-3 gap-4">
-        {samples.map((s) => (
-          <li key={s.id}>
-            <button type="button" onClick={() => run({ sample_id: s.id })} disabled={busy}
-              className="h-full w-full text-left rounded-2xl border border-ink/10 bg-white/70 dark:bg-white/5 p-5 hover:border-savanna">
-              <p className="text-xs uppercase tracking-widest text-terracotta">{s.id}</p>
-              <h3 className="font-display text-xl mt-1">{s.label}</h3>
-              <p className="mt-2 text-sm text-ink/70">{s.blurb}</p>
-              <p className="mt-3 text-xs">{s.kind} · SYNTHETIC</p>
-            </button>
-          </li>
-        ))}
+    <Room>
+      <div className="max-w-3xl">
+        <p className="sticker">{t(lang, "whisper")}</p>
+        <h1 className="font-display italic text-5xl md:text-7xl mt-6 leading-[1.05]">Kabla</h1>
+        <p className="mt-4 text-xl opacity-80">{t(lang, "tagline")}</p>
+      </div>
+
+      <h2 className="mt-14 font-display text-2xl">{t(lang, "pick")}</h2>
+      {samples.length === 0 && !err && (
+        <p className="mt-6 text-sm opacity-60">{t(lang, "openingDrawers")}</p>
+      )}
+      <ul className="mt-8 grid md:grid-cols-3 gap-5 overflow-visible">
+        {samples.map((s) => {
+          const f = folder(s.id);
+          return (
+            <li key={s.id}>
+              <button
+                type="button"
+                onClick={() => run({ sample_id: s.id })}
+                disabled={busy}
+                className={`folder border ${f.tone} disabled:opacity-50`}
+              >
+                <span className="folder-tab" aria-hidden="true" />
+                <p className="font-mono text-[11px] uppercase tracking-widest opacity-70">{s.id}</p>
+                <h3 className="font-display italic text-2xl mt-1">{s.label}</h3>
+                <p className="mt-2 text-sm opacity-80">{s.blurb}</p>
+                <p className="mt-4 text-xs uppercase tracking-widest">
+                  {t(lang, f.tag)} · {s.kind} · SYNTHETIC
+                </p>
+              </button>
+            </li>
+          );
+        })}
       </ul>
-      <h2 className="mt-12 font-display text-2xl">{t(lang, "paste")}</h2>
-      <textarea className="mt-3 w-full min-h-40 rounded-xl border border-ink/15 bg-white/80 p-3" value={text}
-        onChange={(e) => setText(e.target.value)} aria-label={t(lang, "paste")} />
-      <button type="button" disabled={busy || !text.trim()} onClick={() => run({ text })}
-        className="mt-3 bg-savanna text-paper px-5 py-2 rounded-lg disabled:opacity-50">
+
+      <h2 className="mt-14 font-display text-2xl">{t(lang, "paste")}</h2>
+      <textarea
+        className="mt-3 w-full min-h-40 rounded-sm border border-ink/15 bg-blot p-4"
+        value={text}
+        onChange={(e) => setText(e.target.value)}
+        aria-label={t(lang, "paste")}
+      />
+      <button
+        type="button"
+        disabled={busy || !text.trim()}
+        onClick={() => run({ text })}
+        className="stamp stamp-savanna mt-4"
+      >
         {busy ? t(lang, "analysing") : t(lang, "analyse")}
       </button>
       {err && <p className="mt-3 text-flag-red" role="alert">{err}</p>}
-    </main>
+    </Room>
   );
 }

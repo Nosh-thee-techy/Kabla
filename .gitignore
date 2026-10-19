@@ -25,6 +25,7 @@ __pycache__/
 # node
 node_modules/
 web/dist/
+web/tmp-shots/
 
 # os/editor
 .DS_Store

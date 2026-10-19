@@ -5,16 +5,132 @@
 :root { color-scheme: light; }
 .dark { color-scheme: dark; }
 
-.dark body { @apply bg-ink text-paper; }
-
 :focus-visible {
   outline: 3px solid #C4572D;
   outline-offset: 3px;
 }
 
+.room-paper {
+  background-color: #F6F1E7;
+  background-image: radial-gradient(ellipse 80% 45% at 90% -10%, #ead8c0, transparent 60%);
+  color: #1B1A17;
+}
+.dark .room-paper,
+.room-dusk {
+  background-color: #241C16;
+  background-image: radial-gradient(ellipse 70% 50% at 50% -8%, #3d2f24, transparent 62%);
+  color: #F3E6C8;
+}
+
 .clause-red { box-shadow: inset 4px 0 0 #B3261E; background: #f8e8e4; }
 .clause-amber { box-shadow: inset 4px 0 0 #B9770E; background: #f7eedc; }
 .clause-green { box-shadow: inset 4px 0 0 #2F5D50; background: #e7efe9; }
-.dark .clause-red { background: #3a1c18; }
-.dark .clause-amber { background: #3a2e14; }
-.dark .clause-green { background: #1a2e28; }
+.dark .clause-red, .room-dusk .clause-red { background: #3a1c18; }
+.dark .clause-amber, .room-dusk .clause-amber { background: #3a2e14; }
+.dark .clause-green, .room-dusk .clause-green { background: #1a2e28; }
+
+.seal {
+  display: inline-grid;
+  place-items: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 999px;
+  border: 2px solid currentColor;
+  font-size: 0.65rem;
+  letter-spacing: 0.08em;
+  flex-shrink: 0;
+}
+.seal-red { color: #B3261E; background: rgb(179 38 30 / 0.12); }
+.seal-amber { color: #B9770E; background: rgb(185 119 14 / 0.12); }
+.seal-gold { color: #C9A15B; background: rgb(201 161 91 / 0.14); }
+.seal-green { color: #2F5D50; background: rgb(47 93 80 / 0.12); }
+
+.stamp {
+  @apply inline-flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-semibold tracking-widest uppercase rounded-sm;
+  box-shadow: 0 3px 0 rgb(0 0 0 / 0.28);
+  transition: transform 80ms ease, box-shadow 80ms ease;
+}
+.stamp:active:not(:disabled) {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 rgb(0 0 0 / 0.28);
+}
+.stamp:disabled { opacity: 0.45; cursor: not-allowed; }
+.stamp-savanna { @apply bg-savanna text-paper; }
+.stamp-terracotta { @apply bg-terracotta text-paper; }
+.stamp-red { @apply bg-flag-red text-paper; }
+.stamp-ghost { @apply bg-transparent border-2 border-current; box-shadow: none; }
+
+.ticket {
+  background-image: radial-gradient(circle at 0 50%, transparent 8px, currentColor 8.5px);
+  background-size: 16px 100%;
+  background-repeat: no-repeat;
+}
+
+.envelope {
+  position: relative;
+  background: #F6F1E7;
+  color: #1B1A17;
+  border: 1px solid rgb(27 26 23 / 0.14);
+  box-shadow: 4px 6px 0 rgb(36 28 22 / 0.1);
+  overflow: hidden;
+}
+.envelope::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 140%;
+  height: 2.2rem;
+  transform: translateX(-50%);
+  background: #e8dcc8;
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+  pointer-events: none;
+}
+
+.folder {
+  @apply relative h-full w-full text-left rounded-sm p-5 pt-8;
+  box-shadow: 6px 8px 0 rgb(36 28 22 / 0.12);
+  transition: transform 160ms ease, box-shadow 160ms ease;
+}
+.folder:hover:not(:disabled) {
+  transform: translate(-2px, -3px) rotate(-0.4deg);
+  box-shadow: 8px 12px 0 rgb(36 28 22 / 0.14);
+}
+.folder-tab {
+  position: absolute;
+  top: -0.65rem;
+  left: 1.1rem;
+  width: 4.6rem;
+  height: 0.85rem;
+  border-radius: 5px 5px 0 0;
+  background: inherit;
+  filter: brightness(0.9);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.35);
+}
+
+.sticker {
+  @apply inline-block text-xs tracking-wide px-2 py-1 -rotate-2;
+  background: #F3E6C8;
+  color: #1B1A17;
+  box-shadow: 1px 2px 0 rgb(0 0 0 / 0.12);
+}
+
+.lamp {
+  width: 4.5rem;
+  height: 4.5rem;
+  border-radius: 999px;
+  border: 4px solid rgb(243 230 200 / 0.25);
+  box-shadow: inset 0 0 0 6px rgb(0 0 0 / 0.2);
+}
+.lamp-green { background: #2F5D50; box-shadow: 0 0 32px rgb(47 93 80 / 0.55), inset 0 0 0 6px rgb(0 0 0 / 0.2); }
+.lamp-red { background: #B3261E; box-shadow: 0 0 32px rgb(179 38 30 / 0.55), inset 0 0 0 6px rgb(0 0 0 / 0.2); }
+.lamp-idle { background: #3a3228; }
+
+.tele {
+  @apply font-mono text-xs leading-relaxed overflow-x-auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stamp, .folder, .lamp { transition: none; }
+  .folder:hover:not(:disabled) { transform: none; }
+}

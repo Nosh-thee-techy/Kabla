@@ -25,22 +25,33 @@ export function ClauseHighlight({ text, analysis, onPick, selected }: {
 }) {
   const blocks = splitClauses(text);
   return (
-    <div className="space-y-3 font-sans text-[17px] leading-7">
+    <div className="space-y-2 font-sans text-[16px] leading-7">
       {blocks.map((b) => {
         const sev = analysis?.clause_severity?.[String(b.n)];
-        const cls = sev === "red" ? "clause-red" : sev === "amber" ? "clause-amber" : "px-3 py-2";
-        const icon = sev === "red" ? "▲" : sev === "amber" ? "■" : "";
+        const dim = selected != null && selected !== b.n;
+        const live = selected === b.n;
+        const cls = sev === "red" ? "clause-red" : sev === "amber" ? "clause-amber" : "bg-white/40 dark:bg-white/5";
         return (
-          <section key={b.n}>
+          <section key={b.n} className={dim ? "opacity-40 transition-opacity" : "transition-opacity"}>
             {sev ? (
-              <button type="button" onClick={() => onPick(b.n)}
-                className={`w-full text-left rounded-md px-3 py-2 ${cls} ${selected === b.n ? "ring-2 ring-terracotta" : ""}`}>
-                <strong>{icon} {b.n}. {b.title}</strong>
-                <span className="sr-only">{sev}</span>
-                <p className="whitespace-pre-wrap mt-1">{b.body}</p>
+              <button
+                type="button"
+                onClick={() => onPick(b.n)}
+                className={`w-full text-left rounded-sm px-3 py-3 ${cls} ${live ? "ring-2 ring-terracotta" : ""}`}
+              >
+                <span className="flex items-start gap-3">
+                  <span className={`seal ${sev === "red" ? "seal-red" : "seal-amber"} mt-0.5`} aria-hidden="true">
+                    {sev === "red" ? "▲" : "■"}
+                  </span>
+                  <span>
+                    <strong>{b.n}. {b.title}</strong>
+                    <span className="sr-only"> {sev}</span>
+                    <span className="block whitespace-pre-wrap mt-1">{b.body}</span>
+                  </span>
+                </span>
               </button>
             ) : (
-              <div className="px-3 py-2">
+              <div className="px-3 py-2 opacity-80">
                 <strong>{b.n}. {b.title}</strong>
                 <p className="whitespace-pre-wrap mt-1">{b.body}</p>
               </div>

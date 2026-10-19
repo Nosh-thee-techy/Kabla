@@ -243,6 +243,7 @@ http://localhost:5173 and proxies `/api` to the API.
 
 - API health: http://localhost:8000/health
 - Desk: http://localhost:5173
+- Demo jump (Mawingu): http://localhost:5173/?sample=c001
 
 `KABLA_MODE=deterministic` (default) uses fixtures and templates — no LLM, no
 network. Copy `.env.example` to `.env` for live mode; never commit secrets.

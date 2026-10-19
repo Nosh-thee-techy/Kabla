@@ -1,26 +1,47 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
 import { ClauseHighlight } from "../components/ClauseHighlight";
-import { TrailDrawer } from "../components/TrailDrawer";
+import { EmptyGate } from "../components/EmptyGate";
+import { NextStamp } from "../components/NextStamp";
+import { Room } from "../components/Room";
+import { TrailBody, TrailDrawer } from "../components/TrailDrawer";
 import { t, type Lang } from "../i18n";
 import { useKabla } from "../state";
 
 export function ClauseMap({ lang }: { lang: Lang }) {
   const { contract, analysis } = useKabla();
   const [n, setN] = useState<number | null>(null);
-  if (!contract || !analysis) {
-    return <p className="p-8">Open a contract from the <Link className="underline" to="/">Desk</Link>.</p>;
-  }
+  if (!contract || !analysis) return <EmptyGate lang={lang} title={t(lang, "map")} />;
+
   const flag = analysis.flags.find((f) => f.clause === n) || null;
   return (
-    <main className="max-w-5xl mx-auto px-6 py-8">
-      <p className="text-sm">{analysis.summary.red} {t(lang, "red")} · {analysis.summary.amber} {t(lang, "amber")}</p>
-      <h1 className="font-display text-4xl mt-2">{contract.title}</h1>
-      <p className="text-sm mt-1">{contract.label} · MeTTa trail · {analysis.extraction_source}</p>
-      <div className="mt-8">
+    <Room wide>
+      <div className="flex flex-wrap items-end gap-4">
+        <div>
+          <p className="flex gap-2 text-sm">
+            <span className="seal seal-red">{analysis.summary.red}</span>
+            <span className="self-center">{t(lang, "red")}</span>
+            <span className="seal seal-amber ml-2">{analysis.summary.amber}</span>
+            <span className="self-center">{t(lang, "amber")}</span>
+          </p>
+          <h1 className="font-display italic text-4xl mt-3">{contract.title}</h1>
+          <p className="font-mono text-xs mt-2 opacity-60">
+            {contract.label} · {t(lang, "metta")} · {analysis.extraction_source}
+          </p>
+        </div>
+      </div>
+
+      <div className="mt-8 grid lg:grid-cols-[minmax(0,1fr)_28rem] gap-8 items-start">
         <ClauseHighlight text={contract.text} analysis={analysis} selected={n} onPick={setN} />
+        <aside className="hidden lg:block sticky top-4 rounded-sm border border-current/10 bg-white/50 dark:bg-dusk-2/80 p-5 min-h-[60vh]">
+          {flag ? (
+            <TrailBody flag={flag} lang={lang} />
+          ) : (
+            <p className="font-display italic text-xl opacity-60">{t(lang, "pickSealed")}</p>
+          )}
+        </aside>
       </div>
       {flag && <TrailDrawer flag={flag} lang={lang} onClose={() => setN(null)} />}
-    </main>
+      <NextStamp to="/simulate">{t(lang, "nextSim")}</NextStamp>
+    </Room>
   );
 }
