@@ -1,0 +1,59 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  engine-and-api:
+    runs-on: ubuntu-24.04
+    env:
+      KABLA_MODE: deterministic
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install SWI-Prolog
+        run: |
+          sudo apt-add-repository -y ppa:swi-prolog/stable
+          sudo apt-get update
+          sudo apt-get install -y swi-prolog-nox
+          swipl --version
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Fetch pinned PeTTa
+        run: python scripts/setup_petta.py
+
+      - name: MeTTa rule tests
+        run: python engine/run_tests.py
+
+      - name: Install API
+        if: hashFiles('api/pyproject.toml') != ''
+        run: pip install -e "api[dev]"
+
+      - name: Lint
+        if: hashFiles('api/pyproject.toml') != ''
+        working-directory: api
+        run: ruff check kabla tests
+
+      - name: API tests
+        if: hashFiles('api/pyproject.toml') != ''
+        working-directory: api
+        run: pytest -q
+
+  web:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        if: hashFiles('web/package.json') != ''
+        with:
+          node-version: "22"
+      - name: Build web
+        if: hashFiles('web/package.json') != ''
+        working-directory: web
+        run: |
+          npm ci || npm install
+          npm run build
