@@ -1,0 +1,21 @@
+# Default: L0 product (MeTTa on PeTTa + FastAPI + UI).
+# Omega is P1 and is not started here — plugin files exist but have not been
+# loaded in a live Omega agent. See omega-plugin/README.md.
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    environment:
+      KABLA_MODE: deterministic
+      PETTA_HOME: /app/.vendor/PeTTa
+    ports:
+      - "8000:8000"
+  web:
+    build:
+      context: ./web
+      dockerfile: Dockerfile
+    ports:
+      - "5173:80"
+    depends_on:
+      - api

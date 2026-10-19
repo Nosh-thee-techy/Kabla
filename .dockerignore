@@ -1,0 +1,13 @@
+.git
+.vendor
+.venv
+api/.venv
+api/.pytest_cache
+web/node_modules
+web/dist
+var
+*.sqlite
+.env
+__pycache__
+*.egg-info
+.ruff_cache
