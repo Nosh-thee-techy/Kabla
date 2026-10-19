@@ -1,0 +1,37 @@
+(redline tz ai-training never 2026-10-19)
+(redline tz term-max-years 7 2026-10-19)
+
+; ── R-TERM-01 ──
+(contract-artist t-term-long tz)
+(clause t-term-long 4 term 10)
+(contract-artist t-term-perp tz)
+(clause t-term-perp 5 term perpetual)
+(contract-artist t-term-ok tz)
+(clause t-term-ok 4 term 5)
+(contract-artist t-term-noredline nobody)
+(clause t-term-noredline 4 term 25)
+
+!(check-has term01-over-redline (collapse (effective-flags t-term-long))
+   (flag t-term-long 4 R-TERM-01 red (clause t-term-long 4 term 10)))
+!(check-has term01-perpetual (collapse (effective-flags t-term-perp))
+   (flag t-term-perp 5 R-TERM-01 red (clause t-term-perp 5 term perpetual)))
+!(check term01-within-redline (collapse (effective-flags t-term-ok)) ())
+!(check term01-needs-a-redline (collapse (effective-flags t-term-noredline)) ())
+!(check-has term01-hit-cites-date (collapse (redline-hits-of t-term-long))
+   (redline-hit t-term-long 4 R-TERM-01 term-max-years 7 2026-10-19))
+
+; ── AI red line raises severity and cites the date ──
+(contract-artist t-rl-vague tz)
+(clause t-rl-vague 8 ai-training vague)
+(contract-artist t-rl-grant tz)
+(clause t-rl-grant 7 ai-training granted no-opt-in)
+(contract-artist t-rl-other nobody)
+(clause t-rl-other 8 ai-training vague)
+
+!(check-has ai02-raised-to-red (collapse (effective-flags t-rl-vague))
+   (flag t-rl-vague 8 R-AI-02 red (clause t-rl-vague 8 ai-training vague)))
+!(check-has ai02-stays-amber-without-redline (collapse (effective-flags t-rl-other))
+   (flag t-rl-other 8 R-AI-02 amber (clause t-rl-other 8 ai-training vague)))
+!(check-has ai01-redline-hit (collapse (redline-hits-of t-rl-grant))
+   (redline-hit t-rl-grant 7 R-AI-01 ai-training never 2026-10-19))
+!(check no-hits-without-redline (collapse (redline-hits-of t-rl-other)) ())
