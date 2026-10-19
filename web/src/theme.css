@@ -1,0 +1,20 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root { color-scheme: light; }
+.dark { color-scheme: dark; }
+
+.dark body { @apply bg-ink text-paper; }
+
+:focus-visible {
+  outline: 3px solid #C4572D;
+  outline-offset: 3px;
+}
+
+.clause-red { box-shadow: inset 4px 0 0 #B3261E; background: #f8e8e4; }
+.clause-amber { box-shadow: inset 4px 0 0 #B9770E; background: #f7eedc; }
+.clause-green { box-shadow: inset 4px 0 0 #2F5D50; background: #e7efe9; }
+.dark .clause-red { background: #3a1c18; }
+.dark .clause-amber { background: #3a2e14; }
+.dark .clause-green { background: #1a2e28; }
