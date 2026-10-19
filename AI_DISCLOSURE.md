@@ -16,3 +16,6 @@ Every use of AI in this project is logged here, append-only. Entries are never r
 | Date | Tool | What it did | Human review |
 |---|---|---|---|
 | 2026-10-19 | Cursor agent (Claude) | Repo scaffolding: LICENSE/NOTICE, docs skeletons, decisions log | Reviewed by team |
+| 2026-10-19 | Cursor agent (Claude) | Wrote the three SYNTHETIC contracts, extraction fixtures, artist/work/policy data | Reviewed by team |
+| 2026-10-19 | Cursor agent (Claude) | Wrote MeTTa rule modules (flags, red lines, licence, simulator) and their tests, verified on PeTTa | Reviewed by team; tests run on every commit |
+| 2026-10-19 | Cursor agent (Claude) | Drafted the English and **Swahili** explanation templates (`api/kabla/i18n/`) and the RULES.md generator | Swahili is AI-drafted and **must be checked by a fluent speaker** (see LIMITATIONS.md) |

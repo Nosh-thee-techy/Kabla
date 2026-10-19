@@ -9,3 +9,4 @@
 !(import! &self ./redlines.metta)
 !(import! &self ./licence.metta)
 !(import! &self ./simulate.metta)
+!(import! &self ./i18n_keys.metta)

@@ -1,0 +1,97 @@
+{
+  "rule": {
+    "R-GRANT-01": {
+      "title": "Your recordings: forever, everywhere, only theirs",
+      "meaning": "Clause {n} hands over the {right} rights for ever, in every country, exclusively.",
+      "cost": "You can never take these recordings elsewhere or get them back, even if the label stops working on them."
+    },
+    "R-GRANT-02": {
+      "title": "Forever, but not only theirs",
+      "meaning": "Clause {n} grants the {right} rights for ever, though not exclusively.",
+      "cost": "You can still license elsewhere, but this licence never ends."
+    },
+    "R-TERM-01": {
+      "title": "Longer than your limit",
+      "meaning": "Clause {n} ties the rights up for {value}, beyond the limit you set.",
+      "cost": "Your music stays locked up for years after you may want to move on."
+    },
+    "R-AI-01": {
+      "title": "AI training on your recordings, with no say",
+      "meaning": "Clause {n} lets the label train AI on your recordings and voice without asking you or paying you.",
+      "cost": "A machine could learn to sound like you, and you would earn nothing from it."
+    },
+    "R-AI-02": {
+      "title": "Vague \"new technology\" wording",
+      "meaning": "Clause {n} allows machine-learning uses in open-ended words.",
+      "cost": "Vague words tend to be read in the other side's favour; this could cover AI training."
+    },
+    "R-VOICE-01": {
+      "title": "Synthetic copies of your voice",
+      "meaning": "Clause {n} lets the label make and use digital copies of your voice.",
+      "cost": "Songs you never sang could be released in your voice."
+    },
+    "R-REVERT-01": {
+      "title": "Rights never come back",
+      "meaning": "Clause {n} says the rights never return to you, even if nothing is released.",
+      "cost": "Unreleased songs can sit on a shelf for ever."
+    },
+    "R-XCOLL-01": {
+      "title": "Debts from other deals eat these royalties",
+      "meaning": "Clause {n} lets the label recover costs from other agreements out of this one.",
+      "cost": "One project that doesn't sell can stop you earning from one that does."
+    },
+    "R-OPT-01": {
+      "title": "Only the label can extend",
+      "meaning": "Clause {n} gives the label {value} options to extend the deal, and gives you none.",
+      "cost": "You can be held for years on the same terms if the label wants."
+    },
+    "R-ROY-01": {
+      "title": "Royalty below the illustrative benchmark",
+      "meaning": "Clause {n} pays {value}%, below the {floor}% in the illustrative profile for this kind of deal.",
+      "cost": "You keep less from every stream. (Illustrative comparison, not market data.)"
+    },
+    "R-AUDIT-01": {
+      "title": "No right to check the books",
+      "meaning": "Clause {n} gives you no right to audit the other side's books.",
+      "meaning_missing": "The contract gives you no right to audit the other side's books.",
+      "cost": "You cannot check that your royalty statements are correct."
+    },
+    "R-SYNC-01": {
+      "title": "Films and adverts without your approval",
+      "meaning": "Clause {n} lets the label license your music to films and adverts without asking you.",
+      "cost": "Your song could appear in an advert you disagree with."
+    },
+    "R-SPLIT-01": {
+      "title": "Co-writer splits not settled",
+      "meaning": "Clause {n} does not state co-writer shares that add up to 100%.",
+      "cost": "Unsettled splits lead to disputes and frozen payments later."
+    }
+  },
+  "redline": {
+    "line": "You told Kabla on {date}: {said}. Clause {n} breaks this.",
+    "ai-training": "never AI training",
+    "term-max-years": "no more than {value} years"
+  },
+  "licence": {
+    "R-LIC-AI": "Not cleared: AI training is opt-in only under {ref}, and {artist}'s stance is never (set on {date}).",
+    "R-LIC-AI-OPTIN": "Needs consent: AI training is opt-in per use under {ref}, so every owner must opt in.",
+    "R-LIC-TERM": "Not cleared: {months} months is longer than the {max}-month licence window.",
+    "R-LIC-CONSENT": "Needs consent: {list} has not given {family} consent for {terr}.",
+    "R-LIC-OK": "Cleared with conditions: every owner has a verified consent covering {terr}.",
+    "missing_item": "{who} ({share}% of the {right})"
+  },
+  "condition": {
+    "term-window": "The licence runs {months} months, within the {max}-month window.",
+    "territory-limit": "Use is limited to {terr}.",
+    "no-ai-training": "The licensee may not use the track to train AI ({ref}).",
+    "no-synthetic-voice": "No synthetic voice; name and approved photos for promotion only ({ref})."
+  },
+  "right": {"master": "master recording", "composition": "composition", "artwork": "artwork"},
+  "family": {"sync": "sync", "live": "live", "sample": "sample", "ai-training": "AI-training"},
+  "territory": {
+    "KE": "Kenya", "TZ": "Tanzania", "UG": "Uganda", "EA": "East Africa", "NG": "Nigeria",
+    "AF": "Africa", "WW": "the whole world", "US": "the United States", "NA": "North America",
+    "GB": "the United Kingdom", "EU": "Europe"
+  },
+  "value": {"perpetual": "for ever", "years": "{value} years"}
+}

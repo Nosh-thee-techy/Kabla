@@ -1,0 +1,98 @@
+{
+  "_note": "Kiswahili kutoka violezo vilivyopitiwa. Kinapaswa kukaguliwa na mzungumzaji fasaha kabla ya matumizi halisi.",
+  "rule": {
+    "R-GRANT-01": {
+      "title": "Rekodi zako: milele, kila mahali, ni zao peke yao",
+      "meaning": "Kifungu {n} kinakabidhi haki za {right} milele, katika kila nchi, kwa upekee.",
+      "cost": "Hutaweza kamwe kupeleka rekodi hizi kwingine wala kuzirudisha, hata kama lebo itaacha kuzishughulikia."
+    },
+    "R-GRANT-02": {
+      "title": "Milele, lakini si zao peke yao",
+      "meaning": "Kifungu {n} kinatoa haki za {right} milele, ingawa si kwa upekee.",
+      "cost": "Bado unaweza kutoa leseni kwingine, lakini leseni hii haiishi kamwe."
+    },
+    "R-TERM-01": {
+      "title": "Muda mrefu kuliko kikomo chako",
+      "meaning": "Kifungu {n} kinafunga haki kwa {value}, zaidi ya kikomo ulichoweka.",
+      "cost": "Muziki wako unabaki umefungwa kwa miaka mingi baada ya wewe kutaka kuendelea."
+    },
+    "R-AI-01": {
+      "title": "Mafunzo ya AI kwa rekodi zako, bila sauti yako",
+      "meaning": "Kifungu {n} kinairuhusu lebo kufunza AI kwa rekodi na sauti yako bila kukuuliza wala kukulipa.",
+      "cost": "Mashine inaweza kujifunza kuimba kama wewe, na hutapata chochote."
+    },
+    "R-AI-02": {
+      "title": "Maneno yasiyo wazi kuhusu \"teknolojia mpya\"",
+      "meaning": "Kifungu {n} kinaruhusu matumizi ya mashine kujifunza kwa maneno yasiyo na mipaka.",
+      "cost": "Maneno yasiyo wazi mara nyingi hutafsiriwa kwa faida ya upande mwingine; yanaweza kujumuisha mafunzo ya AI."
+    },
+    "R-VOICE-01": {
+      "title": "Nakala bandia za sauti yako",
+      "meaning": "Kifungu {n} kinairuhusu lebo kutengeneza na kutumia nakala za kidijitali za sauti yako.",
+      "cost": "Nyimbo ambazo hukuwahi kuimba zinaweza kutolewa kwa sauti yako."
+    },
+    "R-REVERT-01": {
+      "title": "Haki hazirudi kamwe",
+      "meaning": "Kifungu {n} kinasema haki hazitarudi kwako, hata kama hakuna kilichotolewa.",
+      "cost": "Nyimbo ambazo hazijatolewa zinaweza kukaa rafuni milele."
+    },
+    "R-XCOLL-01": {
+      "title": "Madeni ya mikataba mingine yanakula mrabaha huu",
+      "meaning": "Kifungu {n} kinairuhusu lebo kurejesha gharama za mikataba mingine kutoka kwa mkataba huu.",
+      "cost": "Mradi mmoja usiouza unaweza kukuzuia kupata mapato kutoka kwa mradi unaouza."
+    },
+    "R-OPT-01": {
+      "title": "Lebo pekee ndiyo inaweza kuongeza muda",
+      "meaning": "Kifungu {n} kinaipa lebo nafasi {value} za kuongeza mkataba, na wewe hupewi hata moja.",
+      "cost": "Unaweza kushikiliwa kwa miaka mingi kwa masharti yale yale lebo ikitaka."
+    },
+    "R-ROY-01": {
+      "title": "Mrabaha chini ya kipimo cha mfano",
+      "meaning": "Kifungu {n} kinalipa {value}%, chini ya {floor}% katika wasifu wa mfano kwa aina hii ya mkataba.",
+      "cost": "Unabaki na kidogo kutoka kila usikilizaji. (Ulinganisho wa mfano, si takwimu za soko.)"
+    },
+    "R-AUDIT-01": {
+      "title": "Hakuna haki ya kukagua hesabu",
+      "meaning": "Kifungu {n} hakikupi haki ya kukagua hesabu za upande mwingine.",
+      "meaning_missing": "Mkataba haukupi haki ya kukagua hesabu za upande mwingine.",
+      "cost": "Huwezi kuthibitisha kwamba taarifa za mrabaha wako ni sahihi."
+    },
+    "R-SYNC-01": {
+      "title": "Filamu na matangazo bila idhini yako",
+      "meaning": "Kifungu {n} kinairuhusu lebo kutoa leseni ya muziki wako kwa filamu na matangazo bila kukuuliza.",
+      "cost": "Wimbo wako unaweza kutumika katika tangazo usilokubaliana nalo."
+    },
+    "R-SPLIT-01": {
+      "title": "Mgawanyo wa watunzi wenza haujakamilika",
+      "meaning": "Kifungu {n} hakitaji hisa za watunzi wenza zinazofikia 100%.",
+      "cost": "Mgawanyo usio wazi husababisha migogoro na malipo kukwama baadaye."
+    }
+  },
+  "redline": {
+    "line": "Uliiambia Kabla tarehe {date}: {said}. Kifungu {n} kinavunja hili.",
+    "ai-training": "kamwe mafunzo ya AI",
+    "term-max-years": "si zaidi ya miaka {value}"
+  },
+  "licence": {
+    "R-LIC-AI": "Hairuhusiwi: mafunzo ya AI ni kwa idhini maalum tu chini ya {ref}, na msimamo wa {artist} ni kamwe (uliwekwa {date}).",
+    "R-LIC-AI-OPTIN": "Inahitaji idhini: mafunzo ya AI ni kwa idhini ya kila matumizi chini ya {ref}, kwa hiyo kila mmiliki lazima akubali.",
+    "R-LIC-TERM": "Hairuhusiwi: miezi {months} ni zaidi ya kipindi cha leseni cha miezi {max}.",
+    "R-LIC-CONSENT": "Inahitaji idhini: {list} hajatoa idhini ya {family} kwa {terr}.",
+    "R-LIC-OK": "Imeruhusiwa kwa masharti: kila mmiliki ana idhini iliyothibitishwa inayohusu {terr}.",
+    "missing_item": "{who} ({share}% ya {right})"
+  },
+  "condition": {
+    "term-window": "Leseni ni ya miezi {months}, ndani ya kipindi cha miezi {max}.",
+    "territory-limit": "Matumizi yanahusu {terr} pekee.",
+    "no-ai-training": "Mwenye leseni hawezi kutumia wimbo kufunza AI ({ref}).",
+    "no-synthetic-voice": "Hakuna sauti bandia; jina na picha zilizoidhinishwa kwa matangazo tu ({ref})."
+  },
+  "right": {"master": "rekodi kuu", "composition": "utunzi", "artwork": "kazi ya sanaa"},
+  "family": {"sync": "matumizi ya filamu/tangazo", "live": "maonyesho ya moja kwa moja", "sample": "sampuli", "ai-training": "mafunzo ya AI"},
+  "territory": {
+    "KE": "Kenya", "TZ": "Tanzania", "UG": "Uganda", "EA": "Afrika Mashariki", "NG": "Nigeria",
+    "AF": "Afrika", "WW": "dunia nzima", "US": "Marekani", "NA": "Amerika Kaskazini",
+    "GB": "Uingereza", "EU": "Ulaya"
+  },
+  "value": {"perpetual": "milele", "years": "miaka {value}"}
+}
