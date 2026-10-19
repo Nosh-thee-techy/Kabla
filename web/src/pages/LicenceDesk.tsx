@@ -46,7 +46,7 @@ export function LicenceDesk({ lang }: { lang: Lang }) {
         ))}
       </ul>
       {verdict && (
-        <article className={`mt-10 rounded-sm border-4 ${tone} p-6 bg-white/70 dark:bg-dusk-2/70`}>
+        <article className={`panel mt-10 border-4 ${tone} p-6`}>
           <p className="font-mono text-[11px] uppercase tracking-widest">{verdict.rule_id}</p>
           <h2 className="font-display italic text-4xl mt-2">{label}</h2>
           <p className="mt-4 text-ink dark:text-lamp">{lang === "sw" ? verdict.headline_sw : verdict.headline_en}</p>

@@ -55,7 +55,7 @@ export function Verify({ lang }: { lang: Lang }) {
         <p className="text-sm opacity-70">{t(lang, "tray")}</p>
       </div>
       <textarea
-        className="mt-6 w-full min-h-[40vh] rounded-sm border border-current/15 bg-dusk-2/80 p-3 font-mono text-xs text-lamp"
+        className="field mt-6 w-full min-h-[40vh] p-3 font-mono text-xs"
         value={text}
         onChange={(e) => setText(e.target.value)}
         aria-label="Certificate JSON"

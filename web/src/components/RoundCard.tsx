@@ -8,7 +8,7 @@ export function RoundCard({ topic, lang, onDecide, disabled, selected }: {
 }) {
   const open = topic.status === "open";
   return (
-    <article className="rounded-sm border border-current/15 bg-dusk-2/80 p-4">
+    <article className="panel p-4">
       <header className="flex justify-between gap-2 text-sm">
         <h3 className="font-display italic text-xl capitalize">{topic.topic.replace("-", " ")}</h3>
         <span className="font-mono text-[11px] opacity-70">

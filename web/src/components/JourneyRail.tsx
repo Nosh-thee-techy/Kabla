@@ -27,12 +27,12 @@ export function JourneyRail({ lang }: { lang: Lang }) {
               <NavLink
                 to={step.to}
                 end={step.to === "/"}
-                className={`flex items-center gap-1.5 px-2 py-1 rounded-full whitespace-nowrap ${
+                className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-full whitespace-nowrap border ${
                   here
-                    ? "bg-terracotta text-paper"
+                    ? "bg-terracotta text-paper border-terracotta"
                     : done
-                      ? "text-foil"
-                      : "opacity-70 hover:opacity-100"
+                      ? "text-gold border-gold/50"
+                      : "border-current/25 opacity-80 hover:opacity-100"
                 }`}
               >
                 <span

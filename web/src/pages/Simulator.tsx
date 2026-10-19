@@ -66,7 +66,7 @@ function Stage({ label, amount, max, tone, detail }: {
 }) {
   const bar = tone === "terracotta" ? "bg-terracotta" : "bg-savanna";
   return (
-    <article className="rounded-sm border border-current/10 p-5 bg-white/50 dark:bg-dusk-2/60">
+    <article className="panel p-5">
       <p className="text-[11px] uppercase tracking-widest opacity-60">{label}</p>
       <p className="font-display italic text-3xl mt-1">{money(amount)}</p>
       <div className="h-3 bg-ink/10 dark:bg-white/10 rounded-full mt-4 overflow-hidden">

@@ -30,7 +30,7 @@ export function ClauseHighlight({ text, analysis, onPick, selected }: {
         const sev = analysis?.clause_severity?.[String(b.n)];
         const dim = selected != null && selected !== b.n;
         const live = selected === b.n;
-        const cls = sev === "red" ? "clause-red" : sev === "amber" ? "clause-amber" : "bg-white/40 dark:bg-white/5";
+        const cls = sev === "red" ? "clause-red" : sev === "amber" ? "clause-amber" : "panel";
         return (
           <section key={b.n} className={dim ? "opacity-40 transition-opacity" : "transition-opacity"}>
             {sev ? (

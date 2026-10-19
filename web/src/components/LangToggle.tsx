@@ -2,7 +2,7 @@ import type { Lang } from "../i18n";
 
 export function LangToggle({ lang, onChange }: { lang: Lang; onChange: (l: Lang) => void }) {
   return (
-    <div className="inline-flex rounded-full border border-current/25 p-0.5" role="group" aria-label="Language">
+    <div className="inline-flex rounded-full border-2 border-current/40 p-0.5" role="group" aria-label="Language">
       {(["en", "sw"] as const).map((l) => (
         <button
           key={l}

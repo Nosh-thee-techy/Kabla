@@ -41,7 +41,7 @@ export function Passport({ lang }: { lang: Lang }) {
         {t(lang, "register")} → {t(lang, "issue")}
       </button>
       {data && (
-        <section className="mt-10 grid md:grid-cols-2 border border-gold/40 rounded-sm overflow-hidden bg-dusk-2/50">
+        <section className="panel mt-10 grid md:grid-cols-2 overflow-hidden border-gold/50">
           <article className="p-6 border-b md:border-b-0 md:border-r border-dashed border-gold/30">
             <p className="sticker">{t(lang, "synthetic").split("—")[0]}</p>
             <p className="font-display italic text-3xl mt-6">{title}</p>

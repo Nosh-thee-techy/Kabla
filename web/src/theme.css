@@ -17,17 +17,37 @@
 }
 .dark .room-paper,
 .room-dusk {
-  background-color: #241C16;
-  background-image: radial-gradient(ellipse 70% 50% at 50% -8%, #3d2f24, transparent 62%);
-  color: #F3E6C8;
+  background-color: #1A1410;
+  background-image: radial-gradient(ellipse 70% 50% at 50% -8%, #4a3424, transparent 62%);
+  color: #F8EED8;
+}
+
+.panel {
+  @apply rounded-sm border border-ink/15 bg-white/70;
+}
+.dark .panel,
+.room-dusk .panel {
+  background: #32261D;
+  border-color: rgb(243 230 200 / 0.22);
+  color: #F8EED8;
+}
+
+.field {
+  @apply rounded-sm border border-ink/20 bg-blot text-ink;
+}
+.dark .field,
+.room-dusk .field {
+  background: #2A211A;
+  border-color: rgb(243 230 200 / 0.28);
+  color: #F8EED8;
 }
 
 .clause-red { box-shadow: inset 4px 0 0 #B3261E; background: #f8e8e4; }
 .clause-amber { box-shadow: inset 4px 0 0 #B9770E; background: #f7eedc; }
 .clause-green { box-shadow: inset 4px 0 0 #2F5D50; background: #e7efe9; }
-.dark .clause-red, .room-dusk .clause-red { background: #3a1c18; }
-.dark .clause-amber, .room-dusk .clause-amber { background: #3a2e14; }
-.dark .clause-green, .room-dusk .clause-green { background: #1a2e28; }
+.dark .clause-red, .room-dusk .clause-red { background: #5a241c; color: #F8EED8; }
+.dark .clause-amber, .room-dusk .clause-amber { background: #5a4218; color: #F8EED8; }
+.dark .clause-green, .room-dusk .clause-green { background: #1f3d34; color: #F8EED8; }
 
 .seal {
   display: inline-grid;
@@ -44,6 +64,10 @@
 .seal-amber { color: #B9770E; background: rgb(185 119 14 / 0.12); }
 .seal-gold { color: #C9A15B; background: rgb(201 161 91 / 0.14); }
 .seal-green { color: #2F5D50; background: rgb(47 93 80 / 0.12); }
+.dark .seal-red, .room-dusk .seal-red { color: #F0A39C; background: rgb(179 38 30 / 0.28); }
+.dark .seal-amber, .room-dusk .seal-amber { color: #F0C36A; background: rgb(185 119 14 / 0.28); }
+.dark .seal-gold, .room-dusk .seal-gold { color: #F0D78A; background: rgb(201 161 91 / 0.22); }
+.dark .seal-green, .room-dusk .seal-green { color: #8FCFB8; background: rgb(47 93 80 / 0.28); }
 
 .stamp {
   @apply inline-flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-semibold tracking-widest uppercase rounded-sm;
@@ -86,6 +110,17 @@
   clip-path: polygon(0 0, 100% 0, 50% 100%);
   pointer-events: none;
 }
+.dark .envelope,
+.room-dusk .envelope {
+  background: #32261D;
+  color: #F8EED8;
+  border-color: rgb(243 230 200 / 0.28);
+  box-shadow: 4px 6px 0 rgb(0 0 0 / 0.35);
+}
+.dark .envelope::before,
+.room-dusk .envelope::before {
+  background: #4A3828;
+}
 
 .folder {
   @apply relative h-full w-full text-left rounded-sm p-5 pt-8;
@@ -114,6 +149,12 @@
   color: #1B1A17;
   box-shadow: 1px 2px 0 rgb(0 0 0 / 0.12);
 }
+.dark .sticker,
+.room-dusk .sticker {
+  background: #5A4320;
+  color: #F8EED8;
+  box-shadow: 1px 2px 0 rgb(0 0 0 / 0.4);
+}
 
 .lamp {
   width: 4.5rem;
@@ -124,7 +165,7 @@
 }
 .lamp-green { background: #2F5D50; box-shadow: 0 0 32px rgb(47 93 80 / 0.55), inset 0 0 0 6px rgb(0 0 0 / 0.2); }
 .lamp-red { background: #B3261E; box-shadow: 0 0 32px rgb(179 38 30 / 0.55), inset 0 0 0 6px rgb(0 0 0 / 0.2); }
-.lamp-idle { background: #3a3228; }
+.lamp-idle { background: #5a4a38; border-color: rgb(243 230 200 / 0.45); }
 
 .tele {
   @apply font-mono text-xs leading-relaxed overflow-x-auto;

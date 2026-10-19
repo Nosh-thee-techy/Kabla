@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Route, Routes, useLocation } from "react-router-dom";
 import { JourneyRail } from "./components/JourneyRail";
 import { LangToggle } from "./components/LangToggle";
@@ -18,7 +18,14 @@ const DUSK = new Set(["/theater", "/passport", "/verify"]);
 
 export default function App() {
   const [lang, setLang] = useState<Lang>("en");
-  const [dark, setDark] = useState(false);
+  const [dark, setDark] = useState(() => {
+    try { return localStorage.getItem("kabla-lamp") === "on"; }
+    catch { return false; }
+  });
+  useEffect(() => {
+    try { localStorage.setItem("kabla-lamp", dark ? "on" : "off"); }
+    catch { /* ignore */ }
+  }, [dark]);
   const { pathname } = useLocation();
   const dusk = DUSK.has(pathname);
   const night = dusk || dark;
@@ -26,7 +33,7 @@ export default function App() {
   return (
     <KablaProvider>
       <div className={night ? "dark" : ""}>
-        <div className={`min-h-dvh flex flex-col ${dusk ? "room-dusk" : "room-paper"}`}>
+        <div className={`min-h-dvh flex flex-col ${dusk || dark ? "room-dusk" : "room-paper"}`}>
           <a href="#main" className="sr-only focus:not-sr-only focus:absolute focus:p-2 bg-savanna text-paper">
             {t(lang, "skip")}
           </a>
@@ -38,7 +45,7 @@ export default function App() {
                 <LangToggle lang={lang} onChange={setLang} />
                 <button
                   type="button"
-                  className="text-sm underline decoration-from-font"
+                  className="stamp stamp-ghost text-xs"
                   aria-pressed={dark}
                   onClick={() => setDark(!dark)}
                 >
@@ -46,7 +53,7 @@ export default function App() {
                 </button>
               </div>
             </div>
-            <div className="mt-4 border-t border-current/10 pt-3">
+            <div className="mt-4 border-t border-current/25 pt-3">
               <JourneyRail lang={lang} />
             </div>
           </header>

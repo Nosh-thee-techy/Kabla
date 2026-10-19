@@ -32,7 +32,7 @@ export function ClauseMap({ lang }: { lang: Lang }) {
 
       <div className="mt-8 grid lg:grid-cols-[minmax(0,1fr)_28rem] gap-8 items-start">
         <ClauseHighlight text={contract.text} analysis={analysis} selected={n} onPick={setN} />
-        <aside className="hidden lg:block sticky top-4 rounded-sm border border-current/10 bg-white/50 dark:bg-dusk-2/80 p-5 min-h-[60vh]">
+        <aside className="panel hidden lg:block sticky top-4 p-5 min-h-[60vh]">
           {flag ? (
             <TrailBody flag={flag} lang={lang} />
           ) : (

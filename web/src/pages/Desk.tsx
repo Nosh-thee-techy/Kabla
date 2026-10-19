@@ -6,9 +6,9 @@ import { t, type Lang } from "../i18n";
 import { useKabla } from "../state";
 
 function folder(id: string): { tone: string; tag: "folderTrap" | "folderMixed" | "folderFair" } {
-  if (id === "c001") return { tone: "bg-[#f3d4c4] border-terracotta", tag: "folderTrap" };
-  if (id === "c002") return { tone: "bg-[#f3e4c0] border-flag-amber", tag: "folderMixed" };
-  return { tone: "bg-[#d7e4db] border-savanna", tag: "folderFair" };
+  if (id === "c001") return { tone: "bg-[#f3d4c4] text-ink border-terracotta dark:bg-[#5a2c22] dark:text-lamp dark:border-terracotta", tag: "folderTrap" };
+  if (id === "c002") return { tone: "bg-[#f3e4c0] text-ink border-flag-amber dark:bg-[#5a4818] dark:text-lamp dark:border-gold", tag: "folderMixed" };
+  return { tone: "bg-[#d7e4db] text-ink border-savanna dark:bg-[#1f3d34] dark:text-lamp dark:border-savanna", tag: "folderFair" };
 }
 
 export function Desk({ lang }: { lang: Lang }) {
@@ -77,7 +77,7 @@ export function Desk({ lang }: { lang: Lang }) {
 
       <h2 className="mt-14 font-display text-2xl">{t(lang, "paste")}</h2>
       <textarea
-        className="mt-3 w-full min-h-40 rounded-sm border border-ink/15 bg-blot p-4"
+        className="field mt-3 w-full min-h-40 p-4"
         value={text}
         onChange={(e) => setText(e.target.value)}
         aria-label={t(lang, "paste")}
