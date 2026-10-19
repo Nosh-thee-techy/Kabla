@@ -43,6 +43,23 @@
    (flag t-xc-pos 15 R-XCOLL-01 amber (clause t-xc-pos 15 cross-collateral yes)))
 !(check xcoll01-negative (collapse (flags-of t-xc-neg)) ())
 
+; ── R-ROY-01 (benchmark facts normally come from data/policies/benchmarks.metta) ──
+(active-profile p-test)
+(benchmark p-test recording royalty-floor 18)
+(benchmark p-test publishing royalty-floor 50)
+(contract-kind t-roy-pos recording)
+(clause t-roy-pos 11 royalty 12 recoupable)
+(contract-kind t-roy-neg recording)
+(clause t-roy-neg 11 royalty 18 recoupable)
+(contract-kind t-roy-pub publishing)
+(clause t-roy-pub 7 royalty 70 recoupable)
+
+!(check-has roy01-positive (collapse (flags-of t-roy-pos))
+   (flag t-roy-pos 11 R-ROY-01 amber (clause t-roy-pos 11 royalty 12 recoupable)))
+!(check roy01-at-floor (collapse (flags-of t-roy-neg)) ())
+!(check roy01-publishing-floor (collapse (flags-of t-roy-pub)) ())
+!(check roy01-floor-lookup (royalty-floor t-roy-pos) 18)
+
 ; ── R-OPT-01 / R-AUDIT-01 / R-SYNC-01 / R-SPLIT-01 ──
 (clause t-opt-pos 18 option-periods 3 label-only)
 (clause t-opt-neg 9 option-periods 1 mutual)

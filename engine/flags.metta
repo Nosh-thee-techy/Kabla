@@ -43,6 +43,19 @@
    (match &self (clause $c $n cross-collateral yes)
       (flag $c $n R-XCOLL-01 amber (clause $c $n cross-collateral yes))))
 
+; R-ROY-01: royalty below the active (illustrative) benchmark for this kind of deal
+(= (royalty-floor $c)
+   (match &self (contract-kind $c $kind)
+     (match &self (active-profile $profile)
+       (match &self (benchmark $profile $kind royalty-floor $floor) $floor))))
+
+(= (flags-of $c)
+   (match &self (clause $c $n royalty $pct $recoup)
+      (let $floor (royalty-floor $c)
+         (if (< $pct $floor)
+             (flag $c $n R-ROY-01 amber (clause $c $n royalty $pct $recoup))
+             (empty)))))
+
 ; R-OPT-01: option periods only the label can exercise
 (= (flags-of $c)
    (match &self (clause $c $n option-periods $k label-only)
