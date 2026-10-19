@@ -1,5 +1,8 @@
 # Submission checklist
 
+> Kabla — Track 4 (BASIX.MARKET Builds), Brief B (Art IP and Music IP), stage: **License**.
+> Items are ticked by the team as they are verified. The agent may report status but never submits.
+
 Work through this list before the team submits on BASIX.MARKET. The deadline is Wed 21 Oct; the exact time is set at launch. Times are EAT (UTC+3).
 
 ## Registration
