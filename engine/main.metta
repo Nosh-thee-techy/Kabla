@@ -8,3 +8,4 @@
 !(import! &self ./flags.metta)
 !(import! &self ./redlines.metta)
 !(import! &self ./licence.metta)
+!(import! &self ./simulate.metta)
