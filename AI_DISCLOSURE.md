@@ -24,3 +24,4 @@ Every use of AI in this project is logged here, append-only. Entries are never r
 | 2026-10-19 | Cursor agent (Claude) | Omega plugin files (`loadOmegaPlugin` skills). **Not loaded in a live Omega agent.** | Honest L0 status recorded in README |
 | 2026-10-19 | Cursor agent (Claude) | e2e demo script, Dockerfiles, DEMO_SCRIPT, ARCHITECTURE, NEXT | Reviewed by team |
 | 2026-10-19 | Cursor agent (Grok 4.6) | Forked continuation: web build, Docker, chat/omega tests, remaining docs | Reviewed by team |
+| 2026-10-19 | Cursor agent (Grok 4.6) | Fixed passport `never` vs licence vocabulary; setuptools README path; clean-clone gate | Reviewed by team; `verify_clean_clone` green |

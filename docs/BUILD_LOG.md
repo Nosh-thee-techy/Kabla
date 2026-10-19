@@ -16,3 +16,4 @@ Short dated entries. Details and fixes live in `DECISIONS.md`.
 - Vite UI for the seven License-stage screens.
 - Omega plugin files written; **not** loaded in a live agent (L0 ship).
 - Docker (api + web), e2e demo scenes, DEMO_SCRIPT / ARCHITECTURE / NEXT.
+- Clean-clone gate passed: PeTTa + pytest 40 + MeTTa 76 + web build.

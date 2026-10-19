@@ -50,7 +50,7 @@ The agent does **not** submit. Human submits on BASIX.MARKET.
 | Track and challenge recorded in README | **passed** (Track 4 / Brief B / License) |
 | Scope is License stage | **passed** |
 | README: what, setup, run, test, team | **passed** |
-| Setup tested on a clean clone | **not applicable until** `python scripts/tasks.py verify` is run on a committed tree |
+| Setup tested on a clean clone | **passed** (`python scripts/tasks.py verify`, 2026-10-19) |
 | AI_DISCLOSURE.md kept | **passed** |
 | Artist statement | **not applicable** (builders track, not creators) |
 | No secrets committed | **passed** (`.env` git-ignored) |
