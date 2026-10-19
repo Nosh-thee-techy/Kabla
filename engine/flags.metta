@@ -26,3 +26,19 @@
 (= (flags-of $c)
    (match &self (clause $c $n ai-training vague)
       (flag $c $n R-AI-02 amber (clause $c $n ai-training vague))))
+
+; R-VOICE-01: synthetic voice / likeness rights granted
+; (promo-only use of name and approved photos is standard and not flagged)
+(= (flags-of $c)
+   (match &self (clause $c $n voice-likeness granted synthetic-voice)
+      (flag $c $n R-VOICE-01 red (clause $c $n voice-likeness granted synthetic-voice))))
+
+; R-REVERT-01: rights never revert
+(= (flags-of $c)
+   (match &self (clause $c $n reversion none)
+      (flag $c $n R-REVERT-01 amber (clause $c $n reversion none))))
+
+; R-XCOLL-01: cross-collateralisation across agreements
+(= (flags-of $c)
+   (match &self (clause $c $n cross-collateral yes)
+      (flag $c $n R-XCOLL-01 amber (clause $c $n cross-collateral yes))))

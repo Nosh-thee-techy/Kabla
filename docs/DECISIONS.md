@@ -62,6 +62,13 @@ Output convention: every query is `!(result <tag> <values...>)`; `result` is nev
 defined as a function, so PeTTa evaluates the arguments and prints the whole expression.
 The bridge ignores any line that does not start with `(result `.
 
+## 2026-10-19 — R-VOICE-01 narrowed to synthetic voice
+
+The §6.2 sketch fires R-VOICE-01 on `(voice-likeness granted $x)` for any `$x`. That
+would flag c003's "name and approved photographs only to promote the Recordings", which
+is standard and fair, and Kabla must not cry wolf. R-VOICE-01 fires on
+`synthetic-voice` only; `promo-only` is recorded but not flagged.
+
 ## 2026-10-19 — Task runner instead of bare make
 
 The dev machine is Windows without `make`. `Makefile` targets delegate to
