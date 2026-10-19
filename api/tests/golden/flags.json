@@ -1,0 +1,22 @@
+{
+  "_note": "Expected effective flags per sample contract: [clause, rule_id, severity]. Zawadi's red lines apply (AI never, term max 7 years).",
+  "c001": [
+    [4, "R-GRANT-01", "red"],
+    [5, "R-TERM-01", "red"],
+    [7, "R-AI-01", "red"],
+    [9, "R-VOICE-01", "red"],
+    [11, "R-ROY-01", "amber"],
+    [13, "R-REVERT-01", "amber"],
+    [15, "R-XCOLL-01", "amber"],
+    [18, "R-OPT-01", "amber"]
+  ],
+  "c002": [
+    [4, "R-TERM-01", "red"],
+    [8, "R-AI-02", "red"],
+    [9, "R-XCOLL-01", "amber"],
+    [11, "R-AUDIT-01", "amber"]
+  ],
+  "c003": [
+    [11, "R-SPLIT-01", "amber"]
+  ]
+}
