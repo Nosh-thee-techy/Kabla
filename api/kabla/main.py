@@ -6,7 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from kabla import __version__
 from kabla.config import get_settings
-from kabla.routers import analyze, contracts
+from kabla.routers import analyze, contracts, licence
 
 app = FastAPI(title="Kabla API", version=__version__,
               description="SYNTHETIC DEMO. MeTTa rules on PeTTa decide; the LLM (live mode only) only reads.")
@@ -20,6 +20,7 @@ app.add_middleware(
 
 app.include_router(contracts.router)
 app.include_router(analyze.router)
+app.include_router(licence.router)
 
 
 @app.get("/health")

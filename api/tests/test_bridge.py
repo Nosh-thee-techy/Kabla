@@ -1,6 +1,6 @@
 import pytest
 
-from kabla.services.metta_bridge import Sym, fact, parse_sexpr, query, run_engine, sym_or_str, to_metta
+from kabla.services.metta_bridge import Sym, _decode, fact, parse_sexpr, query, run_engine, sym_or_str, to_metta
 
 
 def test_to_metta_quotes_strings_and_keeps_symbols():
@@ -20,6 +20,11 @@ def test_parse_sexpr_types():
     parsed = parse_sexpr('(result flags ((flag c001 4 R-GRANT-01 red) "Mawingu Records" 15000.0 true -5))')
     flag = ["flag", "c001", 4, "R-GRANT-01", "red"]
     assert parsed == ["result", "flags", [flag, "Mawingu Records", 15000.0, True, -5]]
+
+
+def test_decode_latin1_section_sign():
+    assert _decode(b'"c003-\xa76"') == '"c003-§6"'
+    assert _decode(b"already unicode") == "already unicode"
 
 
 def test_parse_sexpr_unicode_and_escapes():

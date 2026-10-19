@@ -62,6 +62,12 @@ Output convention: every query is `!(result <tag> <values...>)`; `result` is nev
 defined as a function, so PeTTa evaluates the arguments and prints the whole expression.
 The bridge ignores any line that does not start with `(result `.
 
+## 2026-10-19 — PeTTa stdout encoding on Windows
+
+`swipl` on Windows may emit Latin-1 (byte `0xA7` for `§`) even when source files are UTF-8.
+The bridge (`metta_bridge.py`) therefore decodes PeTTa stdout as UTF-8, then cp1252, then
+Latin-1, so clause refs like `"c003-§6"` round-trip on every platform.
+
 ## 2026-10-19 — R-VOICE-01 narrowed to synthetic voice
 
 The §6.2 sketch fires R-VOICE-01 on `(voice-likeness granted $x)` for any `$x`. That

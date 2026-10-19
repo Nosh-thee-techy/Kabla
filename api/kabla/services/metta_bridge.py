@@ -148,19 +148,33 @@ def run_engine(facts: list[str], queries: list[str], extra_files: list[Path] | N
         files = [s.engine_dir / "main.metta", *(extra_files or []), facts_file, query_file]
         cmd = [s.swipl, "--stack_limit=2g", "-q", "-s", str(main_pl), "--", *map(str, files), "--silent"]
         try:
-            proc = subprocess.run(cmd, capture_output=True, text=True, encoding="utf-8", timeout=timeout)
+            proc = subprocess.run(cmd, capture_output=True, timeout=timeout)
         except FileNotFoundError as exc:
             raise EngineError(f"swipl not found ({s.swipl}); install SWI-Prolog or set SWIPL") from exc
         except subprocess.TimeoutExpired as exc:
             raise EngineError("engine timed out") from exc
+    stdout = _decode(proc.stdout)
+    stderr = _decode(proc.stderr)
     if proc.returncode != 0:
-        raise EngineError(f"PeTTa exited {proc.returncode}: {proc.stderr.strip()[-1500:]}")
+        raise EngineError(f"PeTTa exited {proc.returncode}: {stderr.strip()[-1500:]}")
     results: dict[str, list[list]] = {}
-    for line in proc.stdout.splitlines():
+    for line in stdout.splitlines():
         if line.startswith("(result "):
             parsed = parse_sexpr(line)
             results.setdefault(str(parsed[1]), []).append(parsed[2:])
     return EngineRun(results=results, facts_text=facts_text, query_text=query_text)
+
+
+def _decode(raw: bytes | None) -> str:
+    """SWI-Prolog on Windows may print Latin-1 for characters such as §. """
+    if not raw:
+        return ""
+    for enc in ("utf-8", "cp1252", "latin-1"):
+        try:
+            return raw.decode(enc)
+        except UnicodeDecodeError:
+            continue
+    return raw.decode("utf-8", errors="replace")
 
 
 def query(tag: str, expr: str) -> str:
