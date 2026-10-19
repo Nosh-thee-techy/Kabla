@@ -1,0 +1,38 @@
+Kabla
+Copyright 2026 The Kabla team (BASIX State of the Art Hackathon 2026)
+
+This product is licensed under the Apache License, Version 2.0 (see LICENSE).
+
+All contracts, artists, labels, works and amounts in data/ are SYNTHETIC and
+invented for demonstration. They do not describe real people or real deals.
+
+-------------------------------------------------------------------------------
+Third-party software used (not vendored; fetched by scripts/setup_petta.sh or
+package managers at setup time)
+-------------------------------------------------------------------------------
+
+PeTTa - Efficient MeTTa language implementation in Prolog
+  https://github.com/trueagi-io/PeTTa
+  Copyright (c) 2025 Patrick Hammer
+  MIT License. Pinned commit recorded in scripts/setup_petta.sh.
+
+Omega - neural-symbolic agent framework (P1 integration, optional)
+  https://github.com/singnet/Omega
+  Copyright SingularityNET Foundation
+  Apache License 2.0. Pinned commit recorded in scripts/setup_omega.sh.
+
+SWI-Prolog - https://www.swi-prolog.org - BSD-2-Clause
+
+BASIX hackathon starter (AGENTS.md, BRIEF.md, SUBMISSION.md, CLAUDE.md)
+  https://github.com/BASIXmarket-io/hackathon-starter
+
+Python packages (api/pyproject.toml):
+  FastAPI (MIT), Starlette (BSD-3-Clause), Pydantic (MIT), Uvicorn (BSD-3-Clause),
+  PyNaCl (Apache-2.0), httpx (BSD-3-Clause), pytest (MIT), ruff (MIT)
+
+JavaScript packages (web/package.json):
+  React (MIT), React DOM (MIT), Vite (MIT), TypeScript (Apache-2.0),
+  Tailwind CSS (MIT), PostCSS (MIT), Autoprefixer (MIT)
+
+Fonts (loaded from Google Fonts at runtime, SIL Open Font License 1.1):
+  Fraunces, Inter
