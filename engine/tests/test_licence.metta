@@ -40,8 +40,28 @@
    (licence-decision r-long)
    (decision r-long not-cleared R-LIC-TERM ("work-policy") ((terms tw max-licence-months 12 "work-policy"))))
 
-; ── conditions ──
+; ── consent tracking ──
+(consent tw tz sync WW 2026-10-19)
+(consent tw tb sync KE 2026-10-01)
+
 (request r-ad tw ad KE 6 "Nuru Soaps")
+(request r-film tw sync-film US 3 "Exhibition film")
+(request r-live tw live KE 1 "Festival")
+
+!(check consent-covers-region (consented? tw tb sync KE) true)
+!(check consent-not-outside-region (consented? tw tb sync US) false)
+!(check ad-in-kenya-cleared
+   (licence-decision r-ad)
+   (decision r-ad cleared R-LIC-OK ("work-policy")
+      ((consent tw tz sync WW 2026-10-19) (consent tw tb sync KE 2026-10-01))))
+!(check film-in-us-needs-baraka
+   (licence-decision r-film)
+   (decision r-film needs-consent R-LIC-CONSENT () ((missing r-film tb composition 40))))
+!(check live-needs-everyone
+   (size-atom (collapse (missing-consents r-live)))
+   3)
+
+; ── conditions ──
 !(check-has condition-window (collapse (licence-conditions r-ad))
    (condition r-ad term-window (6 12) "work-policy"))
 !(check-has condition-no-ai (collapse (licence-conditions r-ad))

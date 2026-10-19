@@ -72,9 +72,34 @@
                     (collapse (term-fact $w max-licence-months)))
                  (non-ai-consent-decision $r $w))))))
 
-; replaced by the consent-aware version in the next step
+; ── consent tracking ──
+; Every master and composition owner needs a verified consent event covering
+; the use family and (a region containing) the requested territory.
+(= (consent-for $w $who $fam $terr)
+   (match &self (consent $w $who $fam $cterr $date)
+      (if (covers? $cterr $terr) (consent $w $who $fam $cterr $date) (empty))))
+
+(= (consented? $w $who $fam $terr) (present? (collapse (consent-for $w $who $fam $terr))))
+
+(= (missing-consents $r)
+   (match &self (request $r $w $use $terr $months $party)
+      (match &self (owner $w $right $who $share)
+         (if (consented? $w $who (family-of $use) $terr)
+             (empty)
+             (missing $r $who $right $share)))))
+
+(= (consents-used $r)
+   (match &self (request $r $w $use $terr $months $party)
+      (match &self (owner $w $right $who $share)
+         (consent-for $w $who (family-of $use) $terr))))
+
 (= (non-ai-consent-decision $r $w)
-   (decision $r cleared R-LIC-OK () ()))
+   (let $missing (collapse (missing-consents $r))
+      (if (== $missing ())
+          (decision $r cleared R-LIC-OK
+             (collapse (superpose ((term-ref $w max-licence-months))))
+             (unique-atom (collapse (consents-used $r))))
+          (decision $r needs-consent R-LIC-CONSENT () $missing))))
 
 ; ── conditions attached to a cleared licence ──
 (= (licence-conditions $r)
