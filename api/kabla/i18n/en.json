@@ -12,7 +12,7 @@
     },
     "R-TERM-01": {
       "title": "Longer than your limit",
-      "meaning": "Clause {n} ties the rights up for {value}, beyond the limit you set.",
+      "meaning": "Clause {n} ties the rights up {value}, beyond the limit you set.",
       "cost": "Your music stays locked up for years after you may want to move on."
     },
     "R-AI-01": {
@@ -93,5 +93,16 @@
     "AF": "Africa", "WW": "the whole world", "US": "the United States", "NA": "North America",
     "GB": "the United Kingdom", "EU": "Europe"
   },
-  "value": {"perpetual": "for ever", "years": "{value} years"}
+  "value": {"perpetual": "for ever", "years": "for {value} years"},
+  "glossary": {
+    "master": "The original recording of a song. Whoever owns the master controls copies of that recording.",
+    "composition": "The song itself: melody and lyrics, owned by the writers.",
+    "royalty": "Your share of the money a recording or song earns.",
+    "advance": "Money paid up front, usually taken back (recouped) from your future royalties.",
+    "recoup": "When the label takes its advance and costs back out of your royalties before paying you.",
+    "reversion": "Rights coming back to you after a time or a condition.",
+    "cross-collateralisation": "Using what one deal earns to pay off debts from another deal.",
+    "sync": "Putting music in a film, advert, game or video.",
+    "exclusive": "Only they may use the rights; you may not license them to anyone else."
+  }
 }

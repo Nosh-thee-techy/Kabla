@@ -13,7 +13,7 @@
     },
     "R-TERM-01": {
       "title": "Muda mrefu kuliko kikomo chako",
-      "meaning": "Kifungu {n} kinafunga haki kwa {value}, zaidi ya kikomo ulichoweka.",
+      "meaning": "Kifungu {n} kinafunga haki {value}, zaidi ya kikomo ulichoweka.",
       "cost": "Muziki wako unabaki umefungwa kwa miaka mingi baada ya wewe kutaka kuendelea."
     },
     "R-AI-01": {
@@ -94,5 +94,16 @@
     "AF": "Afrika", "WW": "dunia nzima", "US": "Marekani", "NA": "Amerika Kaskazini",
     "GB": "Uingereza", "EU": "Ulaya"
   },
-  "value": {"perpetual": "milele", "years": "miaka {value}"}
+  "value": {"perpetual": "milele", "years": "kwa miaka {value}"},
+  "glossary": {
+    "master": "Rekodi ya asili ya wimbo. Anayemiliki rekodi kuu ndiye anadhibiti nakala za rekodi hiyo.",
+    "composition": "Wimbo wenyewe: mdundo na maneno, unaomilikiwa na watunzi.",
+    "royalty": "Mrabaha: sehemu yako ya pesa zinazopatikana kutoka kwa rekodi au wimbo.",
+    "advance": "Malipo ya awali, ambayo kwa kawaida hurejeshwa kutoka kwa mrabaha wako wa baadaye.",
+    "recoup": "Lebo inapochukua malipo ya awali na gharama zake kutoka kwa mrabaha wako kabla ya kukulipa.",
+    "reversion": "Haki kurudi kwako baada ya muda fulani au sharti fulani.",
+    "cross-collateralisation": "Kutumia mapato ya mkataba mmoja kulipa madeni ya mkataba mwingine.",
+    "sync": "Kuweka muziki katika filamu, tangazo, mchezo au video.",
+    "exclusive": "Wao pekee ndio wanaweza kutumia haki hizo; huwezi kumpa mtu mwingine leseni."
+  }
 }

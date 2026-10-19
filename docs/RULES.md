@@ -41,9 +41,9 @@ Swahili text comes from reviewed templates and should be checked by a fluent spe
 
 ## R-TERM-01 (red)
 
-- **EN:** Longer than your limit. Clause {n} ties the rights up for {value}, beyond the limit you set.
+- **EN:** Longer than your limit. Clause {n} ties the rights up {value}, beyond the limit you set.
   - *What it costs you:* Your music stays locked up for years after you may want to move on.
-- **SW:** Muda mrefu kuliko kikomo chako. Kifungu {n} kinafunga haki kwa {value}, zaidi ya kikomo ulichoweka.
+- **SW:** Muda mrefu kuliko kikomo chako. Kifungu {n} kinafunga haki {value}, zaidi ya kikomo ulichoweka.
   - *Inakugharimu nini:* Muziki wako unabaki umefungwa kwa miaka mingi baada ya wewe kutaka kuendelea.
 
 ## R-AI-01 (red)
