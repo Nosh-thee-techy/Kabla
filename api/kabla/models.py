@@ -161,6 +161,36 @@ class DecideRequest(BaseModel):
     decisions: list[Decision]
 
 
+class NegoTopic(BaseModel):
+    topic: str
+    clause: int
+    current: str | int
+    ask: str | int
+    label_pos: int
+    offered: str | int
+    kind: Literal["accept", "counter", "reject"]
+    policy_line: str
+    advice: str
+    advice_value: str | int
+    status: Literal["open", "agreed", "rejected"]
+    is_redline: bool
+    severity: str
+    rule_id: str
+
+
+class NegoSession(BaseModel):
+    id: str
+    contract_id: str
+    policy: str
+    round: int
+    max_rounds: int = 4
+    state: Literal["open", "agreed", "standoff", "walk-away"]
+    topics: list[NegoTopic]
+    ledger: list[dict]
+    unresolved: list[str] = Field(default_factory=list)
+    lawyer_note: str | None = None
+
+
 class WorkCreate(BaseModel):
     work_id: str = "w-asali"
     consent_to_register: bool
