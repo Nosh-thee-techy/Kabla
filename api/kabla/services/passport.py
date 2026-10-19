@@ -85,13 +85,21 @@ def register(body) -> dict:
     return record
 
 
+_AI_TERM_VALUES = {"opt-in-paid", "prohibited", "granted"}
+
+
 def _terms(work: dict) -> dict:
     redlines = {r["kind"]: r["value"] for r in store.list_redlines(work["artist"])}
     splits: dict[str, dict[str, float]] = {}
     for o in work["owners"]:
         splits.setdefault(o["right"], {})[o["person"]] = o["share"]
+    # Standing red line "never" is a separate MeTTa fact. Agreed terms stay in the
+    # licence vocabulary (opt-in-paid / prohibited / granted) so R-LIC-AI fires.
+    raw = redlines.get("ai-training", "opt-in-paid")
+    ai_training = raw if raw in _AI_TERM_VALUES else "opt-in-paid"
     return {
-        "ai_training": redlines.get("ai-training", "opt-in-paid"),
+        "ai_training": ai_training,
+        "ai_stance": redlines.get("ai-training", ai_training),
         "territories": ["KE"],
         "term_years": int(redlines.get("term-max-years", work.get("max_licence_months", 12) // 12 or 5)),
         "splits": splits,
@@ -128,8 +136,9 @@ def issue(artist: str, work_id: str = "w-asali") -> dict:
         "creation": {"collaborators": work.get("collaborators", []),
                      "ai_tools": work.get("ai_tools", ["none"]),
                      "original_location": work.get("original_location", "held by artist")},
-        "terms": {k: work["terms"][k] for k in ("ai_training", "territories", "term_years", "splits", "clause_refs")
-                  if k in work["terms"]},
+        "terms": {k: work["terms"][k] for k in (
+            "ai_training", "ai_stance", "territories", "term_years", "splits", "clause_refs")
+            if k in work["terms"]},
         "prev_hash": prev,
     }
     sig = key.sign(canonical(unsigned).encode("utf-8"))
@@ -153,7 +162,7 @@ def issue(artist: str, work_id: str = "w-asali") -> dict:
 
 def _erc721(cert: dict) -> dict:
     attrs = [{"trait_type": k, "value": str(v)} for k, v in (
-        ("AI training", cert["terms"].get("ai_training")),
+        ("AI training", cert["terms"].get("ai_stance") or cert["terms"].get("ai_training")),
         ("Term (years)", cert["terms"].get("term_years")),
         ("Synthetic", True),
     )]

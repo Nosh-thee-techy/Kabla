@@ -24,6 +24,15 @@ def test_request_b_ai_training_not_cleared(fresh_store):
     assert "kamwe" in body["headline_sw"]
 
 
+def test_request_b_still_not_cleared_after_passport(fresh_store):
+    client = TestClient(app)
+    client.post("/works", json={"work_id": "w-asali", "consent_to_register": True})
+    client.post("/passport/zawadi/issue")
+    body = _check(client, use="ai-training", territory="WW", months=12, party="Nuru Labs")
+    assert body["verdict"] == "not-cleared"
+    assert body["rule_id"] == "R-LIC-AI"
+
+
 def test_request_c_film_us_needs_baraka(fresh_store):
     body = _check(TestClient(app), use="sync-film", territory="US", months=3, party="Exhibition")
     assert body["verdict"] == "needs-consent"

@@ -31,9 +31,12 @@ def work_facts(work: dict, terms: dict) -> list[str]:
 
 def _terms_for(work: dict) -> dict:
     """Passport terms if issued; otherwise the work's own policy + artist's red lines."""
-    passport = store.get_work(work["id"])
-    if passport and passport.get("terms"):
-        return passport["terms"]
+    stored = store.get_work(work["id"])
+    if stored and stored.get("terms"):
+        terms = dict(stored["terms"])
+        if terms.get("ai_training") not in ("opt-in-paid", "prohibited", "granted"):
+            terms["ai_training"] = "opt-in-paid"
+        return terms
     return {
         "ai_training": "opt-in-paid", "voice_likeness": "promo-only",
         "max_licence_months": work.get("max_licence_months", 12),
