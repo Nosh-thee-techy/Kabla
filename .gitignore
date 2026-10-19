@@ -1,0 +1,33 @@
+# secrets and local config
+.env
+*.key
+keys/
+api/keys/
+
+# vendored runtimes fetched by setup
+.vendor/
+
+# runtime state
+*.sqlite
+*.sqlite3
+*.db
+var/
+api/var/
+
+# python
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+.ruff_cache/
+*.egg-info/
+
+# node
+node_modules/
+web/dist/
+
+# os/editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
