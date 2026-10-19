@@ -25,3 +25,5 @@ Every use of AI in this project is logged here, append-only. Entries are never r
 | 2026-10-19 | Cursor agent (Claude) | e2e demo script, Dockerfiles, DEMO_SCRIPT, ARCHITECTURE, NEXT | Reviewed by team |
 | 2026-10-19 | Cursor agent (Grok 4.6) | Forked continuation: web build, Docker, chat/omega tests, remaining docs | Reviewed by team |
 | 2026-10-19 | Cursor agent (Grok 4.6) | Fixed passport `never` vs licence vocabulary; setuptools README path; clean-clone gate | Reviewed by team; `verify_clean_clone` green |
+| 2026-10-19 | Cursor agent (Grok 4.6) | Production Dockerfile + FastAPI SPA/`/api` prefix so the demo can be hosted (Railway) | Reviewed by team |
+| 2026-10-19 | Cursor agent (Grok 4.6) | Expanded README: product story, seven-screen desk, MeTTa decision path, and a detailed Kabla-vs-Claude (LLM chatbot) section | Reviewed by team |
