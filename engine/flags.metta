@@ -42,3 +42,35 @@
 (= (flags-of $c)
    (match &self (clause $c $n cross-collateral yes)
       (flag $c $n R-XCOLL-01 amber (clause $c $n cross-collateral yes))))
+
+; R-OPT-01: option periods only the label can exercise
+(= (flags-of $c)
+   (match &self (clause $c $n option-periods $k label-only)
+      (flag $c $n R-OPT-01 amber (clause $c $n option-periods $k label-only))))
+
+; R-AUDIT-01: no audit right (explicitly excluded, or no audit clause at all)
+(= (flags-of $c)
+   (match &self (clause $c $n audit none)
+      (flag $c $n R-AUDIT-01 amber (clause $c $n audit none))))
+
+(= (flags-of $c)
+   (match &self (contract $c)
+      (if (present? (collapse (match &self (clause $c $n audit $v) $n)))
+          (empty)
+          (flag $c 0 R-AUDIT-01 amber (missing $c audit)))))
+
+; R-SYNC-01: label may license sync without the artist's approval
+(= (flags-of $c)
+   (match &self (clause $c $n sync-approval label-only)
+      (flag $c $n R-SYNC-01 amber (clause $c $n sync-approval label-only))))
+
+; R-SPLIT-01: co-writer splits not stated, or not summing to 100
+(= (flags-of $c)
+   (match &self (clause $c $n splits not-stated)
+      (flag $c $n R-SPLIT-01 amber (clause $c $n splits not-stated))))
+
+(= (flags-of $c)
+   (match &self (clause $c $n splits stated $total)
+      (if (== $total 100)
+          (empty)
+          (flag $c $n R-SPLIT-01 amber (clause $c $n splits stated $total)))))
