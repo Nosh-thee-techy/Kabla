@@ -1,0 +1,30 @@
+{
+  "_banner": "SYNTHETIC — fixture extraction for the Kabla demo (deterministic mode). Hand-checked against data/contracts/c002_pwani_publishing.txt.",
+  "contract_id": "c002",
+  "kind": "publishing",
+  "artist": "zawadi",
+  "parties": {"label": "Pwani Publishing", "artist": "Zawadi"},
+  "policy": "pwani",
+  "clauses": [
+    {"n": 3, "type": "grant", "attrs": ["composition", "term-limited", "worldwide", "exclusive"],
+     "quote": "assigns to the Publisher, exclusively and throughout the world, the copyright ... for the Term and the Retention Period"},
+    {"n": 4, "type": "term", "attrs": [10],
+     "quote": "The Term of this Agreement is ten (10) years"},
+    {"n": 6, "type": "advance", "attrs": [800],
+     "quote": "an advance of USD 800 on signature, recoupable"},
+    {"n": 7, "type": "royalty", "attrs": [70, "recoupable"],
+     "quote": "seventy percent (70%) of net publishing income ... recoupable against the advance"},
+    {"n": 8, "type": "ai-training", "attrs": ["vague"],
+     "quote": "new and emerging technologies, including machine learning ... as the Publisher reasonably considers appropriate"},
+    {"n": 9, "type": "cross-collateral", "attrs": ["yes"],
+     "quote": "may be recouped from income under any other agreement"},
+    {"n": 10, "type": "reversion", "attrs": [12],
+     "quote": "a Retention Period of two (2) years, after which all rights ... revert to the Writer"},
+    {"n": 11, "type": "audit", "attrs": ["none"],
+     "quote": "has no right to inspect or audit the Publisher's books"},
+    {"n": 12, "type": "sync-approval", "attrs": ["artist-approval"],
+     "quote": "shall not grant a synchronisation licence ... without the Writer's prior written approval"},
+    {"n": 13, "type": "splits", "attrs": ["stated", 100],
+     "quote": "The shares in each split sheet shall total one hundred percent (100%)"}
+  ]
+}

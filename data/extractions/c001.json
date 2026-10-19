@@ -1,0 +1,32 @@
+{
+  "_banner": "SYNTHETIC — fixture extraction for the Kabla demo (deterministic mode). Hand-checked against data/contracts/c001_mawingu_records.txt.",
+  "contract_id": "c001",
+  "kind": "recording",
+  "artist": "zawadi",
+  "parties": {"label": "Mawingu Records", "artist": "Zawadi"},
+  "policy": "mawingu",
+  "clauses": [
+    {"n": 4, "type": "grant", "attrs": ["master", "perpetual", "worldwide", "exclusive"],
+     "quote": "assigns to the Label all right, title and interest in and to the Masters, throughout the universe, in perpetuity, exclusively"},
+    {"n": 5, "type": "term", "attrs": ["perpetual"],
+     "quote": "shall continue in perpetuity and shall survive any expiry or termination"},
+    {"n": 6, "type": "advance", "attrs": [2000],
+     "quote": "a non-returnable advance of USD 2,000 ... fully recoupable"},
+    {"n": 7, "type": "ai-training", "attrs": ["granted", "no-opt-in"],
+     "quote": "to train, test, fine-tune or improve artificial intelligence ... without further notice, approval or payment"},
+    {"n": 9, "type": "voice-likeness", "attrs": ["granted", "synthetic-voice"],
+     "quote": "including any synthetic or digitally generated reproduction of the Artist's voice, for any purpose"},
+    {"n": 11, "type": "royalty", "attrs": [12, "recoupable"],
+     "quote": "a royalty of twelve percent (12%) of net receipts ... All royalties are recoupable"},
+    {"n": 12, "type": "audit", "attrs": ["yes"],
+     "quote": "may, once per year ... appoint an accountant to inspect the Label's books"},
+    {"n": 13, "type": "reversion", "attrs": ["none"],
+     "quote": "shall not revert to the Artist in any circumstances"},
+    {"n": 15, "type": "cross-collateral", "attrs": ["yes"],
+     "quote": "or under any other agreement between the Label and the Artist"},
+    {"n": 16, "type": "sync-approval", "attrs": ["artist-approval"],
+     "quote": "Uses in political or religious adverts require the Artist's prior written approval"},
+    {"n": 18, "type": "option-periods", "attrs": [3, "label-only"],
+     "quote": "three (3) consecutive options, each exercisable by the Label alone"}
+  ]
+}

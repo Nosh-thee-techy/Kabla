@@ -1,0 +1,28 @@
+{
+  "_banner": "SYNTHETIC — fixture extraction for the Kabla demo (deterministic mode). Hand-checked against data/contracts/c003_kilele_collective.txt.",
+  "contract_id": "c003",
+  "kind": "distribution",
+  "artist": "zawadi",
+  "parties": {"label": "Kilele Collective", "artist": "Zawadi"},
+  "policy": "kilele",
+  "clauses": [
+    {"n": 3, "type": "grant", "attrs": ["master", "term-limited", "east-africa", "non-exclusive"],
+     "quote": "a non-exclusive licence to distribute the Recordings to digital services in East Africa for the Term"},
+    {"n": 4, "type": "term", "attrs": [5],
+     "quote": "The Term of this licence is five (5) years"},
+    {"n": 5, "type": "royalty", "attrs": [70, "non-recoupable"],
+     "quote": "seventy percent (70%) of net receipts. No advance is paid and nothing is recoupable"},
+    {"n": 6, "type": "ai-training", "attrs": ["opt-in-paid"],
+     "quote": "shall not use ... to train ... unless the Artist gives separate written opt-in consent for a specific use, for a fee"},
+    {"n": 7, "type": "voice-likeness", "attrs": ["granted", "promo-only"],
+     "quote": "name and approved photographs only to promote the Recordings. No synthetic ... reproduction"},
+    {"n": 8, "type": "reversion", "attrs": [5],
+     "quote": "On expiry or termination of the Term, all rights granted under this licence end automatically"},
+    {"n": 9, "type": "audit", "attrs": ["yes"],
+     "quote": "may, once per year, inspect the Collective's books"},
+    {"n": 10, "type": "sync-approval", "attrs": ["artist-approval"],
+     "quote": "shall not license any Recording for synchronisation without the Artist's prior written approval"},
+    {"n": 11, "type": "splits", "attrs": ["not-stated"],
+     "quote": "shall pay any co-writer shares as later notified by the Artist"}
+  ]
+}
