@@ -4,3 +4,4 @@
 ; here see the per-request facts, and the query file prints (result ...) lines.
 
 !(import! &self ./schema.metta)
+!(import! &self ./clauses.metta)
