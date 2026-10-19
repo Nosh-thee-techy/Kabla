@@ -45,3 +45,25 @@ per rule; `(collapse (flags-of c001))` gathers all flags. `flag` stays pure data
   an LLM key. The full agent needs `janus-swi`, torch, chromadb and an LLM key. That is
   heavy on Windows, so Omega work is scheduled after the L0 product (fallback ladder §12).
 - `lib_nal.metta` lives at the Omega repo root (not needed for P0).
+- Omega's documented install path is Ubuntu (apt build-essential, python3-dev, janus-swi)
+  or Docker (`singularitynet/omega` image). Plan: attempt plugin load in WSL/Docker after
+  P0, record the result here, and state the real status in README.
+
+## 2026-10-19 — PeTTa builtins verified for the engine design
+
+Prototyped before writing rules (all confirmed on PeTTa `fea8317`):
+`!(import! &self ./sub/mod.metta)` resolves relative to the importing file;
+recursive rules over `match` (region containment KE ⊂ EA ⊂ AF ⊂ WW) work;
+`collapse`, `foldl-atom` with an inline lambda, `size-atom`, `is-member`, `car-atom`,
+`let*`, `and`, `max`, float arithmetic all work. Booleans print as `true`/`false`.
+Symbols such as `R-GRANT-01`, `12-percent` and `2026-10-19` stay symbols.
+
+Output convention: every query is `!(result <tag> <values...>)`; `result` is never
+defined as a function, so PeTTa evaluates the arguments and prints the whole expression.
+The bridge ignores any line that does not start with `(result `.
+
+## 2026-10-19 — Task runner instead of bare make
+
+The dev machine is Windows without `make`. `Makefile` targets delegate to
+`scripts/tasks.py`, so `make test` (Linux/macOS/CI) and `python scripts/tasks.py test`
+(Windows) do the same thing.
