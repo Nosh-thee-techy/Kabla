@@ -40,3 +40,24 @@ Work through this list before the team submits on BASIX.MARKET. The deadline is 
 
 - [ ] Submitted on BASIX.MARKET before the deadline.
 - [ ] A video upload that is already running when the deadline passes gets 10 extra minutes. Don't rely on this.
+
+## Agent status report (2026-10-19)
+
+The agent does **not** submit. Human submits on BASIX.MARKET.
+
+| Item | Status |
+|---|---|
+| Track and challenge recorded in README | **passed** (Track 4 / Brief B / License) |
+| Scope is License stage | **passed** |
+| README: what, setup, run, test, team | **passed** |
+| Setup tested on a clean clone | **not applicable until** `python scripts/tasks.py verify` is run on a committed tree |
+| AI_DISCLOSURE.md kept | **passed** |
+| Artist statement | **not applicable** (builders track, not creators) |
+| No secrets committed | **passed** (`.env` git-ignored) |
+| Partner data | **passed** (SYNTHETIC only; placeholders labelled) |
+| Filming consent | **not applicable** until a human records the video |
+| Reused code credited | **passed** (NOTICE) |
+| 3-minute video | **failed** (script ready; human records) |
+| Video says what's next | **not applicable** until recorded (`docs/NEXT.md` is the source) |
+| Submitted on BASIX.MARKET | **failed** (human only) |
+| Team BASIX profiles | **not applicable** (human) |

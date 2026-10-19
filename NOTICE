@@ -19,7 +19,8 @@ PeTTa - Efficient MeTTa language implementation in Prolog
 Omega - neural-symbolic agent framework (P1 integration, optional)
   https://github.com/singnet/Omega
   Copyright SingularityNET Foundation
-  Apache License 2.0. Pinned commit recorded in scripts/setup_omega.sh.
+  Apache License 2.0. Plugin files in omega-plugin/; not loaded in this build
+  (see scripts/setup_omega.py).
 
 SWI-Prolog - https://www.swi-prolog.org - BSD-2-Clause
 
