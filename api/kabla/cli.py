@@ -23,6 +23,8 @@ def main(argv: list[str]) -> None:
     if cmd == "reset":
         store.reset()
     seed()
+    from kabla.services.passport import ensure_keys
+    ensure_keys()
     print(f"kabla store ready at {get_settings().db_path}")
 
 
