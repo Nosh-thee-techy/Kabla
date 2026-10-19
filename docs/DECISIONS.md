@@ -88,6 +88,13 @@ repo and define `loadOmegaPlugin` plus four skills. They have **not** been loade
 in a live Omega agent here. README, health endpoint and `scripts/setup_omega.py`
 all say **MeTTa on PeTTa**. Docker Compose does not start Omega.
 
+## 2026-10-19 — setuptools forbids api/../README.md
+
+`api/pyproject.toml` pointed `readme` at `../README.md`. A clean clone then
+failed `pip/uv install -e api` because setuptools will not read files outside
+the package directory. The project README stays at the repo root; the package
+metadata no longer references it.
+
 ## 2026-10-19 — Passport terms vs standing red lines
 
 Issuing a passport used to copy the artist's red line value `never` into
