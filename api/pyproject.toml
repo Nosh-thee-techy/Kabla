@@ -1,0 +1,38 @@
+[project]
+name = "kabla"
+version = "1.0.0"
+description = "Kabla API: read a music/art contract before signing, negotiate, issue a Rights Passport. MeTTa rules on PeTTa decide."
+readme = "../README.md"
+license = { text = "Apache-2.0" }
+requires-python = ">=3.11"
+dependencies = [
+  "fastapi>=0.115",
+  "uvicorn>=0.30",
+  "pydantic>=2.7",
+  "pynacl>=1.5",
+  "httpx>=0.27",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "ruff>=0.6"]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["kabla*"]
+
+[tool.setuptools.package-data]
+kabla = ["i18n/*.json"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]
+ignore = ["B008"]
