@@ -5,3 +5,4 @@
 
 !(import! &self ./schema.metta)
 !(import! &self ./clauses.metta)
+!(import! &self ./flags.metta)
