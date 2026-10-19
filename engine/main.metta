@@ -11,3 +11,4 @@
 !(import! &self ./simulate.metta)
 !(import! &self ./i18n_keys.metta)
 !(import! &self ./negotiate.metta)
+!(import! &self ./score.metta)
