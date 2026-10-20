@@ -1,4 +1,4 @@
-# KABLA — Build Spec
+﻿# KABLA — Build Spec
 
 > Hand this whole file to your coding agent (Cursor / Claude Code) as the first message, and also commit it to the repo as `docs/BUILD_SPEC.md`.
 > Hackathon: BASIX State of the Art Hackathon 2026 · Track 4 (BASIX.MARKET Builds), Brief B (Managing originals: Art IP and Music IP) · Stage built: **License** · Stack: MeTTa + PeTTa (+ Omega)
@@ -198,7 +198,7 @@ kabla/
 ├── omega-plugin/                 # P1
 │   ├── README.md
 │   ├── kabla_plugin.metta        # skills registered through the plugin API
-│   ├── kabla_plugin.py           # Python helpers for the skills
+│   ├── kabla_skills.py           # Python helpers for the skills
 │   └── tests/
 ├── web/
 │   ├── package.json  vite.config.ts  tailwind.config.ts

@@ -1,4 +1,4 @@
-"""Helpers are HTTP clients. We only check they exist and refuse to invent verdicts."""
+﻿"""Helpers are HTTP clients. We only check they exist and refuse to invent verdicts."""
 import ast
 from pathlib import Path
 
@@ -13,6 +13,6 @@ def test_plugin_has_loadOmegaPlugin():
 
 
 def test_python_helpers_have_no_verdict_logic():
-    tree = ast.parse((ROOT / "kabla_plugin.py").read_text(encoding="utf-8"))
+    tree = ast.parse((ROOT / "kabla_skills.py").read_text(encoding="utf-8"))
     names = {n.name for n in tree.body if isinstance(n, ast.FunctionDef)}
     assert names >= {"analyze", "licence", "redline_set", "explain"}

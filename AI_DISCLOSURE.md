@@ -42,3 +42,5 @@ Every use of AI in this project is logged here, append-only. Entries are never r
 | 2026-10-20 | Cursor agent (Claude) | Pasted-contract handling: plain 422 messages instead of a crash (deterministic mode and live mode without a key), 2 tests; Passport/Verify/Financier use the open contract's artist; Financier added to the journey rail | Reviewed by team; pytest + web build |
 | 2026-10-20 | Cursor agent (Claude) | Omega harness: plugin loader file, demo MeTTa script and scripts/omega_demo.py written. **Not yet shown to load**; see DECISIONS for status | Status recorded honestly in README |
 
+| 2026-10-20 | Cursor agent (Claude) | Omega partial L1: renamed helper to kabla_skills.py, native harness (scripts/omega_native.py, omega-plugin/demo/kabla_native.metta) that runs Omega's skill registry with our plugin and the Red Lines demo; log in docs/evidence/omega-load.log. Not the full agent loop | Reviewed by team; log is real output |
+

@@ -1,0 +1,41 @@
+KABLA-DEMO skills registered with Omega:
+[['remember', 'Remember a particular string such as a skill or memory.', ['content']], ['query', 'Query long-term embedding memory using a short phrase.', ['content']], ['episodes', 'Search history for episodes around a timestamp in %Y-%m-%d %H:%M:%S format.', ['timestamp']], ['pin', 'Pin a string as a short-term working-memory item to keep track of task state and relevant query results as query returns are only available once and gone next cycle.', ['message']], ['shell', 'Execute a shell command.', ['cmd']], ['read-file', 'Read a file.', ['filename']], ['write-file', 'Write content to a file, replacing its previous contents.', ['filename', 'content']], ['write-file-b64', 'Write base64-encoded content to file as a single line, replacing its previous content', ['filename', 'content_base64']], ['append-file', 'Append content to a file.', ['filename', 'content']], ['get-io-policy', 'Get a list of allowed base paths for reading, writing, and updating files', []], ['delete-file', 'Delete a file, the result is read back and verified afterward (DELETE-VERIFIED or DELETE-FAILED with reason) - relay it, never claim a deletion succeeded without it', ['filename']], ['send', 'To send a message to the user but keep yourself very brief.', ['content']], ['websearch', 'Search the internet for content.', ['content']], ['version', 'To get the Omega version number', []], ['nop', 'Perform no action.', []], ['metta', 'Evaluate a MeTTa s-expression, since its a s-expression omit the ! in the beginning. Use (add-atom &persistent X) to add X to space, same for remove-atom.', ['sexpression']], ['kabla-analyze', 'Analyse a SYNTHETIC Kabla sample contract (c001, c002 or c003). Returns flags and a MeTTa trail. Does not give legal advice.', ['sample_id']], ['kabla-licence', 'Ask whether a use of the SYNTHETIC work Asali ya Jioni is cleared. use is ad|sync-film|ai-training etc.', ['use', 'territory', 'months', 'party']], ['kabla-redline-set', "Set an artist's standing red line (ai-training never, or term-max-years N). Remembered across contracts.", ['artist', 'kind', 'value']], ['kabla-explain', 'Answer why a clause was flagged, grounded in the stored MeTTa trail for a contract id.', ['contract_id', 'question']]]
+KABLA-DEMO step 1: artist sets a red line through the Omega skill
+{"artist":"zawadi","kind":"ai-training","value":"never","set_on":"2026-10-20","said":"","source":"kabla"}
+KABLA-DEMO step 2: analyse contract c001 through the Omega skill
+c001: 8 flags ({'red': 4, 'amber': 4}) | remembered red lines: clause 7 R-AI-01 (red line set 2026-10-20); clause 5 R-TERM-01 (red line set 2026-10-19)
+KABLA-DEMO step 3: a different contract, c002, same artist, no red line restated
+c002: 4 flags ({'red': 2, 'amber': 2}) | remembered red lines: clause 8 R-AI-02 (red line set 2026-10-20); clause 4 R-TERM-01 (red line set 2026-10-19)
+KABLA-DEMO done
+true
+true
+true
+true
+true
+true
+true
+true
+true
+true
+true
+()
+(@ none)
+(@ none)
+true
+(@ none)
+KABLA-DEMO skills registered with Omega:
+[['remember', 'Remember a particular string such as a skill or memory.', ['content']], ['query', 'Query long-term embedding memory using a short phrase.', ['content']], ['episodes', 'Search history for episodes around a timestamp in %Y-%m-%d %H:%M:%S format.', ['timestamp']], ['pin', 'Pin a string as a short-term working-memory item to keep track of task state and relevant query results as query returns are only available once and gone next cycle.', ['message']], ['shell', 'Execute a shell command.', ['cmd']], ['read-file', 'Read a file.', ['filename']], ['write-file', 'Write content to a file, replacing its previous contents.', ['filename', 'content']], ['write-file-b64', 'Write base64-encoded content to file as a single line, replacing its previous content', ['filename', 'content_base64']], ['append-file', 'Append content to a file.', ['filename', 'content']], ['get-io-policy', 'Get a list of allowed base paths for reading, writing, and updating files', []], ['delete-file', 'Delete a file, the result is read back and verified afterward (DELETE-VERIFIED or DELETE-FAILED with reason) - relay it, never claim a deletion succeeded without it', ['filename']], ['send', 'To send a message to the user but keep yourself very brief.', ['content']], ['websearch', 'Search the internet for content.', ['content']], ['version', 'To get the Omega version number', []], ['nop', 'Perform no action.', []], ['metta', 'Evaluate a MeTTa s-expression, since its a s-expression omit the ! in the beginning. Use (add-atom &persistent X) to add X to space, same for remove-atom.', ['sexpression']], ['kabla-analyze', 'Analyse a SYNTHETIC Kabla sample contract (c001, c002 or c003). Returns flags and a MeTTa trail. Does not give legal advice.', ['sample_id']], ['kabla-licence', 'Ask whether a use of the SYNTHETIC work Asali ya Jioni is cleared. use is ad|sync-film|ai-training etc.', ['use', 'territory', 'months', 'party']], ['kabla-redline-set', "Set an artist's standing red line (ai-training never, or term-max-years N). Remembered across contracts.", ['artist', 'kind', 'value']], ['kabla-explain', 'Answer why a clause was flagged, grounded in the stored MeTTa trail for a contract id.', ['contract_id', 'question']]]
+KABLA-DEMO step 1: artist sets a red line through the Omega skill
+{"artist":"zawadi","kind":"ai-training","value":"never","set_on":"2026-10-20","said":"","source":"kabla"}
+KABLA-DEMO step 2: analyse contract c001 through the Omega skill
+c001: 8 flags ({'red': 4, 'amber': 4}) | remembered red lines: clause 7 R-AI-01 (red line set 2026-10-20); clause 5 R-TERM-01 (red line set 2026-10-19)
+KABLA-DEMO step 3: a different contract, c002, same artist, no red line restated
+c002: 4 flags ({'red': 2, 'amber': 2}) | remembered red lines: clause 8 R-AI-02 (red line set 2026-10-20); clause 4 R-TERM-01 (red line set 2026-10-19)
+KABLA-DEMO done
+
+--- stderr ---
+2026-10-20 22:58:33 | INFO     | skills | "Add skill: Analyse a SYNTHETIC Kabla sample contract (c001, c002 or c003). Returns flags and a MeTTa trail. Does not give legal advice.: kabla-analyze sample_id"
+2026-10-20 22:58:33 | INFO     | skills | "Add skill: Ask whether a use of the SYNTHETIC work Asali ya Jioni is cleared. use is ad|sync-film|ai-training etc.: kabla-licence use territory months party"
+2026-10-20 22:58:33 | INFO     | skills | "Add skill: Set an artist's standing red line (ai-training never, or term-max-years N). Remembered across contracts.: kabla-redline-set artist kind value"
+2026-10-20 22:58:33 | INFO     | skills | "Add skill: Answer why a clause was flagged, grounded in the stored MeTTa trail for a contract id.: kabla-explain contract_id question"
+2026-10-20 22:58:33 | INFO     | kabla-plugin | "kabla-plugin loaded: 4 skills registered (calls FastAPI; MeTTa decides)"

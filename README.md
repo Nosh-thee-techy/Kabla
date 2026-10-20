@@ -19,7 +19,7 @@ cleared, not cleared, or needs consent from a named person.
 > **Recorded in this repo:** Track 4 — BASIX.MARKET Builds · **Brief B:** Managing originals (Art IP and Music IP)
 > **Stage built:** **License** (not Protect, not Earn)
 > **Team:** solo (record institution or Independent on the BASIX profile)
-> **Engine:** **MeTTa on PeTTa.** Omega plugin files exist; they have **not** been loaded in a live Omega agent. Do not describe this as "built on Omega".
+> **Engine:** **MeTTa on PeTTa.** The Kabla plugin has been loaded into **Omega's skill registry** (Omega's own source, no LLM) and its four skills ran against this API, including the Red Lines carry-over; evidence in [`docs/evidence/omega-load.log`](docs/evidence/omega-load.log). Omega's agent loop (LLM, memory, chat channels) was **not** run, and Omega's own plugin-loader step was done by hand on this machine. Do not describe this as "built on Omega".
 
 ### Why not just ask a chatbot?
 
@@ -213,7 +213,7 @@ Artists: **Zawadi** (red line: never AI training; term cap 7 years) and
 - **React + Vite + Tailwind** (`web/`) — Desk, ClauseMap, Simulator, Theater, LicenceDesk, Passport, Verify
 - **Ed25519** (PyNaCl) hash-linked ledger; Open Badges v2-shaped badges
 - **EN/SW** deterministic templates (`api/kabla/i18n/`) — Swahili is AI-drafted and must be checked by a fluent speaker
-- **Omega plugin** (`omega-plugin/`) — files only; **not loaded**. Same HTTP API if it ever is.
+- **Omega plugin** (`omega-plugin/`) — loads into Omega's skill registry and calls this same HTTP API (`python scripts/omega_native.py <path-to-omega-clone>`, log in `docs/evidence/`). No Omega agent loop was run.
 
 Architecture sketch: [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
 
@@ -267,7 +267,7 @@ and do not claim a prize, a placement, or co-ownership.
 
 | Claim | Truth |
 |---|---|
-| "Built on Omega" | **No.** Plugin stubs exist. Default run is MeTTa on PeTTa (L0). |
+| "Built on Omega" | **No.** The product runs on MeTTa on PeTTa (L0). The Omega plugin loads into Omega's skill registry and its skills run (partial: no LLM loop, loader step by hand). |
 | "AI reads the contract and decides" | **No.** MeTTa decides. LLM is extract/phrase only, and off in the demo. |
 | "This is legal advice" | **No.** See [LIMITATIONS.md](LIMITATIONS.md). |
 | "The score is a credit / ranking" | **No.** It never compares artists. |

@@ -168,3 +168,8 @@ The Omega image is about 2.3 GB and this network gave about 1 MB/s, so the downl
 
 Synthetic-only demo: confirm that invented contracts (no Incantio, HFAS, Harlem CLxR or AI for Peace data) are fine for Brief B. Record the organisers' answer here when received.
 
+
+## 2026-10-20 - Omega: partial load, stated precisely
+
+Docker image could not be pulled (about 2.3 GB, slow link, low disk), and the full agent needs torch and chromadb. Instead scripts/omega_native.py stages Omega's source (cloned, Apache-2.0) under PeTTa repos/ and runs Omega's own config, logger, plugin-listing and skill-registry modules. Omega's loadMettaPlugin returned without registering the skills on this Windows setup (cause not found in the time box), so the harness performs its three steps by hand: add the folder to sys.path, import the plugin .metta, call loadOmegaPlugin. Result in docs/evidence/omega-load.log: four skills registered in Omega's registry; kabla-redline-set then kabla-analyze on c001 and c002 shows red lines carried with their set dates. Not claimed: the Omega agent loop, memory, LLM, channels, or 'built on Omega'. Also learned: the Python helper must not share the plugin .metta's basename (renamed kabla_skills.py).
+
