@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { api, type Readiness } from "../api";
 import { BadgeShelf } from "../components/BadgeShelf";
 import { ChecklistGate } from "../components/ChecklistGate";
-import { HowTo } from "../components/HowTo";
+import { Clerk } from "../components/HowTo";
 import { NextStamp } from "../components/NextStamp";
 import { Room } from "../components/Room";
 import { ScoreRing } from "../components/ScoreRing";
@@ -45,6 +45,7 @@ export function Passport({ lang }: { lang: Lang }) {
         </div>
         <p className="font-mono text-[11px] opacity-60">Evidence of agreed terms — not a legal instrument · SYNTHETIC</p>
       </div>
+      <Clerk lang={lang} page="passport" say={t(lang, data ? "sayPassportIssued" : "sayPassport")} />
       <div className="mt-5 grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1.4fr)] gap-x-8 gap-y-6 items-start">
         <div>
           {ready && <ChecklistGate lang={lang} items={ready.checklist} />}
@@ -100,7 +101,6 @@ export function Passport({ lang }: { lang: Lang }) {
         )}
       </div>
       {data && <NextStamp to="/financier">{t(lang, "nextFinancier")}</NextStamp>}
-      <HowTo lang={lang} page="passport" />
     </Room>
   );
 }

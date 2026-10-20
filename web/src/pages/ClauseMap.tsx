@@ -3,12 +3,12 @@ import { api, type Readiness } from "../api";
 import { ClauseHighlight } from "../components/ClauseHighlight";
 import { EmptyGate } from "../components/EmptyGate";
 import { FairnessMeter } from "../components/FairnessMeter";
-import { HowTo } from "../components/HowTo";
+import { Clerk } from "../components/HowTo";
 import { NextStamp } from "../components/NextStamp";
 import { Room } from "../components/Room";
 import { SignReadiness } from "../components/SignReadiness";
 import { TrailBody, TrailDrawer } from "../components/TrailDrawer";
-import { t, type Lang } from "../i18n";
+import { t, tf, type Lang } from "../i18n";
 import { useKabla } from "../state";
 
 export function ClauseMap({ lang }: { lang: Lang }) {
@@ -38,6 +38,7 @@ export function ClauseMap({ lang }: { lang: Lang }) {
           <span className="self-center">{t(lang, "amber")}</span>
         </p>
       </div>
+      <Clerk lang={lang} page="map" say={tf(lang, "sayMap", { red: analysis.summary.red, amber: analysis.summary.amber })} />
       {ready && (
         <div className="mt-3 space-y-2">
           <FairnessMeter lang={lang} data={ready.fairness} />
@@ -60,7 +61,6 @@ export function ClauseMap({ lang }: { lang: Lang }) {
       </div>
       {flag && <TrailDrawer flag={flag} lang={lang} onClose={() => setN(null)} />}
       <NextStamp to="/simulate">{t(lang, "nextSim")}</NextStamp>
-      <HowTo lang={lang} page="map" />
     </Room>
   );
 }

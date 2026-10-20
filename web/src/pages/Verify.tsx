@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { api } from "../api";
-import { HowTo } from "../components/HowTo";
+import { Clerk } from "../components/HowTo";
 import { Room } from "../components/Room";
 import { t, type Lang } from "../i18n";
 import { useKabla } from "../state";
@@ -53,6 +53,7 @@ export function Verify({ lang }: { lang: Lang }) {
         <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-gold">{t(lang, "customs")}</p>
         <h1 className="font-display italic text-3xl md:text-4xl mt-1 leading-none">{t(lang, "verify")}</h1>
       </div>
+      <Clerk lang={lang} page="verify" say={t(lang, "sayVerify")} />
       <div className="mt-5 grid lg:grid-cols-[minmax(0,1fr)_20rem] gap-6 items-start">
         <div>
           <p className="label">{t(lang, "tray")}</p>
@@ -83,7 +84,6 @@ export function Verify({ lang }: { lang: Lang }) {
           )}
         </aside>
       </div>
-      <HowTo lang={lang} page="verify" />
     </Room>
   );
 }

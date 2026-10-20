@@ -36,3 +36,4 @@ Every use of AI in this project is logged here, append-only. Entries are never r
 | 2026-10-20 | Cursor agent (Grok 4.6) | Judge-facing README top; Financier view (existing facts only); red-line date sticker on clause map | Reviewed by team; pytest + web build |
 | 2026-10-20 | Cursor agent (Grok 4.6) | Clause map: fold flag list and score cards into a slim strip so the contract is readable | Reviewed by team |
 | 2026-10-20 | Cursor agent (Grok 4.6) | Design pass: tighter gutters, one-row header with numbered rail, ruled-paper rooms, hairline panels and ledger lists on every page; no logic changes | Reviewed by team; web build; headless screenshots |
+| 2026-10-20 | Cursor agent (Grok 4.6) | Karani desk-clerk avatar (SVG) with state-aware one-line guidance at the top of every room; theater flow strip and decided-counter; EN/SW copy drafted by the agent, Swahili needs a fluent check | Reviewed by team; web build |

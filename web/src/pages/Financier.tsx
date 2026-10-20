@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { api, type FinancierView } from "../api";
-import { HowTo } from "../components/HowTo";
+import { Clerk } from "../components/HowTo";
 import { NextStamp } from "../components/NextStamp";
 import { Room } from "../components/Room";
 import { ScoreRing } from "../components/ScoreRing";
@@ -27,6 +27,7 @@ export function Financier({ lang }: { lang: Lang }) {
         </div>
         <p className="guide-card max-w-xs font-mono text-[10px] uppercase tracking-wider leading-relaxed">{t(lang, "backerBanner")}</p>
       </div>
+      <Clerk lang={lang} page="financier" say={t(lang, "sayFinancier")} />
       {data && (
         <div className="mt-5 grid lg:grid-cols-2 gap-x-8 gap-y-6 items-start">
           {/* Left column: who owns it and where the money could leak. */}
@@ -90,7 +91,6 @@ export function Financier({ lang }: { lang: Lang }) {
       )}
       {err && <p className="text-flag-red text-sm mt-4" role="alert">{err}</p>}
       <NextStamp to="/verify">{t(lang, "nextVerify")}</NextStamp>
-      <HowTo lang={lang} page="financier" />
     </Room>
   );
 }

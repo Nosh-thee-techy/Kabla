@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { api, type Sample } from "../api";
-import { HowTo } from "../components/HowTo";
+import { Clerk } from "../components/HowTo";
 import { Room } from "../components/Room";
 import { t, type Lang } from "../i18n";
 import { useKabla } from "../state";
@@ -49,6 +49,7 @@ export function Desk({ lang }: { lang: Lang }) {
         </div>
         <p className="sticker">{t(lang, "whisper")}</p>
       </div>
+      <Clerk lang={lang} page="desk" say={t(lang, "sayDesk")} />
 
       <div className="mt-6 grid lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)] gap-x-10 gap-y-8">
         <section>
@@ -100,7 +101,6 @@ export function Desk({ lang }: { lang: Lang }) {
           {err && <p className="mt-3 text-flag-red text-sm" role="alert">{err}</p>}
         </section>
       </div>
-      <HowTo lang={lang} page="desk" />
     </Room>
   );
 }

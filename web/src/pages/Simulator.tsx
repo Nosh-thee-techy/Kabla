@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { api, type Simulation } from "../api";
 import { EmptyGate } from "../components/EmptyGate";
-import { HowTo } from "../components/HowTo";
+import { Clerk } from "../components/HowTo";
 import { NextStamp } from "../components/NextStamp";
 import { Room } from "../components/Room";
 import { money, streams as fmt } from "../lib/format";
@@ -28,6 +28,7 @@ export function Simulator({ lang }: { lang: Lang }) {
         <h1 className="font-display italic text-3xl md:text-4xl leading-none">{t(lang, "sim")}</h1>
         <p className="sticker">{t(lang, "illustrate")}</p>
       </div>
+      <Clerk lang={lang} page="sim" say={t(lang, "saySim")} />
       <label className="block mt-5 max-w-2xl">
         <span className="label">{fmt(n)} streams</span>
         <input
@@ -60,7 +61,6 @@ export function Simulator({ lang }: { lang: Lang }) {
       )}
       {err && <p className="text-flag-red mt-4" role="alert">{err}</p>}
       <NextStamp to="/theater">{t(lang, "nextTheater")}</NextStamp>
-      <HowTo lang={lang} page="sim" />
     </Room>
   );
 }

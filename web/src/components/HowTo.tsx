@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { t, type Lang } from "../i18n";
 
 const STEPS = {
@@ -87,23 +88,58 @@ const STEPS = {
   },
 } as const;
 
-export function HowTo({ lang, page }: { lang: Lang; page: keyof typeof STEPS.en }) {
+export type Page = keyof typeof STEPS.en;
+
+/** Why this exists: the three-step guide used to sit at the bottom of the room and fell below the fold.
+ *  Karani, the desk clerk, now sits at the top with one line on what to do right now; steps fold out. */
+export function Clerk({ lang, page, say }: { lang: Lang; page: Page; say: string }) {
+  const [open, setOpen] = useState(false);
   const steps = STEPS[lang][page];
   return (
-    <div className="mt-auto pt-8">
-      <aside className="guide-card max-w-sm" aria-label={t(lang, "howTo")}>
+    <aside className="mt-4 flex items-start gap-3 max-w-3xl" aria-label={t(lang, "karani")}>
+      <KaraniFace />
+      <div className="bubble flex-1 px-3.5 py-2.5">
         <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-terracotta dark:text-gold">
-          {t(lang, "howTo")}
+          {t(lang, "karani")}
         </p>
-        <ol className="mt-1.5 space-y-1">
-          {steps.map((line, i) => (
-            <li key={i} className="text-xs leading-snug opacity-85">
-              <span className="font-mono text-terracotta dark:text-gold mr-1.5">{i + 1}.</span>
-              {line}
-            </li>
-          ))}
-        </ol>
-      </aside>
-    </div>
+        <p className="mt-0.5 text-sm leading-snug">{say}</p>
+        <button
+          type="button"
+          className="mt-1.5 text-xs underline opacity-70 hover:opacity-100"
+          aria-expanded={open}
+          onClick={() => setOpen(!open)}
+        >
+          {open ? t(lang, "hideSteps") : t(lang, "showSteps")}
+        </button>
+        {open && (
+          <ol className="mt-2 space-y-1 border-t hair pt-2">
+            {steps.map((line, i) => (
+              <li key={i} className="text-xs leading-snug opacity-85">
+                <span className="font-mono text-terracotta dark:text-gold mr-1.5">{i + 1}.</span>
+                {line}
+              </li>
+            ))}
+          </ol>
+        )}
+      </div>
+    </aside>
+  );
+}
+
+/** Karani's face: paper-coloured head, round spectacles, terracotta kofia with a gold band.
+ *  Fixed colours so it reads the same on the light desk and the dusk rooms. */
+function KaraniFace() {
+  return (
+    <svg viewBox="0 0 48 48" width="54" height="54" aria-hidden="true" className="shrink-0 mt-0.5">
+      <circle cx="24" cy="28" r="14" fill="#F6F1E7" stroke="#1B1A17" strokeWidth="1.5" />
+      <path d="M11 20 Q24 5 37 20 Z" fill="#C4572D" stroke="#1B1A17" strokeWidth="1.5" strokeLinejoin="round" />
+      <rect x="9.5" y="18.5" width="29" height="4" fill="#D9A441" stroke="#1B1A17" strokeWidth="1.5" />
+      <circle cx="18" cy="29" r="3.8" fill="none" stroke="#1B1A17" strokeWidth="1.5" />
+      <circle cx="30" cy="29" r="3.8" fill="none" stroke="#1B1A17" strokeWidth="1.5" />
+      <line x1="21.8" y1="29" x2="26.2" y2="29" stroke="#1B1A17" strokeWidth="1.5" />
+      <circle cx="18" cy="29" r="1.2" fill="#1B1A17" />
+      <circle cx="30" cy="29" r="1.2" fill="#1B1A17" />
+      <path d="M19.5 36 Q24 39.5 28.5 36" fill="none" stroke="#1B1A17" strokeWidth="1.5" strokeLinecap="round" />
+    </svg>
   );
 }

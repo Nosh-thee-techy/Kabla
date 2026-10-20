@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { api, type Preset } from "../api";
-import { HowTo } from "../components/HowTo";
+import { Clerk } from "../components/HowTo";
 import { NextStamp } from "../components/NextStamp";
 import { Room } from "../components/Room";
-import { t, type Lang } from "../i18n";
+import { t, tf, type Lang } from "../i18n";
 import { useKabla } from "../state";
 
 export function LicenceDesk({ lang }: { lang: Lang }) {
@@ -34,6 +34,11 @@ export function LicenceDesk({ lang }: { lang: Lang }) {
         <h1 className="font-display italic text-3xl md:text-4xl leading-none">{t(lang, "licence")}</h1>
         <p className="font-mono text-[11px] opacity-60">Three envelopes for “Asali ya Jioni” · SYNTHETIC</p>
       </div>
+      <Clerk
+        lang={lang}
+        page="licence"
+        say={verdict ? tf(lang, "sayLicenceVerdict", { rule: verdict.rule_id }) : t(lang, "sayLicence")}
+      />
       {presets.length === 0 && !err && (
         <p className="mt-5 text-sm opacity-60">{t(lang, "sortingEnvelopes")}</p>
       )}
@@ -70,7 +75,6 @@ export function LicenceDesk({ lang }: { lang: Lang }) {
       )}
       {err && <p className="text-flag-red mt-4" role="alert">{err}</p>}
       <NextStamp to="/passport">{t(lang, "nextPassport")}</NextStamp>
-      <HowTo lang={lang} page="licence" />
     </Room>
   );
 }

@@ -47,6 +47,34 @@
 .label::after { content: ""; flex: 1; height: 1px; background: currentColor; opacity: 0.3; }
 .dark .label, .room-dusk .label { color: #D9A441; }
 
+/* Speech bubble for Karani: hairline box with a small notch pointing at the face. */
+.bubble {
+  position: relative;
+  border: 1px solid rgb(27 26 23 / 0.22);
+  background: rgb(255 255 255 / 0.45);
+}
+.bubble::before {
+  content: "";
+  position: absolute;
+  left: -7px;
+  top: 16px;
+  width: 12px;
+  height: 12px;
+  border-left: 1px solid rgb(27 26 23 / 0.22);
+  border-bottom: 1px solid rgb(27 26 23 / 0.22);
+  background: inherit;
+  transform: rotate(45deg);
+}
+.dark .bubble, .room-dusk .bubble { background: rgb(0 0 0 / 0.22); border-color: rgb(243 230 200 / 0.26); }
+.dark .bubble::before, .room-dusk .bubble::before { border-color: rgb(243 230 200 / 0.26); }
+
+/* Theater flow strip: four numbered stations, the current one underlined. */
+.flow { @apply flex flex-wrap gap-x-5 gap-y-1 font-mono text-[10px] uppercase tracking-[0.16em]; }
+.flow li { @apply flex items-baseline gap-1.5 pb-0.5 border-b-2 border-transparent opacity-50; }
+.flow li[aria-current="step"] { @apply opacity-100 border-terracotta; }
+.dark .flow li[aria-current="step"], .room-dusk .flow li[aria-current="step"] { border-color: #D9A441; }
+.flow li.done { @apply opacity-80 text-gold; }
+
 .hair { border-color: rgb(27 26 23 / 0.18); }
 .dark .hair, .room-dusk .hair { border-color: rgb(243 230 200 / 0.22); }
 
