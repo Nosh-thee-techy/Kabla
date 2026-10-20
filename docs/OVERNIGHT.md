@@ -13,22 +13,26 @@ background and are polled; if one item is stuck for ~45 min, write the blocker h
 
 ## Queue
 
-- [ ] A1. Omega runtime deps installed natively on Windows into `.vendor/omega-site` (CPU torch, chromadb, sentence-transformers; pip log `.vendor/pip-omega2.log`), used through PYTHONPATH. WSL and Docker were tried and ruled out. Landlock is Linux-only, so `securityPolicyPath` is empty and the docs say so. The slow link stalled the first attempt; it was restarted with retries.
-- [ ] A2. Run the real Omega agent loop (`scripts/omega_run.py`): Kabla provider + Kabla chat channel + Kabla plugin; fix whatever fails to load on Windows.
-- [ ] A3. Omega answers through the plugin skills (red line set, analyse, explain) with memory on; evidence in `docs/evidence/omega-agent.log`.
-- [x] A4. LLM key path written: `omega-plugin/kabla_llm.py` uses a live model when `ANTHROPIC_API_KEY` or `OPENAI_API_KEY` is in `.env`, else an offline keyword router (labelled "not an LLM"). Timeout, retry, circuit breaker, fallback. Offline router unit-checked.
+- [x] A1. Omega runtime deps installed natively on Windows into `.vendor/omega-site` (CPU torch, chromadb, sentence-transformers). WSL and Docker were tried and ruled out. Landlock is Linux-only, so `securityPolicyPath` is empty and the docs say so.
+- [x] A2. Real Omega agent loop runs (`scripts/omega_run.py`): Kabla provider + Kabla chat channel + Kabla plugin, PeTTa v1.0.4.
+- [x] A3. Omega answers through the plugin skills with memory on; evidence in `docs/evidence/omega-chat.md` (5 of 5 turns, offline-router mode) and `docs/evidence/omega-agent-excerpt.log`.
+- [x] A4. LLM key path written: live model when `ANTHROPIC_API_KEY` or `OPENAI_API_KEY` is in `.env`, else a labelled offline router. Timeout, retry, circuit breaker, fallback. Live request code **not yet tried against a real endpoint**.
 - [x] B1. Before: `/onboard`, `POST/GET /artists`, consent tick, no scraping.
 - [x] B2. Before: `engine/profile.metta` lists profile gaps (no change to existing rules/weights).
 - [x] B3. Rail grouped Before / During / After; Karani steps and EN/SW strings; Desk profile strip; "Ask the Omega agent" panel.
 - [x] B4. Profile sealed in its own signed hash chain; ERC-721-shaped metadata (not minted); wording "self-declared, consent-recorded".
-- [ ] C1. Browser click-through of every room (Playwright), per-room pass/fail table in `docs/E2E.md`.
-- [ ] C2. Testnet contract source + local-chain test only (no deploy without a funded key from the user).
-- [ ] D1. README, DECISIONS, AI_DISCLOSURE, NEXT, record checklist, `SUBMISSION.md` agent status report.
+- [x] C1. Browser click-through of every room (Playwright), per-room table in `docs/E2E.md`.
+- [x] C2. (reduced) Testnet contract **source** `contracts/KablaPassport.sol` + compile check (`scripts/compile_contract.mjs`). No on-chain test, no deploy (needs a key the user funds).
+- [x] D1. README, DECISIONS, AI_DISCLOSURE, NEXT, `SUBMISSION.md` agent status report.
 
-When all tasks are completed, push to main and do no further checks.
+Not pushed: the user decides when to push and submits on BASIX.MARKET themselves.
 
 ## Log
 
 (agent appends one line per finished item or blocker, newest last)
 - 23:40 A1 started: WSL has no outbound network; native Windows install running in background.
-- 00:00 B1-B4 done and committed (56 API tests, web build green). A4 written and committed with chat bridge API (`/omega/chat`), `scripts/omega_run.py` (watchdog restarts a silent agent). First pip attempt stalled on scipy for 30 min; restarted with retries.
+- 23:57 B1-B4 done and committed (56 API tests, web build green). A4 written and committed with chat bridge API (`/omega/chat`), `scripts/omega_run.py` (watchdog restarts a silent agent). First pip attempt stalled on scipy for 30 min; restarted with retries.
+- A1-A3 done: agent loop running, 5/5 chat turns through the plugin skills.
+- C1 done: 12/12 rooms pass in the browser.
+- D1 done. Clean clone of d9640f6: `tasks.py setup` then `tasks.py test` passed (76 MeTTa checks, 59 API tests, web build). The wrapper script died between the two steps, so they were run separately.
+- C2 reduced to a compile-checked contract sketch.

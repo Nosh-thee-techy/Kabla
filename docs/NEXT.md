@@ -32,5 +32,7 @@ plugin, a chat bridge, and a browser click-through of every room.
 - **Protect** stage: takedown / dispute pack from the same trail; real identity verification (not self-declared).
 - **Earn** stage: a real BASIX marketplace listing of the ERC-721-shaped metadata; a small non-transferable ERC-721 on an EVM
   **testnet only** with Verify showing "on-chain hash matches" (deployer key in git-ignored `.env`; nothing deployed yet).
+  A sketch exists: `contracts/KablaPassport.sol` (non-transferable, one token per certificate hash). `node scripts/compile_contract.mjs`
+  compiles it with solc 0.8.26 (compile check only; its behaviour is **not** tested on any chain, it is unaudited, and it is not deployed).
 - Chat for feature phones: Telegram / WhatsApp / USSD through Omega's channel plugins.
 - Live extraction with a **"please confirm this clause"** check when confidence is low (NAL truth values `(stv f c)` as the signal).

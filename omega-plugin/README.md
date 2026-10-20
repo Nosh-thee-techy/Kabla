@@ -1,22 +1,27 @@
-﻿# Kabla Omega plugin (P1)
+﻿# Kabla Omega plugin
 
-This plugin registers four Omega skills that call the **same FastAPI** the
-web app uses. MeTTa still decides; the skills only ferry facts and trails.
+Four Omega skills that call the **same FastAPI** the web app uses, plus an LLM provider and a chat channel so the
+real Omega agent loop can run with them. MeTTa (inside the API) still decides; the skills only ferry facts and trails.
 
-**Status (2026-10-20, partial L1):** `python scripts/omega_native.py <path-to-omega-clone>`
-loads Omega's own config, logger, plugin-listing and skill-registry modules on
-PeTTa, imports this plugin, runs its `loadOmegaPlugin` (four skills land in
-Omega's registry) and calls the skills against the API: set a red line, analyse
-`c001`, analyse `c002` with the red line carried. Log: `docs/evidence/omega-load.log`.
+**Status (2026-10-21):** `python scripts/omega_run.py` runs Omega's real agent loop natively on Windows (PeTTa v1.0.4,
+Omega `main`) with this plugin, Omega's memory, and the files below. `python scripts/omega_smoke.py` sends five chat
+messages through the API and records the answers in `docs/evidence/omega-chat.md`. The log excerpt is
+`docs/evidence/omega-agent-excerpt.log`.
 
-What this is **not**: the Omega agent loop (LLM, memory, chat channels) did not
-run, the full Docker image could not be pulled on this machine (disk), and
-Omega's own `loadMettaPlugin` did not finish on Windows, so its three steps are
-done by hand in `demo/kabla_native.metta`. Do not say "built on Omega".
-`demo/kabla_demo.metta` + `scripts/omega_demo.py` are the Docker version, untested.
-The helper is `kabla_skills.py` (not `kabla_plugin.py`: same basename as the
-`.metta` confuses the loader). Fallback ladder: **L0** (MeTTa on PeTTa +
-FastAPI + UI) is the shipping product.
+What this is **not**: no LLM was used in that run (no key was set): the provider answered with a labelled keyword router.
+There is no Landlock sandbox on Windows. The web product does not depend on Omega. Do not say "built on Omega". The
+patches made to the staged Omega copy are listed in `docs/DECISIONS.md`.
+
+## Files
+
+| File | Role |
+|---|---|
+| `kabla_plugin.metta` | MeTTa plugin: registers the four skills (`loadOmegaPlugin`) |
+| `kabla_skills.py` | HTTP helpers behind the skills; each result starts with a one-line `DIGEST:` |
+| `kabla_llm.py` | Provider `Kabla`: live model if `ANTHROPIC_API_KEY` / `OPENAI_API_KEY` is set, otherwise (or on timeout, error, open circuit) an offline keyword router. Never logs a key |
+| `kabla_chat.py` | Channel `kabla`: `var/omega/inbox.json` in, `var/omega/outbox.jsonl` out; the API bridges it at `/omega/chat` |
+| `demo/kabla_agent.metta` | Omega's `lib_omega` imports as direct paths, then `(omega)` |
+| `demo/kabla_native.metta` | Earlier skill-registry-only harness (`scripts/omega_native.py`) |
 
 ## Skills
 
@@ -27,19 +32,17 @@ FastAPI + UI) is the shipping product.
 | `kabla-redline-set` | `POST /redlines` (Red Lines memory) |
 | `kabla-explain` | grounds "why?" in the stored trail |
 
-## Load (when Omega is installed)
+## Run
 
-1. Copy or mount this folder into an Omega checkout.
-2. Add to `config/plugins.yaml`:
-
-```yaml
-- name: kabla_plugin
-  loader: metta
-  location: "{REPO}/../kabla/omega-plugin"
+```
+python scripts/tasks.py run        # API :8000 + web :5173
+python scripts/omega_run.py        # the agent, with a watchdog (needs Omega's Python deps in .vendor/omega-site)
+python scripts/omega_smoke.py      # five chat turns, writes docs/evidence/omega-chat.md
 ```
 
-3. Run Omega with `provider=mockprovider commchannel=mockchannel` to confirm
-   `loadOmegaPlugin` logs "kabla-plugin loaded" without an LLM key.
+For a stock Omega (Linux/Docker) instead: mount this folder, then in `config/plugins.yaml` add `kabla_plugin` (loader `metta`),
+`kabla_llm` and `kabla_chat` (loader `python`), each with this folder as `location`, and set `provider: Kabla`, `commchannel: kabla`.
+Python helpers read `KABLA_API_URL` (default `http://127.0.0.1:8000`) and `KABLA_OMEGA_DIR`.
 
-Python helper `kabla_skills.py` talks to `KABLA_API_URL` (default
-`http://127.0.0.1:8000`).
+The helper is `kabla_skills.py` (not `kabla_plugin.py`: the same basename as the `.metta` confuses the loader).
+Fallback ladder: **L0** (MeTTa on PeTTa + FastAPI + UI) is the shipping product.
