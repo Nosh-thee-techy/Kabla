@@ -44,3 +44,6 @@ Every use of AI in this project is logged here, append-only. Entries are never r
 
 | 2026-10-20 | Cursor agent (Claude) | Omega partial L1: renamed helper to kabla_skills.py, native harness (scripts/omega_native.py, omega-plugin/demo/kabla_native.metta) that runs Omega's skill registry with our plugin and the Red Lines demo; log in docs/evidence/omega-load.log. Not the full agent loop | Reviewed by team; log is real output |
 
+| 2026-10-21 | Cursor agent (Claude) | Before stage: onboarding page, MeTTa gap rules (engine/profile.metta), sealed profile chain, Before/During/After rail, EN/SW copy (Swahili AI-drafted, needs fluent review) | Reviewed by team; pytest + web build + browser click-through |
+| 2026-10-21 | Cursor agent (Claude) | Omega agent running natively: Kabla LLM provider (offline router + live model path with timeout/circuit breaker), file chat channel, runner with watchdog, chat bridge API, Desk chat panel. **No LLM was used in the agent run**; the live-model code is untested against a real key | Evidence in docs/evidence/omega-*; tests in omega-plugin/tests |
+| 2026-10-21 | Cursor agent (Claude) | Playwright browser click-through (scripts/e2e_browser.mjs, docs/E2E.md) | Per-room pass/fail table; screenshots in docs/evidence/e2e |

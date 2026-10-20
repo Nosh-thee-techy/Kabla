@@ -17,9 +17,9 @@ cleared, not cleared, or needs consent from a named person.
 > **Hackathon:** BASIX State of the Art Hackathon 2026
 > **Official page column:** Omega AI Agents → **BASIX.MARKET — Mature Build**
 > **Recorded in this repo:** Track 4 — BASIX.MARKET Builds · **Brief B:** Managing originals (Art IP and Music IP)
-> **Stage built:** **License** (not Protect, not Earn)
+> **Stage built:** **License**, plus a **Protect-lite "Before" step** (self-declared onboarding with consent, MeTTa gap rules, sealed profile) that the team asked to add. Not full Protect (no identity verification, no scraping) and not Earn (no on-chain mint).
 > **Team:** solo (record institution or Independent on the BASIX profile)
-> **Engine:** **MeTTa on PeTTa.** The Kabla plugin has been loaded into **Omega's skill registry** (Omega's own source, no LLM) and its four skills ran against this API, including the Red Lines carry-over; evidence in [`docs/evidence/omega-load.log`](docs/evidence/omega-load.log). Omega's agent loop (LLM, memory, chat channels) was **not** run, and Omega's own plugin-loader step was done by hand on this machine. Do not describe this as "built on Omega".
+> **Engine:** **MeTTa on PeTTa.** The product (web + API) runs on its own and does not need Omega. Separately, **Omega's real agent loop runs natively on Windows** (PeTTa v1.0.4, Omega `main`) with Kabla's plugin: Omega's loop, memory and tool-calling drive Kabla's four skills, which call this API, and MeTTa decides. Chat reaches it from the Desk page. Evidence: [`docs/evidence/omega-agent-excerpt.log`](docs/evidence/omega-agent-excerpt.log) and [`docs/evidence/omega-chat.md`](docs/evidence/omega-chat.md). **No LLM key was set**, so the agent's "model" is a labelled offline keyword router, not an LLM; a real model is used automatically when a key is added to `.env`. Staged-copy patches to Omega and the Windows limits (no sandbox) are in `docs/DECISIONS.md`. Do not describe this as "built on Omega".
 
 ### Why not just ask a chatbot?
 
@@ -210,10 +210,10 @@ Artists: **Zawadi** (red line: never AI training; term cap 7 years) and
 
 - **MeTTa rules** on [PeTTa](https://github.com/trueagi-io/PeTTa) (`fea83178`, MIT) via SWI-Prolog ≥ 9.3
 - **FastAPI** + SQLite (`api/kabla/`)
-- **React + Vite + Tailwind** (`web/`) — Desk, ClauseMap, Simulator, Theater, LicenceDesk, Passport, Verify
+- **React + Vite + Tailwind** (`web/`) — Onboard (Before), Desk, ClauseMap, Simulator, Theater (During), LicenceDesk, Passport, Financier, Verify (After)
 - **Ed25519** (PyNaCl) hash-linked ledger; Open Badges v2-shaped badges
 - **EN/SW** deterministic templates (`api/kabla/i18n/`) — Swahili is AI-drafted and must be checked by a fluent speaker
-- **Omega plugin** (`omega-plugin/`) — loads into Omega's skill registry and calls this same HTTP API (`python scripts/omega_native.py <path-to-omega-clone>`, log in `docs/evidence/`). No Omega agent loop was run.
+- **Omega plugin** (`omega-plugin/`) — Kabla skills, an LLM provider (live model if a key exists, otherwise an offline router, with timeout, retry and circuit breaker) and a file chat channel. `python scripts/omega_run.py` runs the real Omega agent loop under a watchdog; `python scripts/omega_smoke.py` talks to it through the API. Earlier skill-registry-only harness: `scripts/omega_native.py`.
 
 Architecture sketch: [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
 
@@ -228,6 +228,9 @@ python scripts/tasks.py run     # API :8000  +  web :5173
 
 Linux/macOS: `make setup && make run`. Requires **SWI-Prolog ≥ 9.3** and **Node 22**.
 Windows: add `C:\Program Files\swipl\bin` to `PATH` if `swipl` is not found.
+
+Omega agent (optional, Windows-native; needs the Omega Python deps installed, see `docs/DECISIONS.md`):
+`python scripts/omega_run.py` with the API on :8000. Add `ANTHROPIC_API_KEY` or `OPENAI_API_KEY` to `.env` for a live model.
 
 Docker (API + web; no Omega): `docker compose up --build`. Web is on
 http://localhost:5173 and proxies `/api` to the API.
@@ -246,6 +249,7 @@ network. Copy `.env.example` to `.env` for live mode; never commit secrets.
 ```bash
 python scripts/tasks.py test          # MeTTa + pytest + web build
 python scripts/e2e_demo.py            # three demo scenes → docs/transcripts/
+node scripts/e2e_browser.mjs          # real-browser click-through of every room → docs/E2E.md (needs API, `npx vite`, playwright-core in .vendor/e2e)
 ```
 
 CI: `.github/workflows/ci.yml`. Clean-clone gate: `scripts/verify_clean_clone`
@@ -267,7 +271,8 @@ and do not claim a prize, a placement, or co-ownership.
 
 | Claim | Truth |
 |---|---|
-| "Built on Omega" | **No.** The product runs on MeTTa on PeTTa (L0). The Omega plugin loads into Omega's skill registry and its skills run (partial: no LLM loop, loader step by hand). |
+| "Built on Omega" | **No.** The product runs on MeTTa on PeTTa. What is true: the real Omega agent loop runs with Kabla's plugin and answers chat through Kabla's MeTTa-backed skills (log and chat transcript in `docs/evidence/`), but with an offline router instead of an LLM until a key is added, and without Omega's Linux sandbox. |
+| "The Before step verifies who you are" | **No.** It is self-declared and consent-recorded; the seal proves the text did not change after sealing. Nothing is read from any social platform. |
 | "AI reads the contract and decides" | **No.** MeTTa decides. LLM is extract/phrase only, and off in the demo. |
 | "This is legal advice" | **No.** See [LIMITATIONS.md](LIMITATIONS.md). |
 | "The score is a credit / ranking" | **No.** It never compares artists. |
