@@ -26,7 +26,7 @@ export function Passport({ lang }: { lang: Lang }) {
     setErr(null);
     try {
       await api.registerWork(sell);
-      setPassport(await api.issuePassport("zawadi"));
+      setPassport(await api.issuePassport(contract?.artist ?? "zawadi"));
     } catch (e) { setErr(String(e)); }
   }
 

@@ -6,7 +6,9 @@ import { t, type Lang } from "../i18n";
 import { useKabla } from "../state";
 
 export function Verify({ lang }: { lang: Lang }) {
-  const { verify: result, setVerify, passport } = useKabla();
+  const { verify: result, setVerify, passport, contract } = useKabla();
+  // Why: the passport belongs to whoever's contract is open; "zawadi" is only the fallback for a cold start.
+  const artist = contract?.artist ?? "zawadi";
   const [text, setText] = useState("");
   const [err, setErr] = useState<string | null>(null);
 
@@ -31,7 +33,7 @@ export function Verify({ lang }: { lang: Lang }) {
         setText(JSON.stringify(existing, null, 2));
       } else {
         try {
-          const p = await api.getPassport("zawadi");
+          const p = await api.getPassport(artist);
           const c = p.certificate || p.certificates?.[0];
           if (!c) { setErr("Issue a passport first, or paste JSON."); return; }
           cert = c;

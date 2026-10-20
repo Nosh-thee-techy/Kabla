@@ -9,6 +9,7 @@ const STEPS = [
   { to: "/theater", key: "theater" as const, done: (s: ReturnType<typeof useKabla>) => !!s.nego },
   { to: "/licence", key: "licence" as const, done: (s: ReturnType<typeof useKabla>) => !!s.licence },
   { to: "/passport", key: "passport" as const, done: (s: ReturnType<typeof useKabla>) => !!s.passport },
+  { to: "/financier", key: "financier" as const, done: (s: ReturnType<typeof useKabla>) => !!s.passport },
   { to: "/verify", key: "verify" as const, done: (s: ReturnType<typeof useKabla>) => !!s.verify },
 ];
 
