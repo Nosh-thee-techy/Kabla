@@ -47,7 +47,6 @@ export function Desk({ lang }: { lang: Lang }) {
         <h1 className="font-display italic text-5xl md:text-7xl mt-6 leading-[1.05]">Kabla</h1>
         <p className="mt-4 text-xl opacity-80">{t(lang, "tagline")}</p>
       </div>
-      <HowTo lang={lang} page="desk" />
 
       <h2 className="mt-8 font-display text-2xl">{t(lang, "pick")}</h2>
       {samples.length === 0 && !err && (
@@ -93,6 +92,7 @@ export function Desk({ lang }: { lang: Lang }) {
         {busy ? t(lang, "analysing") : t(lang, "analyse")}
       </button>
       {err && <p className="mt-3 text-flag-red" role="alert">{err}</p>}
+      <HowTo lang={lang} page="desk" />
     </Room>
   );
 }

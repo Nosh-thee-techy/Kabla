@@ -30,9 +30,8 @@ export function ClauseMap({ lang }: { lang: Lang }) {
           </p>
         </div>
       </div>
-      <HowTo lang={lang} page="map" />
 
-      <div className="mt-2 grid lg:grid-cols-[minmax(0,1fr)_28rem] gap-8 items-start">
+      <div className="mt-8 grid lg:grid-cols-[minmax(0,1fr)_28rem] gap-8 items-start">
         <ClauseHighlight text={contract.text} analysis={analysis} selected={n} onPick={setN} />
         <aside className="panel hidden lg:block sticky top-4 p-5 min-h-[60vh]">
           {flag ? (
@@ -44,6 +43,7 @@ export function ClauseMap({ lang }: { lang: Lang }) {
       </div>
       {flag && <TrailDrawer flag={flag} lang={lang} onClose={() => setN(null)} />}
       <NextStamp to="/simulate">{t(lang, "nextSim")}</NextStamp>
+      <HowTo lang={lang} page="map" />
     </Room>
   );
 }

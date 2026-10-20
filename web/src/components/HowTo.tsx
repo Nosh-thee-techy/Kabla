@@ -80,18 +80,20 @@ const STEPS = {
 export function HowTo({ lang, page }: { lang: Lang; page: keyof typeof STEPS.en }) {
   const steps = STEPS[lang][page];
   return (
-    <aside className="panel mt-6 mb-8 p-4 md:p-5" aria-label={t(lang, "howTo")}>
-      <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-terracotta dark:text-gold">
-        {t(lang, "howTo")}
-      </p>
-      <ol className="mt-3 grid gap-2 md:grid-cols-3 md:gap-6">
-        {steps.map((line, i) => (
-          <li key={i} className="text-sm leading-relaxed">
-            <span className="font-mono text-terracotta dark:text-gold mr-2">{i + 1}.</span>
-            {line}
-          </li>
-        ))}
-      </ol>
-    </aside>
+    <div className="mt-auto pt-10">
+      <aside className="guide-card max-w-sm" aria-label={t(lang, "howTo")}>
+        <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-terracotta dark:text-gold">
+          {t(lang, "howTo")}
+        </p>
+        <ol className="mt-2 space-y-1.5">
+          {steps.map((line, i) => (
+            <li key={i} className="text-xs leading-snug opacity-85">
+              <span className="font-mono text-terracotta dark:text-gold mr-1.5">{i + 1}.</span>
+              {line}
+            </li>
+          ))}
+        </ol>
+      </aside>
+    </div>
   );
 }

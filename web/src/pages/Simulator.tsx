@@ -26,7 +26,6 @@ export function Simulator({ lang }: { lang: Lang }) {
     <Room>
       <p className="sticker">{t(lang, "illustrate")}</p>
       <h1 className="font-display italic text-4xl mt-6">{t(lang, "sim")}</h1>
-      <HowTo lang={lang} page="sim" />
       <label className="block mt-8 text-sm">
         {fmt(n)} streams
         <input
@@ -59,6 +58,7 @@ export function Simulator({ lang }: { lang: Lang }) {
       )}
       {err && <p className="text-flag-red mt-4" role="alert">{err}</p>}
       <NextStamp to="/theater">{t(lang, "nextTheater")}</NextStamp>
+      <HowTo lang={lang} page="sim" />
     </Room>
   );
 }

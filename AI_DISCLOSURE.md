@@ -29,3 +29,4 @@ Every use of AI in this project is logged here, append-only. Entries are never r
 | 2026-10-19 | Cursor agent (Grok 4.6) | Expanded README: product story, seven-screen desk, MeTTa decision path, and a detailed Kabla-vs-Claude (LLM chatbot) section | Reviewed by team |
 | 2026-10-19 | Cursor agent (Grok 4.6) | Night Desk UI: design tokens, journey rail, redesigned seven rooms, empty states, favicon/OG | Reviewed by team |
 | 2026-10-19 | Cursor agent (Grok 4.6) | Full-bleed rooms, clearer dark mode, and per-page how-to guidelines (EN/SW) | Reviewed by team |
+| 2026-10-19 | Cursor agent (Grok 4.6) | Moved how-tos into a small guide card at the bottom of each room | Reviewed by team |

@@ -32,7 +32,6 @@ export function LicenceDesk({ lang }: { lang: Lang }) {
     <Room>
       <h1 className="font-display italic text-4xl">{t(lang, "licence")}</h1>
       <p className="mt-2 text-sm opacity-80">Three envelopes for “Asali ya Jioni” (SYNTHETIC).</p>
-      <HowTo lang={lang} page="licence" />
       {presets.length === 0 && !err && (
         <p className="mt-6 text-sm opacity-60">{t(lang, "sortingEnvelopes")}</p>
       )}
@@ -69,6 +68,7 @@ export function LicenceDesk({ lang }: { lang: Lang }) {
       )}
       {err && <p className="text-flag-red mt-4" role="alert">{err}</p>}
       <NextStamp to="/passport">{t(lang, "nextPassport")}</NextStamp>
+      <HowTo lang={lang} page="licence" />
     </Room>
   );
 }

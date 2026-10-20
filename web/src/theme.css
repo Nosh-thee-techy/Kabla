@@ -171,6 +171,17 @@
   @apply font-mono text-xs leading-relaxed overflow-x-auto;
 }
 
+.guide-card {
+  @apply rounded-sm border border-ink/12 bg-white/80 p-3.5;
+  box-shadow: 3px 4px 0 rgb(36 28 22 / 0.08);
+}
+.dark .guide-card,
+.room-dusk .guide-card {
+  background: #2A211A;
+  border-color: rgb(243 230 200 / 0.22);
+  box-shadow: 3px 4px 0 rgb(0 0 0 / 0.35);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .stamp, .folder, .lamp { transition: none; }
   .folder:hover:not(:disabled) { transform: none; }

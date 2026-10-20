@@ -53,8 +53,7 @@ export function Theater({ lang }: { lang: Lang }) {
           </p>
         )}
       </header>
-      <HowTo lang={lang} page="theater" />
-      <p className="text-sm opacity-80">Kabla never agrees for you. Stamp every concession.</p>
+      <p className="mt-4 text-sm opacity-80">Kabla never agrees for you. Stamp every concession.</p>
 
       {!nego && (
         <button type="button" onClick={begin} disabled={busy} className="stamp stamp-savanna mt-8">
@@ -102,6 +101,7 @@ export function Theater({ lang }: { lang: Lang }) {
         </>
       )}
       {err && <p className="text-flag-red mt-4" role="alert">{err}</p>}
+      <HowTo lang={lang} page="theater" />
     </Room>
   );
 }
