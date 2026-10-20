@@ -103,6 +103,26 @@ Issuing a passport used to copy the artist's red line value `never` into
 Copying it made Request B return `needs-consent` (R-LIC-AI-OPTIN) after a passport
 was issued. Fix: agreed terms stay `opt-in-paid`; stance is stored as `ai_stance`.
 
+## 2026-10-20 — Financier view reuses existing facts
+
+A backer sheet (`GET /passport/{artist}/financier`) rearranges owners from
+`w-asali`, flags from `analyze()` on stored contracts, the standing AI red line,
+consent gaps from the existing licence probes, and `score()`. No new MeTTa
+rules and no new scoring weights. The journey rail stays seven rooms; the
+sheet is linked from Passport.
+
+## 2026-10-20 — Red-line carry-over already worked
+
+`analyze()` always loads `store.list_redlines(artist)` (artist-scoped, not
+contract-scoped). c001 then c002 already cited `2026-10-19`. The only change
+is surfacing `redline_set_on` as "You set this on <date>" on the clause-map
+trail. No engine change.
+
+## 2026-10-20 — Local hosting sketches stay untracked
+
+`Dockerfile`, `fly.toml`, `railway.toml` and `web/vercel.json` are gitignored.
+They are not a durable host and are out of the License-stage demo.
+
 ## 2026-10-19 — Docker PETTA_HOME
 
 Compose must use `/app/.vendor/PeTTa` (where `setup_petta.py` clones inside

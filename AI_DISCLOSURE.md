@@ -31,3 +31,6 @@ Every use of AI in this project is logged here, append-only. Entries are never r
 | 2026-10-19 | Cursor agent (Grok 4.6) | Full-bleed rooms, clearer dark mode, and per-page how-to guidelines (EN/SW) | Reviewed by team |
 | 2026-10-19 | Cursor agent (Grok 4.6) | Moved how-tos into a small guide card at the bottom of each room | Reviewed by team |
 | 2026-10-20 | Cursor agent (Grok 4.6) | Pre-sign surfaces: sign-readiness preview (same `score.metta` on hypothetical events), checklist gate (warnings only), deal-fairness meter (flag summary with clause trail) | Reviewed by team; pytest + web build |
+| 2026-10-20 | Cursor agent (Grok 4.6) | Readiness review: best-case label before theater, standing facts marked already-true, live dates, two fair topics | Reviewed by team |
+| 2026-10-20 | Cursor agent (Grok 4.6) | README: honest chatbot comparison (no product names), why deterministic, moat-not-yet | Reviewed by team |
+| 2026-10-20 | Cursor agent (Grok 4.6) | Judge-facing README top; Financier view (existing facts only); red-line date sticker on clause map | Reviewed by team; pytest + web build |

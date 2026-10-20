@@ -32,3 +32,9 @@ web/tmp-shots/
 Thumbs.db
 .idea/
 .vscode/
+
+# local hosting sketches (not part of the License-stage demo)
+/Dockerfile
+/fly.toml
+/railway.toml
+/web/vercel.json

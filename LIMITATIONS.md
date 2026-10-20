@@ -29,7 +29,8 @@ anything it says.
 ## Language
 
 - Swahili text is produced from reviewed templates, not live translation, and should be
-  checked by a fluent speaker before real-world use.
+  checked by a fluent speaker before real-world use. Still unchecked: the four pre-sign
+  checklist labels/warnings and the deal-fairness line (`fair on` / `sawa katika`).
 
 ## Data
 
@@ -40,8 +41,9 @@ anything it says.
 ## Extraction
 
 - In deterministic mode clause facts come from hand-checked fixtures. In live mode an LLM
-  extracts them and can be wrong; the UI shows the source clause next to every fact so the
-  artist can challenge it. Clause extraction confidence (NAL truth values) is a stretch goal.
+  extracts them and can be wrong; an extraction error would flow into the rules. The UI
+  shows the source clause next to every fact so the artist can challenge it. Next step:
+  "please confirm this clause" when confidence is low (NAL truth values).
 
 ## Engineering
 

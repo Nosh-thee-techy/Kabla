@@ -2,14 +2,17 @@
 
 **Know what you're signing. Prove what you own.**
 
-Kabla ("before") is a desk for one job: read a music or art contract *before*
-the artist signs it, flag every trap with the clause behind it, negotiate a
-fairer version with the label's agent in the open, and, once terms are agreed,
-issue a tamper-evident Rights Passport.
+Artists sign music and art contracts they cannot fully read. AI-training and
+voice clauses are new traps buried in ordinary-looking grants. An explanation
+she can challenge — rule id, clause number, same answer tomorrow — beats a
+verdict she must trust.
 
-It is not a chatbot that "looks over" a deal. An explanation the artist can
-challenge — rule id, clause number, same answer tomorrow — is the product. A
-confident paragraph with no trail is the thing it was built against.
+Kabla is a **pre-signing guard** for one artist at a time. She pastes a
+contract (or opens a sample). MeTTa rules flag the traps. Two rule agents
+negotiate while she approves every concession. Agreed terms become a Rights
+Passport: a hash-linked certificate, badges, and a rights-health score that
+explains itself. Later, the Licence Desk answers “can X use this?” with
+cleared, not cleared, or needs consent from a named person.
 
 > **Hackathon:** BASIX State of the Art Hackathon 2026
 > **Official page column:** Omega AI Agents → **BASIX.MARKET — Mature Build**
@@ -18,13 +21,26 @@ confident paragraph with no trail is the thing it was built against.
 > **Team:** solo (record institution or Independent on the BASIX profile)
 > **Engine:** **MeTTa on PeTTa.** Omega plugin files exist; they have **not** been loaded in a live Omega agent. Do not describe this as "built on Omega".
 
-All contracts, artists, labels, works and amounts are **SYNTHETIC**. No partner
-catalogues (Incantio, HFAS, Harlem CLxR, AI for Peace) and no real music or art
-files are used.
+### Why not just ask a chatbot?
 
-Kabla is **not a lawyer** and does not give legal advice. The Rights Passport
-is evidence of agreed terms, not a court instrument or a collecting-society
-registration. The rights-health score is **not a credit score**.
+An LLM may read messy wording better than Kabla. Kabla uses an LLM only for
+extraction and wording (and not at all in the demo). **MeTTa decides.**
+
+| | Asking a chatbot | Kabla |
+|---|---|---|
+| Same input, asked twice | Can give different answers | Same answer, every time |
+| Why a clause is flagged | A convincing explanation written after the fact | The rule that actually fired (rule id + clause number) |
+| Standing red lines ("never AI training") | Forgotten next chat unless she repeats them | Remembered, applied, and cited on every new contract |
+| What happens after | Another chat reply | Negotiation she approves step by step |
+| Proving what was agreed | Nothing | A tamper-evident, hash-linked record |
+| Licence questions later | Starts from scratch | Checks stored consents and names who has not signed |
+
+### Limits
+
+- **Not legal advice.** Kabla is not a lawyer.
+- The score is **rights-health, not credit.** It never ranks artists.
+- **Synthetic data only.** Invented contracts, artists and amounts. No partner catalogues.
+- **Live extraction is not deterministic.** Demo mode (`KABLA_MODE=deterministic`) uses saved extractions so the flags are repeatable.
 
 ---
 
@@ -67,41 +83,15 @@ yourself, and a certificate that notices if someone edits the past.
 
 ---
 
-## How this is different from Claude (or any LLM chatbot)
+## Why the demo is deterministic
 
-Claude is a language model. You paste a contract; it predicts a helpful
-reply. It can be careful. It can also skip a clause, invent a confident
-summary, or change its mind if you ask again. There is no stable rule id, no
-forced pointer to "clause 7", and nothing that stops it from agreeing on your
-behalf. If you ask "does this look fine?", a black box that says yes is worse
-than no tool at all.
+If a decision affects someone's rights, "the model felt so" is not acceptable.
+A fixed rule can be inspected, challenged and fixed. The trail is the cause,
+not a story written after. We can assert "c001 must produce these 4 red flags".
+Rule ids live in [`docs/RULES.md`](docs/RULES.md).
 
-Kabla is a **product**. The UI only renders what the API and the MeTTa engine
-already decided. In demo mode (`KABLA_MODE=deterministic`, the default) there
-is **no LLM and no network**. Clause facts come from hand-checked fixtures.
-Explanations come from fixed EN/SW templates. The same contract and the same
-facts produce the same flags tomorrow.
-
-| | Claude / an LLM chat | Kabla |
-|---|---|---|
-| What it is | A language model | A desk: UI + API + MeTTa rules + ledger |
-| What it does with a contract | Explains in paragraphs | Extracts facts, then fires **named rules** |
-| Who decides flags, verdicts, score, moves | The model, in prose | **MeTTa.** The LLM never decides. |
-| Can it change its mind? | Yes | Not if the facts and rules are the same |
-| Trail | "Because I think…" | `R-AI-01`, clause 7, EN/SW template |
-| Negotiation | It might role-play both sides | Two rule agents; **you** Approve or Reject |
-| Proof of ownership | None | Hash-sealed certificate + tamper check |
-| Demo mode | Always a model | **No model at all** |
-| Legal advice | Still not a lawyer | Still not a lawyer — and it says so |
-
-The LLM is optional and narrow. In `KABLA_MODE=live` it may (a) turn contract
-text into structured clause facts and (b) polish wording. It does **not**
-choose severity, raise a red line, accept a concession, clear a licence, or
-award a score point. Those come from `engine/*.metta`, each with a rule id
-documented in [`docs/RULES.md`](docs/RULES.md).
-
-Claude is the voice. Kabla is the ledger. In this project the voice is
-optional; the ledger is the product.
+A live extraction error would still flow into the rules. Next: a "please
+confirm this clause" check when confidence is low.
 
 ---
 
@@ -123,6 +113,7 @@ Desk → Clause map → Simulator → Theater → Licence desk → Passport → 
 | **Theater** | Approve or reject each concession. See the checklist (warnings only). | `POST /negotiate` → MeTTa artist/label moves. Artist is the only one who applies a concession. Max 4 rounds. |
 | **Licence desk** | Ask "can they use this work for X?" | `POST /licence` → MeTTa verdicts (`R-LIC-AI`, `R-LIC-TERM`, `R-LIC-CONSENT`, `R-LIC-OK`, …). |
 | **Passport** | Review the pre-sign checklist, then issue the certificate after agreed terms. | Hash work, sign with Ed25519, append hash-linked ledger, emit Open Badges v2-shaped badges + ERC-721-shaped metadata. **Nothing is minted.** Checklist never blocks. |
+| **Financier view** | Read a backer sheet: owners, open flags, AI stance, consent gaps, the same score. | `GET /passport/{artist}/financier` rearranges existing facts. No new score. Banner: not credit, not lending advice, SYNTHETIC. |
 | **Verify** | Run the tamper test (or check a certificate). | `POST /verify` → `intact` or `tampered: record N …`. |
 
 State is held in the API (SQLite) and in the browser session (`web/src/state.tsx`).
