@@ -16,9 +16,14 @@ REASONS = {
     "licence-missing-consent": "Licence granted without a required consent",
 }
 
+DATE = "2026-10-19"
+
 
 def score(artist: str) -> dict:
-    events = store.list_events(artist)
+    return score_from_events(artist, store.list_events(artist))
+
+
+def score_from_events(artist: str, events: list[dict]) -> dict:
     facts = [fact(Sym("event"), Sym(e["id"]), Sym(artist), Sym(e["type"]),
                   Sym(str(e["subject"])), Sym(e["date"])) for e in events]
     run = run_engine(facts, [
@@ -34,9 +39,30 @@ def score(artist: str) -> dict:
     return {
         "artist": artist, "score": total, "max": 100,
         "label": "rights-health, not credit",
+        "hypothetical": any(str(e["id"]).startswith("hyp-") for e in events),
         "next_best_steps": _next_steps(set(r["type"] for r in reasons)),
         "reasons": reasons,
     }
+
+
+def merge_hypothetical(artist: str, extras: list[dict]) -> list[dict]:
+    """Store events plus extras that are not already present (type+subject)."""
+    events = list(store.list_events(artist))
+    seen = {(e["type"], str(e["subject"])) for e in events}
+    out = events[:]
+    for i, extra in enumerate(extras):
+        key = (extra["type"], str(extra["subject"]))
+        if key in seen:
+            continue
+        seen.add(key)
+        out.append({
+            "id": extra.get("id") or f"hyp-{i}",
+            "artist": artist,
+            "type": extra["type"],
+            "subject": extra["subject"],
+            "date": extra.get("date") or DATE,
+        })
+    return out
 
 
 def _next_steps(have: set[str]) -> list[str]:

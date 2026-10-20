@@ -57,6 +57,12 @@ const ui = {
     openingDrawers: "Opening the drawers…",
     sortingEnvelopes: "Sorting the envelopes…",
     howTo: "Guide",
+    signReady: "Sign-readiness",
+    whyTap: "Tap a number for why",
+    fairness: "Deal fairness",
+    checklist: "Before you sign",
+    checklistNote: "Warnings only. Kabla does not block or decide for you.",
+    projected: "Projected — finish the theater to lock it in",
   },
   sw: {
     tagline: "Jua unachosaini. Thibitisha unachomiliki.",
@@ -115,6 +121,12 @@ const ui = {
     openingDrawers: "Inafungua droo…",
     sortingEnvelopes: "Inapanga bahasha…",
     howTo: "Mwongozo",
+    signReady: "Utayari wa kusaini",
+    whyTap: "Gusa namba kuona sababu",
+    fairness: "Haki ya mkataba",
+    checklist: "Kabla hujasaini",
+    checklistNote: "Onyo tu. Kabla haizuii wala kuamua kwa niaba yako.",
+    projected: "Makadirio — maliza ukumbi ili kufunga",
   },
 } as const;
 

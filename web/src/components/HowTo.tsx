@@ -8,9 +8,9 @@ const STEPS = {
       "You land on the clause map. Use the rail at the top to move rooms.",
     ],
     map: [
-      "Red and amber seals mark clauses. Click one to open its trail.",
-      "The right panel shows the rule id, the clause, and what it costs you.",
-      "When you have seen enough, stamp through to the simulator.",
+      "Deal fairness is a flag count, not a new score — each point names a clause.",
+      "Tap as-written vs after-negotiation to see why the rights-health number moves.",
+      "Red and amber seals mark clauses. Open one for the rule trail, then stamp on.",
     ],
     sim: [
       "Drag streams. The numbers are illustrative — not a forecast.",
@@ -20,7 +20,7 @@ const STEPS = {
     theater: [
       "Raise the curtain. Two rule agents talk; you are the only closer.",
       "Stamp Approve or Reject on every concession. Kabla never agrees for you.",
-      "Reject at least one if you want to hold a red line. Then send the stamps.",
+      "The checklist warns only — it does not block. Scores update after each act.",
     ],
     licence: [
       "Open an envelope: a Kenyan ad, AI training, or a film that needs Baraka.",
@@ -28,8 +28,8 @@ const STEPS = {
       "Try all three. Then seal a passport for the agreed terms.",
     ],
     passport: [
-      "Consent to register the work (sale is a separate tick, default off).",
-      "Issue the booklet: hash, badges, and a rights-health score — not credit.",
+      "The pre-sign list warns if a red line, AI stance, split, or consent is missing.",
+      "Consent to register (sale is a separate tick). Issue: hash, badges, score.",
       "Copy the hash if you want. Then take the certificate to customs.",
     ],
     verify: [
@@ -45,9 +45,9 @@ const STEPS = {
       "Utaingia kwenye ramani. Tumia reli juu kuhama vyumba.",
     ],
     map: [
-      "Muhuri mwekundu na wa njano unaashiria vifungu. Bofya kufungua njia.",
-      "Paneli ya kulia inaonyesha kitambulisho cha sheria, kifungu, na gharama.",
-      "Ukishaona, piga muhuri uende kwenye kisimulizi.",
+      "Haki ya mkataba ni hesabu ya bendera, si alama mpya — kila nukta ina kifungu.",
+      "Gusa kama-kilivyoandikwa dhidi ya baada-ya-majadiliano kuona kwa nini namba inabadilika.",
+      "Muhuri mwekundu na wa njano unaashiria vifungu. Fungua moja kwa njia, kisha endelea.",
     ],
     sim: [
       "Sogeza idadi ya mitiririko. Hizi ni namba za mfano — si utabiri.",
@@ -57,7 +57,7 @@ const STEPS = {
     theater: [
       "Inua pazia. Mawakala wawili wanazungumza; wewe ndiye unayefunga.",
       "Piga Kubali au Kataa kila hatua. Kabla haikubali kwa niaba yako.",
-      "Kataa angalau moja ukitaka kushikilia mstari. Kisha tuma muhuri.",
+      "Orodha ya kabla-ya-saini inaonya tu — haizuii. Alama zinabadilika baada ya kila kitendo.",
     ],
     licence: [
       "Fungua bahasha: tangazo la Kenya, mafunzo ya AI, au filamu inayohitaji Baraka.",
@@ -65,8 +65,8 @@ const STEPS = {
       "Jaribu zote tatu. Kisha funga pasipoti ya masharti yaliyokubaliwa.",
     ],
     passport: [
-      "Kubali kusajili kazi (kuuza ni alama tofauti, kawaida imezimwa).",
-      "Toa kitabu: hash, beji, na alama ya afya ya haki — si mkopo.",
+      "Orodha ya kabla-ya-saini inaonya ikiwa mstari, AI, mgawanyo, au idhini inakosekana.",
+      "Kubali kusajili (kuuza ni alama tofauti). Toa: hash, beji, na alama ya afya.",
       "Nakili hash ukitaka. Kisha peleka cheti forodhani.",
     ],
     verify: [

@@ -1,15 +1,18 @@
-import { useState } from "react";
-import { api } from "../api";
+import { useEffect, useState } from "react";
+import { api, type Readiness } from "../api";
+import { ChecklistGate } from "../components/ChecklistGate";
 import { EmptyGate } from "../components/EmptyGate";
 import { HowTo } from "../components/HowTo";
 import { NextStamp } from "../components/NextStamp";
 import { Room } from "../components/Room";
 import { RoundCard } from "../components/RoundCard";
+import { SignReadiness } from "../components/SignReadiness";
 import { t, type Lang } from "../i18n";
 import { useKabla } from "../state";
 
 export function Theater({ lang }: { lang: Lang }) {
   const { contract, nego, setNego } = useKabla();
+  const [ready, setReady] = useState<Readiness | null>(null);
   const [busy, setBusy] = useState(false);
   const [pending, setPending] = useState<Record<string, "approve" | "reject">>({});
   const [err, setErr] = useState<string | null>(null);
@@ -34,6 +37,11 @@ export function Theater({ lang }: { lang: Lang }) {
     } catch (e) { setErr(String(e)); }
     finally { setBusy(false); }
   }
+
+  useEffect(() => {
+    if (!contract) return;
+    api.readiness(contract.id).then(setReady).catch(() => setReady(null));
+  }, [contract, nego]);
 
   if (!contract) return <EmptyGate lang={lang} title={t(lang, "theater")} />;
 
@@ -101,6 +109,12 @@ export function Theater({ lang }: { lang: Lang }) {
         </>
       )}
       {err && <p className="text-flag-red mt-4" role="alert">{err}</p>}
+      {ready && (
+        <div className="mt-8 grid lg:grid-cols-2 gap-4">
+          <SignReadiness lang={lang} data={ready} />
+          <ChecklistGate lang={lang} items={ready.checklist} />
+        </div>
+      )}
       <HowTo lang={lang} page="theater" />
     </Room>
   );

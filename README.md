@@ -118,11 +118,11 @@ Desk → Clause map → Simulator → Theater → Licence desk → Passport → 
 | Screen | What the artist does | What the backend does |
 |---|---|---|
 | **Desk** | Pick a sample contract or paste text. Set language EN/SW. | Load contract + artist/work. Extraction is a fixture (deterministic) or a validated LLM parse (live). |
-| **Clause map** | Open a flag. Read the clause, the rule, the cost. | `POST /analyze` → MeTTa `flags-of` / redline raise. Trail always includes rule id + clause number. |
+| **Clause map** | Open a flag. Read fairness (flag count, clause trail) and tap as-written vs after-negotiation scores. | `POST /analyze` + `GET /readiness` → MeTTa `flags-of` and `score.metta` on hypothetical events. Fairness is a summary of flags, not a new model. |
 | **Simulator** | Try stream counts. Compare as-written vs after. | `POST /simulate` → MeTTa recoupment + cross-collateral. Illustrative only. |
-| **Theater** | Approve or reject each concession. Toggle SW. | `POST /negotiate` → MeTTa artist/label moves. Artist is the only one who applies a concession. Max 4 rounds. |
+| **Theater** | Approve or reject each concession. See the checklist (warnings only). | `POST /negotiate` → MeTTa artist/label moves. Artist is the only one who applies a concession. Max 4 rounds. |
 | **Licence desk** | Ask "can they use this work for X?" | `POST /licence` → MeTTa verdicts (`R-LIC-AI`, `R-LIC-TERM`, `R-LIC-CONSENT`, `R-LIC-OK`, …). |
-| **Passport** | Issue the certificate after agreed terms. | Hash work, sign with Ed25519, append hash-linked ledger, emit Open Badges v2-shaped badges + ERC-721-shaped metadata. **Nothing is minted.** |
+| **Passport** | Review the pre-sign checklist, then issue the certificate after agreed terms. | Hash work, sign with Ed25519, append hash-linked ledger, emit Open Badges v2-shaped badges + ERC-721-shaped metadata. **Nothing is minted.** Checklist never blocks. |
 | **Verify** | Run the tamper test (or check a certificate). | `POST /verify` → `intact` or `tampered: record N …`. |
 
 State is held in the API (SQLite) and in the browser session (`web/src/state.tsx`).

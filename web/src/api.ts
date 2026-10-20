@@ -38,6 +38,7 @@ export const api = {
   getPassport: (artist: string) => req<Passport>(`/passport/${artist}`),
   verify: (body: object) => req<VerifyResult>("/verify", { method: "POST", body: JSON.stringify(body) }),
   tamperDemo: (certificate: object) => req<VerifyResult>("/verify/tamper-demo", { method: "POST", body: JSON.stringify({ certificate }) }),
+  readiness: (id: string) => req<Readiness>(`/contracts/${id}/readiness`),
 };
 
 export type Sample = { id: string; title: string; label: string; kind: string; artist: string; blurb: string };
@@ -81,3 +82,22 @@ export type Passport = {
   ledger?: object[];
 };
 export type VerifyResult = { intact: boolean; reason: string; broken_seq?: number; mutated?: object };
+export type ScoreSlice = {
+  score: number; label: string; hypothetical?: boolean;
+  reasons: { event_id: string; points: number; type: string; subject: string; why: string }[];
+  next_best_steps: string[];
+};
+export type ChecklistItem = {
+  key: string; ok: boolean; label_en: string; label_sw: string; warning_en: string; warning_sw: string;
+};
+export type Readiness = {
+  contract_id: string; artist: string; label: string;
+  as_written: ScoreSlice; after: ScoreSlice;
+  fairness: {
+    red: number; amber: number; fair_topics: string[]; line: string;
+    flags: { rule_id: string; severity: string; topic: string; clause: number; title_en: string; title_sw: string }[];
+  };
+  checklist: ChecklistItem[];
+  remaining_reds: string[];
+  projected: boolean;
+};

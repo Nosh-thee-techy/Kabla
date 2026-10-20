@@ -1,5 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { api, type Readiness } from "../api";
 import { BadgeShelf } from "../components/BadgeShelf";
+import { ChecklistGate } from "../components/ChecklistGate";
 import { HowTo } from "../components/HowTo";
 import { NextStamp } from "../components/NextStamp";
 import { Room } from "../components/Room";
@@ -7,13 +9,18 @@ import { ScoreRing } from "../components/ScoreRing";
 import { shortHash } from "../lib/format";
 import { t, type Lang } from "../i18n";
 import { useKabla } from "../state";
-import { api } from "../api";
 
 export function Passport({ lang }: { lang: Lang }) {
-  const { passport: data, setPassport } = useKabla();
+  const { contract, passport: data, setPassport } = useKabla();
+  const [ready, setReady] = useState<Readiness | null>(null);
   const [err, setErr] = useState<string | null>(null);
   const [sell, setSell] = useState(false);
   const [why, setWhy] = useState(false);
+
+  useEffect(() => {
+    if (!contract) return;
+    api.readiness(contract.id).then(setReady).catch(() => setReady(null));
+  }, [contract]);
 
   async function go() {
     setErr(null);
@@ -34,6 +41,7 @@ export function Passport({ lang }: { lang: Lang }) {
       <p className="text-[11px] uppercase tracking-[0.2em] text-gold">{t(lang, "booklet")}</p>
       <h1 className="font-display italic text-4xl mt-2">{t(lang, "passport")}</h1>
       <p className="mt-2 text-sm opacity-80">Evidence of agreed terms — not a legal instrument. SYNTHETIC.</p>
+      {ready && <div className="mt-6 max-w-lg"><ChecklistGate lang={lang} items={ready.checklist} /></div>}
       <label className="mt-6 flex items-center gap-2 text-sm">
         <input type="checkbox" checked={sell} onChange={(e) => setSell(e.target.checked)} />
         {t(lang, "sell")}

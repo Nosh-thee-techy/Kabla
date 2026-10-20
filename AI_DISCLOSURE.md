@@ -30,3 +30,4 @@ Every use of AI in this project is logged here, append-only. Entries are never r
 | 2026-10-19 | Cursor agent (Grok 4.6) | Night Desk UI: design tokens, journey rail, redesigned seven rooms, empty states, favicon/OG | Reviewed by team |
 | 2026-10-19 | Cursor agent (Grok 4.6) | Full-bleed rooms, clearer dark mode, and per-page how-to guidelines (EN/SW) | Reviewed by team |
 | 2026-10-19 | Cursor agent (Grok 4.6) | Moved how-tos into a small guide card at the bottom of each room | Reviewed by team |
+| 2026-10-20 | Cursor agent (Grok 4.6) | Pre-sign surfaces: sign-readiness preview (same `score.metta` on hypothetical events), checklist gate (warnings only), deal-fairness meter (flag summary with clause trail) | Reviewed by team; pytest + web build |
