@@ -1,4 +1,4 @@
-﻿const BASE = import.meta.env.VITE_API_URL || "/api";
+const BASE = import.meta.env.VITE_API_URL || "/api";
 
 async function req<T>(path: string, init?: RequestInit): Promise<T> {
   const res = await fetch(`${BASE}${path}`, {
@@ -34,6 +34,8 @@ export const api = {
     if (!res.ok) throw new Error(`voice ${res.status}`);
     return res.blob();
   },
+  omegaSend: (text: string) => req<OmegaStatus>("/omega/chat", { method: "POST", body: JSON.stringify({ text }) }),
+  omegaRead: () => req<OmegaStatus & { replies: { ts: number; text: string }[] }>("/omega/chat"),
   samples: () => req<{ contracts: Sample[]; artists: Artist[]; synthetic: boolean }>("/samples"),
   createContract: (body: { sample_id?: string; text?: string }) => req<Contract>("/contracts", { method: "POST", body: JSON.stringify(body) }),
   analyze: (id: string) => req<Analysis>(`/contracts/${id}/analyze`, { method: "POST" }),
@@ -139,3 +141,5 @@ export type Readiness = {
   projected: boolean;
   after_kind?: "best_case" | "after";
 };
+
+export type OmegaStatus = { agent: "up" | "down"; heartbeat_age_s: number | null; llm: "live" | "offline-router"; note: string };

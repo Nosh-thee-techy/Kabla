@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { api, type Sample } from "../api";
 import { Clerk } from "../components/HowTo";
 import { Room } from "../components/Room";
+import { AgentChat } from "../components/AgentChat";
 import { t, tf, type Lang } from "../i18n";
 import { useKabla } from "../state";
 
@@ -120,6 +121,7 @@ export function Desk({ lang }: { lang: Lang }) {
           {err && <p className="mt-3 text-flag-red text-sm" role="alert">{err}</p>}
         </section>
       </div>
+      <AgentChat lang={lang} />
     </Room>
   );
 }
