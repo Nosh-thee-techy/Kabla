@@ -1,15 +1,23 @@
 """FastAPI app: CORS, health, router mount."""
 from __future__ import annotations
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 
 from kabla import __version__
 from kabla.config import get_settings
 from kabla.routers import analyze, chat, contracts, licence, negotiate, passport, voice
+from kabla.services.extractor import ExtractionUnavailable
 
 app = FastAPI(title="Kabla API", version=__version__,
               description="SYNTHETIC DEMO. MeTTa rules on PeTTa decide; the LLM (live mode only) only reads.")
+
+@app.exception_handler(ExtractionUnavailable)
+async def _extraction_unavailable(_req: Request, exc: ExtractionUnavailable) -> JSONResponse:
+    """One place that turns "cannot read this text" into a clear 422 for every route that analyses."""
+    return JSONResponse(status_code=422, content={"detail": str(exc)})
+
 
 app.add_middleware(
     CORSMiddleware,

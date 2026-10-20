@@ -32,6 +32,30 @@ def test_unknown_text_needs_live_mode(fresh_store):
         extract(fresh_store.get_contract(contract["id"]))
 
 
+def test_pasted_text_in_deterministic_mode_gets_a_clear_422(fresh_store):
+    """The reviewer path: unknown text must give a readable message, not a 500."""
+    client = TestClient(app)
+    contract = client.post("/contracts", json={"text": "1. GRANT\nSomething new."}).json()
+    res = client.post(f"/contracts/{contract['id']}/analyze")
+    assert res.status_code == 422
+    assert "SYNTHETIC" in res.json()["detail"]
+
+
+def test_live_mode_without_key_says_so(fresh_store, monkeypatch):
+    from kabla.config import get_settings
+
+    monkeypatch.setenv("KABLA_MODE", "live")
+    monkeypatch.delenv("ANTHROPIC_API_KEY", raising=False)
+    get_settings.cache_clear()
+    try:
+        contract = TestClient(app).post("/contracts", json={"text": "1. GRANT\nSomething new."}).json()
+        with pytest.raises(ExtractionUnavailable, match="ANTHROPIC_API_KEY"):
+            extract(fresh_store.get_contract(contract["id"]))
+    finally:
+        monkeypatch.undo()
+        get_settings.cache_clear()
+
+
 def test_fixture_quotes_appear_in_contract_text():
     for sid in samples.SAMPLE_FILES:
         text = " ".join(samples.contract_text(sid).split())

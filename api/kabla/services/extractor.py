@@ -24,6 +24,24 @@ def extract(contract: dict) -> dict:
         raise ExtractionUnavailable(
             "Deterministic mode only reads the three SYNTHETIC sample contracts (pre-extracted fixtures). "
             "Set KABLA_MODE=live and an LLM key to extract clauses from other text.")
+    import json
+    import os
+
+    import httpx
+
     from kabla.services.llm import extract_with_llm
 
-    return extract_with_llm(contract)
+    # Why these checks: a pasted contract is the first thing a reviewer tries. A missing key or a provider
+    # hiccup must come back as a plain sentence, never as "Internal Server Error".
+    provider = get_settings().llm_provider
+    key_name = "OPENAI_API_KEY" if provider == "openai" else "ANTHROPIC_API_KEY"
+    if not os.environ.get(key_name):
+        raise ExtractionUnavailable(
+            f"Live mode is on but {key_name} is not set, so Kabla cannot read new contract text. "
+            "Use one of the three SYNTHETIC sample folders, or add the key to .env and restart the API.")
+    try:
+        return extract_with_llm(contract)
+    except (httpx.HTTPError, ValueError, json.JSONDecodeError) as exc:
+        raise ExtractionUnavailable(
+            f"The reader could not extract clauses from this text ({type(exc).__name__}). "
+            "Nothing was decided. Try a shorter excerpt or one of the SYNTHETIC samples.") from exc
