@@ -37,7 +37,15 @@ export function LicenceDesk({ lang }: { lang: Lang }) {
       <Clerk
         lang={lang}
         page="licence"
+        cue={verdict ? "licence:verdict" : "licence"}
         say={verdict ? tf(lang, "sayLicenceVerdict", { rule: verdict.rule_id }) : t(lang, "sayLicence")}
+        cta={
+          verdict
+            ? { label: t(lang, "ctaSealPassport"), to: "/passport" }
+            : presets[0]
+              ? { label: t(lang, "ctaEnvelopeA"), onClick: () => void run(presets[0]) }
+              : { label: t(lang, "ctaGotIt") }
+        }
       />
       {presets.length === 0 && !err && (
         <p className="mt-5 text-sm opacity-60">{t(lang, "sortingEnvelopes")}</p>

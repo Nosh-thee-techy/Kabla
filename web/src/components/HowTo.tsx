@@ -1,4 +1,6 @@
-import { useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { api } from "../api";
 import { t, type Lang } from "../i18n";
 
 const STEPS = {
@@ -90,47 +92,192 @@ const STEPS = {
 
 export type Page = keyof typeof STEPS.en;
 
-/** Why this exists: the three-step guide used to sit at the bottom of the room and fell below the fold.
- *  Karani, the desk clerk, now sits at the top with one line on what to do right now; steps fold out. */
-export function Clerk({ lang, page, say }: { lang: Lang; page: Page; say: string }) {
+/** What the primary button on Karani's card does. `to` navigates; `onClick` acts in the room. */
+export type ClerkCta = { label: string; to?: string; onClick?: () => void };
+
+const SEEN_KEY = "karani-seen";
+const VOICE_KEY = "karani-voice";
+
+function seen(): Set<string> {
+  try { return new Set(JSON.parse(sessionStorage.getItem(SEEN_KEY) || "[]")); } catch { return new Set(); }
+}
+function markSeen(cue: string) {
+  const s = seen(); s.add(cue);
+  sessionStorage.setItem(SEEN_KEY, JSON.stringify([...s]));
+}
+
+/** One shared check so eight rooms don't each ask the API whether voice is configured. */
+let voiceEnabled: Promise<boolean> | null = null;
+function elevenLabsReady(): Promise<boolean> {
+  voiceEnabled ??= api.voiceStatus().then((s) => s.enabled).catch(() => false);
+  return voiceEnabled;
+}
+
+/** Why this exists: a guide pinned to the page bottom fell below the fold. Karani now interrupts
+ *  once per state (`cue`) as a bottom-right card that dims the room, says what to do, and offers one
+ *  button that does it. After that he waits as a small badge in the corner. He can also read the
+ *  line aloud: ElevenLabs through the API when a key is set, else the browser's own voice. */
+export function Clerk({ lang, page, say, cue, cta }: { lang: Lang; page: Page; say: string; cue: string; cta?: ClerkCta }) {
+  const navigate = useNavigate();
   const [open, setOpen] = useState(false);
-  const steps = STEPS[lang][page];
+  const [steps, setSteps] = useState(false);
+  const [voiceOn, setVoiceOn] = useState(() => localStorage.getItem(VOICE_KEY) === "on");
+  const [speaking, setSpeaking] = useState(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const lines = STEPS[lang][page];
+
+  // Interrupt once per cue per session; later visits only show the corner badge.
+  useEffect(() => {
+    if (!seen().has(cue)) { setOpen(true); markSeen(cue); }
+  }, [cue]);
+
+  const hush = useCallback(() => {
+    audioRef.current?.pause();
+    audioRef.current = null;
+    if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+    setSpeaking(false);
+  }, []);
+
+  const speak = useCallback(async () => {
+    hush();
+    setSpeaking(true);
+    try {
+      if (await elevenLabsReady()) {
+        const blob = await api.voice(say, lang);
+        const audio = new Audio(URL.createObjectURL(blob));
+        audioRef.current = audio;
+        audio.onended = () => setSpeaking(false);
+        await audio.play();
+        return;
+      }
+    } catch {
+      /* fall through to the browser voice */
+    }
+    if ("speechSynthesis" in window) {
+      const u = new SpeechSynthesisUtterance(say);
+      u.lang = lang === "sw" ? "sw-KE" : "en-KE";
+      u.onend = () => setSpeaking(false);
+      window.speechSynthesis.speak(u);
+    } else {
+      setSpeaking(false);
+    }
+  }, [say, lang, hush]);
+
+  // Auto-read when the card opens and the lamp for voice is on. Browsers may refuse before the
+  // first click on the page; that rejection is swallowed and the speaker button still works.
+  useEffect(() => {
+    if (open && voiceOn) void speak();
+    if (!open) hush();
+  }, [open, voiceOn, speak, hush]);
+
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setOpen(false); };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [open]);
+
+  function toggleVoice() {
+    const next = !voiceOn;
+    setVoiceOn(next);
+    localStorage.setItem(VOICE_KEY, next ? "on" : "off");
+    if (!next) hush();
+  }
+
+  function act() {
+    setOpen(false);
+    cta?.onClick?.();
+    if (cta?.to) navigate(cta.to);
+  }
+
+  if (!open) {
+    return (
+      <button
+        type="button"
+        onClick={() => setOpen(true)}
+        className="fixed bottom-4 right-4 z-40 flex items-center gap-2 pl-1 pr-3 py-1 bubble-card rounded-full shadow-stamp hover:-translate-y-0.5 transition"
+        aria-label={t(lang, "askKarani")}
+      >
+        <KaraniFace size={36} />
+        <span className="font-mono text-[10px] uppercase tracking-[0.16em]">{t(lang, "askKarani")}</span>
+      </button>
+    );
+  }
+
   return (
-    <aside className="mt-4 flex items-start gap-3 max-w-3xl" aria-label={t(lang, "karani")}>
-      <KaraniFace />
-      <div className="bubble flex-1 px-3.5 py-2.5">
-        <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-terracotta dark:text-gold">
-          {t(lang, "karani")}
-        </p>
-        <p className="mt-0.5 text-sm leading-snug">{say}</p>
-        <button
-          type="button"
-          className="mt-1.5 text-xs underline opacity-70 hover:opacity-100"
-          aria-expanded={open}
-          onClick={() => setOpen(!open)}
-        >
-          {open ? t(lang, "hideSteps") : t(lang, "showSteps")}
-        </button>
-        {open && (
-          <ol className="mt-2 space-y-1 border-t hair pt-2">
-            {steps.map((line, i) => (
-              <li key={i} className="text-xs leading-snug opacity-85">
-                <span className="font-mono text-terracotta dark:text-gold mr-1.5">{i + 1}.</span>
-                {line}
-              </li>
-            ))}
-          </ol>
-        )}
-      </div>
-    </aside>
+    <>
+      <div className="fixed inset-0 z-40 bg-ink/45" onClick={() => setOpen(false)} aria-hidden="true" />
+      <section
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="karani-title"
+        className="fixed bottom-4 right-4 z-50 w-[min(26rem,calc(100vw-2rem))] bubble-card shadow-stamp"
+      >
+        <div className="flex items-start gap-3 p-4">
+          <KaraniFace size={56} />
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center justify-between gap-2">
+              <p id="karani-title" className="font-mono text-[10px] uppercase tracking-[0.18em] text-terracotta dark:text-gold">
+                {t(lang, "karani")}
+              </p>
+              <div className="flex items-center gap-1">
+                <button
+                  type="button"
+                  onClick={() => void speak()}
+                  className={`font-mono text-[10px] uppercase tracking-widest px-2 py-0.5 border hair rounded-sm ${speaking ? "bg-terracotta text-paper" : ""}`}
+                  aria-label={t(lang, "hearKarani")}
+                >
+                  {speaking ? "…" : "▶"} {t(lang, "hearKarani")}
+                </button>
+                <button
+                  type="button"
+                  onClick={toggleVoice}
+                  aria-pressed={voiceOn}
+                  className={`font-mono text-[10px] uppercase tracking-widest px-2 py-0.5 border hair rounded-sm ${voiceOn ? "bg-savanna text-paper" : "opacity-60"}`}
+                >
+                  {t(lang, voiceOn ? "voiceOn" : "voiceOff")}
+                </button>
+              </div>
+            </div>
+            <p className="mt-1.5 text-[15px] leading-snug">{say}</p>
+            <button
+              type="button"
+              className="mt-2 text-xs underline opacity-70 hover:opacity-100"
+              aria-expanded={steps}
+              onClick={() => setSteps(!steps)}
+            >
+              {steps ? t(lang, "hideSteps") : t(lang, "showSteps")}
+            </button>
+            {steps && (
+              <ol className="mt-2 space-y-1 border-t hair pt-2">
+                {lines.map((line, i) => (
+                  <li key={i} className="text-xs leading-snug opacity-85">
+                    <span className="font-mono text-terracotta dark:text-gold mr-1.5">{i + 1}.</span>
+                    {line}
+                  </li>
+                ))}
+              </ol>
+            )}
+          </div>
+        </div>
+        <div className="flex items-center justify-between gap-3 px-4 py-3 border-t hair">
+          <button type="button" onClick={() => setOpen(false)} className="text-xs underline opacity-70 hover:opacity-100">
+            {t(lang, "later")}
+          </button>
+          <button type="button" onClick={act} className="stamp stamp-terracotta" autoFocus>
+            {cta?.label ?? t(lang, "ctaGotIt")} →
+          </button>
+        </div>
+      </section>
+    </>
   );
 }
 
 /** Karani's face: paper-coloured head, round spectacles, terracotta kofia with a gold band.
  *  Fixed colours so it reads the same on the light desk and the dusk rooms. */
-function KaraniFace() {
+function KaraniFace({ size = 54 }: { size?: number }) {
   return (
-    <svg viewBox="0 0 48 48" width="54" height="54" aria-hidden="true" className="shrink-0 mt-0.5">
+    <svg viewBox="0 0 48 48" width={size} height={size} aria-hidden="true" className="shrink-0">
       <circle cx="24" cy="28" r="14" fill="#F6F1E7" stroke="#1B1A17" strokeWidth="1.5" />
       <path d="M11 20 Q24 5 37 20 Z" fill="#C4572D" stroke="#1B1A17" strokeWidth="1.5" strokeLinejoin="round" />
       <rect x="9.5" y="18.5" width="29" height="4" fill="#D9A441" stroke="#1B1A17" strokeWidth="1.5" />

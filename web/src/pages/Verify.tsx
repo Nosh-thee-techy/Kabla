@@ -53,7 +53,7 @@ export function Verify({ lang }: { lang: Lang }) {
         <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-gold">{t(lang, "customs")}</p>
         <h1 className="font-display italic text-3xl md:text-4xl mt-1 leading-none">{t(lang, "verify")}</h1>
       </div>
-      <Clerk lang={lang} page="verify" say={t(lang, "sayVerify")} />
+      <Clerk lang={lang} page="verify" cue="verify" say={t(lang, "sayVerify")} cta={{ label: t(lang, "ctaTamper"), onClick: () => void tamper() }} />
       <div className="mt-5 grid lg:grid-cols-[minmax(0,1fr)_20rem] gap-6 items-start">
         <div>
           <p className="label">{t(lang, "tray")}</p>

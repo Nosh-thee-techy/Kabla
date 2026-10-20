@@ -49,7 +49,13 @@ export function Desk({ lang }: { lang: Lang }) {
         </div>
         <p className="sticker">{t(lang, "whisper")}</p>
       </div>
-      <Clerk lang={lang} page="desk" say={t(lang, "sayDesk")} />
+      <Clerk
+        lang={lang}
+        page="desk"
+        cue="desk"
+        say={t(lang, "sayDesk")}
+        cta={{ label: t(lang, "ctaOpenMawingu"), onClick: () => run({ sample_id: "c001" }) }}
+      />
 
       <div className="mt-6 grid lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)] gap-x-10 gap-y-8">
         <section>

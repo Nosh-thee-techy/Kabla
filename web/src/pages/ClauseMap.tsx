@@ -22,6 +22,7 @@ export function ClauseMap({ lang }: { lang: Lang }) {
   if (!contract || !analysis) return <EmptyGate lang={lang} title={t(lang, "map")} />;
 
   const flag = analysis.flags.find((f) => f.clause === n) || null;
+  const firstRed = analysis.flags.find((f) => f.severity === "red") || analysis.flags[0] || null;
   return (
     <Room wide>
       <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-2 pb-3 border-b hair">
@@ -38,7 +39,17 @@ export function ClauseMap({ lang }: { lang: Lang }) {
           <span className="self-center">{t(lang, "amber")}</span>
         </p>
       </div>
-      <Clerk lang={lang} page="map" say={tf(lang, "sayMap", { red: analysis.summary.red, amber: analysis.summary.amber })} />
+      <Clerk
+        lang={lang}
+        page="map"
+        cue={`map:${contract.id}`}
+        say={tf(lang, "sayMap", { red: analysis.summary.red, amber: analysis.summary.amber })}
+        cta={
+          firstRed
+            ? { label: t(lang, "ctaFirstRed"), onClick: () => setN(firstRed.clause) }
+            : { label: t(lang, "ctaGotIt") }
+        }
+      />
       {ready && (
         <div className="mt-3 space-y-2">
           <FairnessMeter lang={lang} data={ready.fairness} />

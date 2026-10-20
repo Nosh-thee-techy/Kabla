@@ -82,7 +82,19 @@ export function Theater({ lang }: { lang: Lang }) {
         </ol>
       </header>
 
-      <Clerk lang={lang} page="theater" say={say} />
+      <Clerk
+        lang={lang}
+        page="theater"
+        cue={`theater:${!nego ? "idle" : isOpen ? `open:${nego.round}` : "done"}`}
+        say={say}
+        cta={
+          !nego
+            ? { label: t(lang, "ctaRaise"), onClick: () => void begin() }
+            : isOpen
+              ? { label: t(lang, "ctaDecide") }
+              : { label: t(lang, "ctaLicence"), to: "/licence" }
+        }
+      />
 
       {!nego && (
         <button type="button" onClick={begin} disabled={busy} className="stamp stamp-savanna mt-5 self-start">

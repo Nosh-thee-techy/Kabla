@@ -67,6 +67,18 @@
 }
 .dark .bubble, .room-dusk .bubble { background: rgb(0 0 0 / 0.22); border-color: rgb(243 230 200 / 0.26); }
 .dark .bubble::before, .room-dusk .bubble::before { border-color: rgb(243 230 200 / 0.26); }
+/* Karani's floating card and corner badge: opaque paper, hairline, no notch, no position of its own
+   (Tailwind's `fixed` must win). */
+.bubble-card {
+  border: 1px solid rgb(27 26 23 / 0.3);
+  background: #F6F1E7;
+  color: #1B1A17;
+}
+.dark .bubble-card, .room-dusk .bubble-card {
+  background: #2A211A;
+  color: #F8EED8;
+  border-color: rgb(243 230 200 / 0.3);
+}
 
 /* Theater flow strip: four numbered stations, the current one underlined. */
 .flow { @apply flex flex-wrap gap-x-5 gap-y-1 font-mono text-[10px] uppercase tracking-[0.16em]; }

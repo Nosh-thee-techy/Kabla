@@ -135,3 +135,23 @@ The slim flag strip and the room redesign touch the same files (ClauseMap,
 Theater, i18n). Splitting them would mean committing an intermediate state
 that was never built, so they ship as one web-only commit. No API, rule or
 scoring file changed.
+
+## 2026-10-20 — Karani's voice goes through the API, and is optional
+
+The team asked for the desk clerk to speak using ElevenLabs. The key never
+reaches the browser: the web app POSTs the line to `/voice` and the API calls
+the provider, caching each distinct line as mp3 under `var/voice/` (git-
+ignored). With no `ELEVENLABS_API_KEY` the endpoint answers 503, the web app
+falls back to the browser's own speech synthesis, and nothing else changes.
+Tests never touch the network. Naming the provider in config and this note is
+unavoidable since the team chose it; it is not a comparison or an endorsement.
+Lines are capped at 400 characters to bound spend. Voice reads Karani's
+guidance only; it does not read contract text or anything MeTTa decided.
+
+## 2026-10-20 — Karani interrupts once per state, not once per render
+
+The clerk card pauses the room the first time a given cue is seen in the
+browser session (`karani-seen` in sessionStorage), e.g. `theater:open:2`.
+After that he waits in the corner. Voice auto-read is off by default and is a
+per-browser preference, because autoplay before the first click is refused by
+browsers and because a judge may be watching with sound off.

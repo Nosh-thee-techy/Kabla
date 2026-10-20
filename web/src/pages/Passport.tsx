@@ -45,7 +45,13 @@ export function Passport({ lang }: { lang: Lang }) {
         </div>
         <p className="font-mono text-[11px] opacity-60">Evidence of agreed terms — not a legal instrument · SYNTHETIC</p>
       </div>
-      <Clerk lang={lang} page="passport" say={t(lang, data ? "sayPassportIssued" : "sayPassport")} />
+      <Clerk
+        lang={lang}
+        page="passport"
+        cue={data ? "passport:issued" : "passport"}
+        say={t(lang, data ? "sayPassportIssued" : "sayPassport")}
+        cta={data ? { label: t(lang, "ctaCustoms"), to: "/verify" } : { label: t(lang, "ctaChecklist") }}
+      />
       <div className="mt-5 grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1.4fr)] gap-x-8 gap-y-6 items-start">
         <div>
           {ready && <ChecklistGate lang={lang} items={ready.checklist} />}

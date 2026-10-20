@@ -27,7 +27,7 @@ export function Financier({ lang }: { lang: Lang }) {
         </div>
         <p className="guide-card max-w-xs font-mono text-[10px] uppercase tracking-wider leading-relaxed">{t(lang, "backerBanner")}</p>
       </div>
-      <Clerk lang={lang} page="financier" say={t(lang, "sayFinancier")} />
+      <Clerk lang={lang} page="financier" cue="financier" say={t(lang, "sayFinancier")} cta={{ label: t(lang, "ctaCustoms"), to: "/verify" }} />
       {data && (
         <div className="mt-5 grid lg:grid-cols-2 gap-x-8 gap-y-6 items-start">
           {/* Left column: who owns it and where the money could leak. */}

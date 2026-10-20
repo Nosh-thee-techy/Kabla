@@ -23,6 +23,17 @@ async function req<T>(path: string, init?: RequestInit): Promise<T> {
 
 export const api = {
   health: () => req<{ mode: string; engine: string }>("/health"),
+  /** Karani's voice. The API holds the provider key; the browser only receives audio. */
+  voiceStatus: () => req<{ enabled: boolean; provider: string | null }>("/voice/status"),
+  voice: async (text: string, lang: string): Promise<Blob> => {
+    const res = await fetch(`${BASE}/voice`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text, lang }),
+    });
+    if (!res.ok) throw new Error(`voice ${res.status}`);
+    return res.blob();
+  },
   samples: () => req<{ contracts: Sample[]; artists: Artist[]; synthetic: boolean }>("/samples"),
   createContract: (body: { sample_id?: string; text?: string }) => req<Contract>("/contracts", { method: "POST", body: JSON.stringify(body) }),
   analyze: (id: string) => req<Analysis>(`/contracts/${id}/analyze`, { method: "POST" }),

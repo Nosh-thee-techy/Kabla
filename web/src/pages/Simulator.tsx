@@ -28,7 +28,7 @@ export function Simulator({ lang }: { lang: Lang }) {
         <h1 className="font-display italic text-3xl md:text-4xl leading-none">{t(lang, "sim")}</h1>
         <p className="sticker">{t(lang, "illustrate")}</p>
       </div>
-      <Clerk lang={lang} page="sim" say={t(lang, "saySim")} />
+      <Clerk lang={lang} page="sim" cue="sim" say={t(lang, "saySim")} cta={{ label: t(lang, "nextTheater"), to: "/theater" }} />
       <label className="block mt-5 max-w-2xl">
         <span className="label">{fmt(n)} streams</span>
         <input
