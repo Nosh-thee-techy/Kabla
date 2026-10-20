@@ -38,3 +38,6 @@ Thumbs.db
 /fly.toml
 /railway.toml
 /web/vercel.json
+
+# Live, ever-growing agent log; the committed evidence is docs/evidence/omega-agent-excerpt.log
+docs/evidence/omega-agent.log
