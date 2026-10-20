@@ -5,15 +5,15 @@ import { NextStamp } from "../components/NextStamp";
 import { Room } from "../components/Room";
 import { ScoreRing } from "../components/ScoreRing";
 import { t, type Lang } from "../i18n";
-import { useKabla } from "../state";
+import { useArtist } from "../state";
 
 /** Why this page exists: a backer sees the same owners, flags and score — rearranged, not rescored. */
 export function Financier({ lang }: { lang: Lang }) {
   const [data, setData] = useState<FinancierView | null>(null);
   const [err, setErr] = useState<string | null>(null);
 
-  const { contract } = useKabla();
-  const artist = contract?.artist ?? "zawadi"; // fallback only for a cold start with no folder open
+
+  const artist = useArtist(); // open contract, else demo-fixture profile, else the demo artist
 
   useEffect(() => {
     api.financier(artist).then(setData).catch((e) => setErr(String(e)));

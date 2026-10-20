@@ -2,18 +2,22 @@ import { NavLink, useLocation } from "react-router-dom";
 import { t, type Lang } from "../i18n";
 import { useKabla } from "../state";
 
+type S = ReturnType<typeof useKabla>;
+
+/** Three stages of an artist's story: Before a contract, During it, After it. */
 const STEPS = [
-  { to: "/", key: "desk" as const, done: () => true },
-  { to: "/map", key: "map" as const, done: (s: ReturnType<typeof useKabla>) => !!s.analysis },
-  { to: "/simulate", key: "sim" as const, done: (s: ReturnType<typeof useKabla>) => !!s.contract },
-  { to: "/theater", key: "theater" as const, done: (s: ReturnType<typeof useKabla>) => !!s.nego },
-  { to: "/licence", key: "licence" as const, done: (s: ReturnType<typeof useKabla>) => !!s.licence },
-  { to: "/passport", key: "passport" as const, done: (s: ReturnType<typeof useKabla>) => !!s.passport },
-  { to: "/financier", key: "financier" as const, done: (s: ReturnType<typeof useKabla>) => !!s.passport },
-  { to: "/verify", key: "verify" as const, done: (s: ReturnType<typeof useKabla>) => !!s.verify },
+  { to: "/onboard", key: "onboard" as const, group: "groupBefore" as const, done: (s: S) => !!s.profile },
+  { to: "/", key: "desk" as const, group: "groupDuring" as const, done: () => true },
+  { to: "/map", key: "map" as const, group: "groupDuring" as const, done: (s: S) => !!s.analysis },
+  { to: "/simulate", key: "sim" as const, group: "groupDuring" as const, done: (s: S) => !!s.contract },
+  { to: "/theater", key: "theater" as const, group: "groupDuring" as const, done: (s: S) => !!s.nego },
+  { to: "/licence", key: "licence" as const, group: "groupAfter" as const, done: (s: S) => !!s.licence },
+  { to: "/passport", key: "passport" as const, group: "groupAfter" as const, done: (s: S) => !!s.passport },
+  { to: "/financier", key: "financier" as const, group: "groupAfter" as const, done: (s: S) => !!s.passport },
+  { to: "/verify", key: "verify" as const, group: "groupAfter" as const, done: (s: S) => !!s.verify },
 ];
 
-/** Numbered ledger line instead of pill chips: 01 Desk · 02 Clause map … */
+/** Numbered ledger line, grouped by stage: Before 01 · During 02-05 · After 06-09. */
 export function JourneyRail({ lang }: { lang: Lang }) {
   const store = useKabla();
   const { pathname } = useLocation();
@@ -23,8 +27,14 @@ export function JourneyRail({ lang }: { lang: Lang }) {
         {STEPS.map((step, i) => {
           const here = pathname === step.to || (step.to !== "/" && pathname.startsWith(step.to));
           const done = step.done(store) && !here;
+          const startsGroup = i === 0 || STEPS[i - 1].group !== step.group;
           return (
-            <li key={step.to}>
+            <li key={step.to} className="flex items-baseline gap-4 md:gap-5">
+              {startsGroup && (
+                <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-gold border-l hair pl-3 first:border-l-0 first:pl-0">
+                  {t(lang, step.group)}
+                </span>
+              )}
               <NavLink
                 to={step.to}
                 end={step.to === "/"}

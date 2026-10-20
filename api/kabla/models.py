@@ -208,3 +208,12 @@ class ChatRequest(BaseModel):
     question: str
     contract_id: str | None = None
     lang: Lang = "en"
+
+
+class ArtistCreate(BaseModel):
+    """Before-stage onboarding input. Consent must be true; nothing is fetched from any platform."""
+    name: str = Field(min_length=1, max_length=80)
+    handles: dict[str, str] = Field(default_factory=dict)
+    consent: bool = False
+    bio: str = Field(default="", max_length=4000)
+    lang: Lang = "en"

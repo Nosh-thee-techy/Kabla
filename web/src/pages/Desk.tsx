@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { api, type Sample } from "../api";
 import { Clerk } from "../components/HowTo";
 import { Room } from "../components/Room";
-import { t, type Lang } from "../i18n";
+import { t, tf, type Lang } from "../i18n";
 import { useKabla } from "../state";
 
 function folder(id: string): { tone: string; tag: "folderTrap" | "folderMixed" | "folderFair" } {
@@ -13,7 +13,7 @@ function folder(id: string): { tone: string; tag: "folderTrap" | "folderMixed" |
 }
 
 export function Desk({ lang }: { lang: Lang }) {
-  const { setContract, setAnalysis } = useKabla();
+  const { setContract, setAnalysis, profile } = useKabla();
   const [samples, setSamples] = useState<Sample[]>([]);
   const [text, setText] = useState("");
   const [busy, setBusy] = useState(false);
@@ -56,6 +56,19 @@ export function Desk({ lang }: { lang: Lang }) {
         say={t(lang, "sayDesk")}
         cta={{ label: t(lang, "ctaOpenMawingu"), onClick: () => run({ sample_id: "c001" }) }}
       />
+
+      {/* Before stage status: who this desk is working for, or a nudge to introduce yourself first. */}
+      <p className="mt-4 text-sm flex flex-wrap items-center gap-x-3 gap-y-1">
+        {profile ? (
+          <>
+            <span className="font-mono text-[11px]">{tf(lang, "onbProfileFor", { name: profile.name })}</span>
+            <span className="opacity-60">{tf(lang, "onbOpenGaps", { n: profile.gaps.length })}</span>
+            <Link to="/onboard" className="underline">{t(lang, "onbSeal")}</Link>
+          </>
+        ) : (
+          <Link to="/onboard" className="underline">{t(lang, "onbStart")}</Link>
+        )}
+      </p>
 
       <div className="mt-6 grid lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)] gap-x-10 gap-y-8">
         <section>

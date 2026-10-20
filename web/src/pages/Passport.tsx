@@ -8,10 +8,11 @@ import { Room } from "../components/Room";
 import { ScoreRing } from "../components/ScoreRing";
 import { shortHash } from "../lib/format";
 import { t, type Lang } from "../i18n";
-import { useKabla } from "../state";
+import { useArtist, useKabla } from "../state";
 
 export function Passport({ lang }: { lang: Lang }) {
   const { contract, passport: data, setPassport } = useKabla();
+  const artist = useArtist();
   const [ready, setReady] = useState<Readiness | null>(null);
   const [err, setErr] = useState<string | null>(null);
   const [sell, setSell] = useState(false);
@@ -26,7 +27,7 @@ export function Passport({ lang }: { lang: Lang }) {
     setErr(null);
     try {
       await api.registerWork(sell);
-      setPassport(await api.issuePassport(contract?.artist ?? "zawadi"));
+      setPassport(await api.issuePassport(artist));
     } catch (e) { setErr(String(e)); }
   }
 

@@ -3,12 +3,12 @@ import { api } from "../api";
 import { Clerk } from "../components/HowTo";
 import { Room } from "../components/Room";
 import { t, type Lang } from "../i18n";
-import { useKabla } from "../state";
+import { useArtist, useKabla } from "../state";
 
 export function Verify({ lang }: { lang: Lang }) {
-  const { verify: result, setVerify, passport, contract } = useKabla();
+  const { verify: result, setVerify, passport } = useKabla();
   // Why: the passport belongs to whoever's contract is open; "zawadi" is only the fallback for a cold start.
-  const artist = contract?.artist ?? "zawadi";
+  const artist = useArtist();
   const [text, setText] = useState("");
   const [err, setErr] = useState<string | null>(null);
 

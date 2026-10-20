@@ -20,6 +20,9 @@ CREATE TABLE IF NOT EXISTS events (
 CREATE TABLE IF NOT EXISTS ledger (seq INTEGER PRIMARY KEY, artist TEXT, body TEXT NOT NULL);
 CREATE TABLE IF NOT EXISTS works (id TEXT PRIMARY KEY, body TEXT NOT NULL);
 CREATE TABLE IF NOT EXISTS licences (id TEXT PRIMARY KEY, work_id TEXT, body TEXT NOT NULL);
+CREATE TABLE IF NOT EXISTS profiles (id TEXT PRIMARY KEY, body TEXT NOT NULL);
+CREATE TABLE IF NOT EXISTS profile_seals (
+  seq INTEGER PRIMARY KEY AUTOINCREMENT, artist TEXT NOT NULL, body TEXT NOT NULL);
 """
 
 
@@ -51,9 +54,10 @@ def connect():
 
 def reset() -> None:
     with connect() as c:
-        for table in ("contracts", "redlines", "negotiations", "events", "ledger", "works", "licences"):
+        for table in ("contracts", "redlines", "negotiations", "events", "ledger", "works", "licences",
+                      "profiles", "profile_seals"):
             c.execute(f"DELETE FROM {table}")
-        c.execute("DELETE FROM sqlite_sequence WHERE name='events'")
+        c.execute("DELETE FROM sqlite_sequence WHERE name IN ('events', 'profile_seals')")
 
 
 # ── generic JSON tables ──────────────────────────────────────────────────────
@@ -173,4 +177,33 @@ def ledger_append(artist: str, record: dict) -> None:
 def ledger_all() -> list[dict]:
     with connect() as c:
         rows = c.execute("SELECT body FROM ledger ORDER BY seq").fetchall()
+    return [json.loads(r["body"]) for r in rows]
+
+
+# -- Before-stage profiles and their separate hash-linked seal chain --------------
+# Why a separate chain: the passport ledger's verifier expects every record to carry a certificate.
+# Profile seals use the same signing key, canonical form and hash rule, in their own table.
+def put_profile(profile: dict) -> None:
+    _put("profiles", profile["id"], profile)
+
+
+def get_profile(pid: str) -> dict | None:
+    return _get("profiles", pid)
+
+
+def list_profiles() -> list[dict]:
+    with connect() as c:
+        rows = c.execute("SELECT body FROM profiles ORDER BY id").fetchall()
+    return [json.loads(r["body"]) for r in rows]
+
+
+def seal_append(artist: str, record: dict) -> None:
+    with connect() as c:
+        c.execute("INSERT INTO profile_seals (artist, body) VALUES (?,?)",
+                  (artist, json.dumps(record, ensure_ascii=False)))
+
+
+def seal_chain(artist: str) -> list[dict]:
+    with connect() as c:
+        rows = c.execute("SELECT body FROM profile_seals WHERE artist=? ORDER BY seq", (artist,)).fetchall()
     return [json.loads(r["body"]) for r in rows]

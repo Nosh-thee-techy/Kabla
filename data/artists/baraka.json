@@ -5,5 +5,20 @@
   "role": "co-writer (40% of the composition of \"Asali ya Jioni\")",
   "home": "Kisumu, Kenya",
   "language": "sw",
-  "redlines": []
+  "redlines": [],
+  "handles": {
+    "instagram": "@baraka_synth",
+    "facebook": "Baraka Synth"
+  },
+  "works": [
+    {
+      "title": "Asali ya Jioni",
+      "kind": "song",
+      "share": 40,
+      "splits_stated": true
+    }
+  ],
+  "income_streams": [
+    "live shows"
+  ]
 }

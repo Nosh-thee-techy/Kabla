@@ -40,6 +40,11 @@ const STEPS = {
       "Intact: green lamp, you may pass. Tampered: red lamp, it names the break.",
       "Change one character yourself if you want to see the clerk catch it.",
     ],
+    onboard: [
+      "Tick consent first. Kabla records only what you type, marked self-declared.",
+      "Put song titles in quotes with a split beside each. A demo artist is one click away.",
+      "Kabla never opens your accounts. MeTTa lists what is missing, then you go to the desk.",
+    ],
     financier: [
       "This sheet rearranges the passport: owners, open flags, AI stance, score.",
       "It is not a credit score and not lending advice. SYNTHETIC only.",
@@ -81,6 +86,11 @@ const STEPS = {
       "Bandika JSON ya cheti, au fanya jaribio la kuharibu baada ya kutoa pasipoti.",
       "Sahihi: taa kijani, unaweza kupita. Imeharibiwa: taa nyekundu, inataja kasoro.",
       "Badilisha herufi moja mwenyewe uone karani akishika.",
+    ],
+    onboard: [
+      "Weka idhini kwanza. Kabla inarekodi unachoandika tu, kimewekwa alama ya kujitangaza.",
+      "Weka majina ya nyimbo ndani ya nukuu na mgawanyo kando. Msanii wa mfano yuko mbofyo mmoja.",
+      "Kabla haifungui akaunti zako. MeTTa inaorodhesha kinachokosekana, kisha unaenda mezani.",
     ],
     financier: [
       "Karatasi hii inapanga pasipoti: wamiliki, bendera, msimamo wa AI, alama.",

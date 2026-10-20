@@ -1,4 +1,4 @@
-const BASE = import.meta.env.VITE_API_URL || "/api";
+﻿const BASE = import.meta.env.VITE_API_URL || "/api";
 
 async function req<T>(path: string, init?: RequestInit): Promise<T> {
   const res = await fetch(`${BASE}${path}`, {
@@ -51,6 +51,21 @@ export const api = {
   verify: (body: object) => req<VerifyResult>("/verify", { method: "POST", body: JSON.stringify(body) }),
   tamperDemo: (certificate: object) => req<VerifyResult>("/verify/tamper-demo", { method: "POST", body: JSON.stringify({ certificate }) }),
   readiness: (id: string) => req<Readiness>(`/contracts/${id}/readiness`),
+  /** Before stage. Consent is required by the API; nothing is fetched from any platform. */
+  createArtist: (body: { name: string; handles: Record<string, string>; consent: boolean; bio: string; lang: string }) =>
+    req<Profile>("/artists", { method: "POST", body: JSON.stringify(body) }),
+  verifySeal: (id: string) => req<{ intact: boolean; records: number; reason?: string; broken_at?: number }>(`/artists/${id}/seal/verify`),
+};
+
+export type ProfileGap = { id: string; detail: string };
+export type Profile = {
+  id: string; name: string; source: string; label: string;
+  handles: Record<string, string>;
+  facts: { works: { title: string; share: number | null; splits_stated: boolean }[]; platforms: string[]; income_streams: string[] };
+  gaps: ProfileGap[];
+  redlines: { kind: string; value: string | number }[];
+  consent: { given: boolean; at: string; text: string };
+  seal: { seq: number; record_hash: string; payload_hash: string };
 };
 
 export type Sample = { id: string; title: string; label: string; kind: string; artist: string; blurb: string };

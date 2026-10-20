@@ -6,9 +6,34 @@
   "home": "Nairobi, Kenya",
   "language": "sw",
   "redlines": [
-    {"kind": "ai-training", "value": "never", "set_on": "2026-10-19",
-     "said": "Never let anyone train AI on my voice or my recordings."},
-    {"kind": "term-max-years", "value": 7, "set_on": "2026-10-19",
-     "said": "I won't tie my music up for more than seven years."}
+    {
+      "kind": "ai-training",
+      "value": "never",
+      "set_on": "2026-10-19",
+      "said": "Never let anyone train AI on my voice or my recordings."
+    },
+    {
+      "kind": "term-max-years",
+      "value": 7,
+      "set_on": "2026-10-19",
+      "said": "I won't tie my music up for more than seven years."
+    }
+  ],
+  "handles": {
+    "instagram": "@zawadi_synth",
+    "tiktok": "@zawadi.synth",
+    "spotify": "Zawadi (synthetic)"
+  },
+  "works": [
+    {
+      "title": "Asali ya Jioni",
+      "kind": "song",
+      "share": 60,
+      "splits_stated": true
+    }
+  ],
+  "income_streams": [
+    "streaming",
+    "live shows"
   ]
 }

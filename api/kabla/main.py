@@ -1,4 +1,4 @@
-"""FastAPI app: CORS, health, router mount."""
+﻿"""FastAPI app: CORS, health, router mount."""
 from __future__ import annotations
 
 from fastapi import FastAPI, Request
@@ -7,7 +7,7 @@ from fastapi.responses import JSONResponse
 
 from kabla import __version__
 from kabla.config import get_settings
-from kabla.routers import analyze, chat, contracts, licence, negotiate, passport, voice
+from kabla.routers import analyze, artists, chat, contracts, licence, negotiate, passport, voice
 from kabla.services.extractor import ExtractionUnavailable
 
 app = FastAPI(title="Kabla API", version=__version__,
@@ -33,6 +33,7 @@ app.include_router(negotiate.router)
 app.include_router(passport.router)
 app.include_router(chat.router)
 app.include_router(voice.router)
+app.include_router(artists.router)
 
 
 @app.get("/health")
