@@ -27,6 +27,7 @@
 !(import! &self ./repos/Omega/src/channels)
 !(import! &self ./repos/Omega/src/providers.py)
 !(import! &self ./repos/Omega/src/providers)
+!(import! &self ./repos/Omega/profile/policy.py)
 !(import! &self ./repos/Omega/profile/policy)
 !(import! &self ./repos/Omega/src/fileio.py)
 !(import! &self ./repos/Omega/src/skills)

@@ -28,7 +28,10 @@ import time
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-PETTA = ROOT / ".vendor" / "PeTTa"
+# Omega's Dockerfile pins PeTTa v1.0.4. The project's engine pin (fea83178) hit a type-check error inside Omega's
+# init code, so the agent gets its own v1.0.4 checkout and Kabla's MeTTa engine keeps its pin untouched.
+_OMEGA_PETTA = ROOT / ".vendor" / "PeTTa-omega"
+PETTA = _OMEGA_PETTA if _OMEGA_PETTA.exists() else ROOT / ".vendor" / "PeTTa"
 OMEGA_SRC = Path(os.environ.get("OMEGA_SRC", Path.home() / "omega-src"))
 SITE = ROOT / ".vendor" / "omega-site"
 RUN_DIR = ROOT / "var" / "omega"
@@ -61,9 +64,15 @@ def set_yaml(text: str, key: str, value: str) -> str:
 
 def stage() -> Path:
     dest = PETTA / "repos" / "Omega"
+    # Restaging replaces the whole copy, but the agent's memory must survive a restart: keep its history file.
+    old_history = dest / "memory" / "history.metta"
+    kept = old_history.read_bytes() if old_history.exists() else None
     if dest.exists():
         shutil.rmtree(dest, ignore_errors=True)
     shutil.copytree(OMEGA_SRC, dest, ignore=shutil.ignore_patterns(".git", "Autotests", "tests", "docs"))
+    if kept is not None:
+        (dest / "memory").mkdir(parents=True, exist_ok=True)
+        (dest / "memory" / "history.metta").write_bytes(kept)
     shutil.copytree(ROOT / "omega-plugin", dest / "plugins" / "kabla",
                     ignore=shutil.ignore_patterns("demo", "__pycache__", "README.md", "tests"), dirs_exist_ok=True)
     plug = (dest / "plugins" / "kabla").as_posix()
@@ -73,21 +82,52 @@ def stage() -> Path:
         f'- name: kabla_chat\n  loader: python\n  location: "{plug}"\n', encoding="utf-8")
     cfg_path = dest / "config" / "config.yaml"
     cfg = cfg_path.read_text(encoding="utf-8")
-    mem = (RUN_DIR / "memory").as_posix()
+    # Memory lives inside the staged copy (git-ignored). Absolute Windows paths made PeTTa's config atoms fail
+    # with a type mismatch, so these two stay relative to the PeTTa folder, exactly like Omega's own defaults.
     for k, v in {
         "provider": "Kabla",
         "commchannel": "kabla",
         "securityPolicyPath": '""',              # landlock is Linux-only
-        "memoryDirectory": f'"{mem}"',
-        "chromaDbPath": f'"{(RUN_DIR / "chroma").as_posix()}"',
+        "memoryDirectory": '"./repos/Omega/memory"',
+        "chromaDbPath": '"./chroma_db"',
         "sleepInterval": "2",
         "wakeupInterval": "900",
         "knowledgeIndexingBackground": "true",  # do not hold the first reply behind knowledge indexing
     }.items():
         cfg = set_yaml(cfg, k, v)
     cfg_path.write_text(cfg, encoding="utf-8")
-    (RUN_DIR / "memory").mkdir(parents=True, exist_ok=True)
-    hist = RUN_DIR / "memory" / "history.metta"
+    # Omega hard-codes the 1.3 GB intfloat/e5-large-v2 for local embeddings. On a slow link that download can
+    # take hours, so the STAGED copy (never the upstream repo) reads the model name from OMEGA_EMBED_MODEL and
+    # we default it to a ~90 MB model. Memory works the same, with coarser recall. Recorded in docs/DECISIONS.md.
+    ext = dest / "providers" / "lib_llm_ext.py"
+    code = ext.read_text(encoding="utf-8")
+    patched = code.replace('model_name="intfloat/e5-large-v2"',
+                           'model_name=__import__("os").environ.get("OMEGA_EMBED_MODEL", "intfloat/e5-large-v2")')
+    if patched == code:
+        print("WARNING: embedding model line not found; Omega will download e5-large-v2 (1.3 GB)")
+    ext.write_text(patched, encoding="utf-8")
+    # initLoop's eighth `configure`, whose default is a (joinPath ...) call, fails on this PeTTa/Windows setup with
+    # "Type mismatch: got true but expected List" (dropping any one of the other seven makes it pass; cause not
+    # found). The config file already supplies memoryDirectory, so the staged copy uses the same literal default.
+    loop = dest / "src" / "loop.metta"
+    ltxt = loop.read_text(encoding="utf-8")
+    fixed = re.sub(r"\(configure memoryDirectory\s+\(joinPath \(\(py-call \(helper\.projectRootDirectory\)\) memory\)\)\)",
+                   '(configure memoryDirectory "./repos/Omega/memory")', ltxt)
+    if fixed == ltxt:
+        print("WARNING: initLoop memoryDirectory line not found; the agent may fail to start")
+    loop.write_text(fixed, encoding="utf-8")
+    # Omega's policy.py imports py_landlock at import time, and Landlock only exists on Linux. With
+    # securityPolicyPath empty Omega never calls it, so a stub that refuses to run keeps the import happy
+    # without pretending a sandbox exists.
+    (dest / "py_landlock.py").write_text(
+        '"""Windows stub: Landlock is Linux-only. Importing works; using it fails loudly."""\n'
+        '# policy.py ORs these flags together at import time, so they must be plain ints; they are never applied.\n'
+        'class _Flags:\n    def __getattr__(self, n):\n        return 0\n'
+        'AccessFs = _Flags()\n'
+        'class Landlock:\n    def __init__(self, *a, **k):\n        raise NotImplementedError("Landlock is not available on Windows")\n',
+        encoding="utf-8")
+    (dest / "memory").mkdir(parents=True, exist_ok=True)
+    hist = dest / "memory" / "history.metta"
     if not hist.exists():
         hist.write_text("", encoding="utf-8")
     tpl = (ROOT / "omega-plugin" / "demo" / "kabla_agent.metta").read_text(encoding="utf-8")
@@ -101,7 +141,16 @@ def child_env(extra: dict[str, str]) -> dict[str, str]:
     env["KABLA_OMEGA_DIR"] = str(RUN_DIR)
     env["PYTHONIOENCODING"] = "utf-8"
     env["HF_HUB_DISABLE_SYMLINKS_WARNING"] = "1"
-    env["PYTHONPATH"] = os.pathsep.join(p for p in (str(SITE), env.get("PYTHONPATH", "")) if p)
+    env.setdefault("OMEGA_EMBED_MODEL", "sentence-transformers/all-MiniLM-L6-v2")
+    # PeTTa's lib_llm.metta builds an OpenAI client at import and crashes if OPENAI_API_KEY is unset, even when
+    # that client is never used. With no real key we give it an obvious placeholder and tell Kabla's provider
+    # to ignore it (KABLA_OFFLINE_ONLY), so the placeholder can never be mistaken for a live LLM.
+    if not (env.get("OPENAI_API_KEY") or env.get("ANTHROPIC_API_KEY")):
+        env["OPENAI_API_KEY"] = "placeholder-not-a-real-key"
+        env["KABLA_OFFLINE_ONLY"] = "1"
+    # The Omega repo root must be importable too: its providers do `from src.logger import ...` (Docker runs from there).
+    omega_root = str(PETTA / "repos" / "Omega")
+    env["PYTHONPATH"] = os.pathsep.join(p for p in (str(SITE), omega_root, env.get("PYTHONPATH", "")) if p)
     return env
 
 
@@ -119,7 +168,9 @@ def run_once(extra_env: dict[str, str], deadline: float | None) -> str:
             assert proc.stdout
             for line in proc.stdout:
                 state["last"] = time.time()
-                logf.write(line)
+                # Omega logs the whole prompt on every REQUEST line (kilobytes, every 2 s). Cap each line so an
+                # overnight run stays small enough to read and to attach as evidence.
+                logf.write(line if len(line) <= 400 else line[:400].rstrip() + " ...[cut]\n")
                 logf.flush()
 
         threading.Thread(target=pump, daemon=True).start()

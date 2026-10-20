@@ -77,7 +77,10 @@ def offline_reply(request: LLMRequest, n: int = 0) -> LLMResponse:
     if low.startswith("[no new user input"):
         # The loop is idle. If a Kabla tool just returned something the user has not seen, relay it once.
         if prev_result and prev_name and prev_name not in ("send", "nop"):
-            body = prev_result.replace("SUCCESS, RETURN:", "").strip()
+            # Skills put a one-line DIGEST first (omega-plugin/kabla_skills.py); the result arrives inside a list
+            # repr, so the line break shows up as a literal backslash-n.
+            m = re.search(r"DIGEST: (.*?)(?:\\n|\n|'\]|$)", prev_result)
+            body = m.group(1) if m else prev_result.replace("SUCCESS, RETURN:", "").strip()
             return resp.add_tool_call(_call("send", request, {"content": f"{OFFLINE_TAG} {body[:700]}"}, n))
         return resp.add_tool_call(_call("nop", request, {}, n))
 
@@ -180,6 +183,8 @@ class KablaProvider(LLMProvider):
         self.pool = ThreadPoolExecutor(max_workers=2, thread_name_prefix="kabla-llm")
 
     def _key(self) -> tuple[str, str]:
+        if os.environ.get("KABLA_OFFLINE_ONLY"):  # set by scripts/omega_run.py when .env has no real key
+            return "", ""
         if os.environ.get("ANTHROPIC_API_KEY"):
             return "anthropic", os.environ["ANTHROPIC_API_KEY"]
         if os.environ.get("OPENAI_API_KEY"):

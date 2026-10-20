@@ -1,0 +1,87 @@
+﻿# Excerpt of the real Omega agent loop log (scripts/omega_run.py). Full log is too large to commit; REQUEST/prompt lines and idle nop turns are left out.
+# Provider: Kabla (offline router, not an LLM, no key set). Channel: Kabla file chat. PeTTa v1.0.4 + Omega main, Windows native.
+
+## Start-up
+
+=== start 2026-10-21 01:06:04 ===
+2026-10-21 01:06:15 | INFO     | policy | "Configuring security policy"
+2026-10-21 01:06:15 | INFO     | config | Configuration item resolved using config file: securityPolicyPath=
+2026-10-21 01:06:15 | WARNING  | policy | SecurityPolicyPath is not set
+2026-10-21 01:06:15 | INFO     | memory | "Initializing memory"
+2026-10-21 01:06:15 | INFO     | config | Configuration item resolved using config file: maxFeedback=50000
+2026-10-21 01:06:15 | INFO     | config | Configuration item resolved using config file: maxRecallItems=20
+2026-10-21 01:06:15 | INFO     | config | Configuration item resolved using config file: maxEpisodeRecallLines=20
+2026-10-21 01:06:15 | INFO     | config | Configuration item resolved using config file: maxHistory=30000
+2026-10-21 01:06:15 | INFO     | config | Configuration item resolved using config file: embeddingprovider=Local
+2026-10-21 01:06:53 | INFO     | sentence_transformers.base.model | No device provided, using cpu
+2026-10-21 01:06:54 | INFO     | sentence_transformers.base.model | Loading SentenceTransformer model from sentence-transformers/all-MiniLM-L6-v2.
+
+Loading weights:   0%|          | 0/103 [00:00<?, ?it/s]
+Loading weights: 100%|â–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆ| 103/103 [00:00<00:00, 2250.77it/s]
+2026-10-21 01:06:54 | INFO     | loop | "Initializing knowledge base"
+2026-10-21 01:06:54 | INFO     | config | Configuration item resolved using config file: knowledgeIndexingBackground=True
+2026-10-21 01:06:54 | INFO     | rag | Embedding type selected is Local
+2026-10-21 01:06:54 | INFO     | loop | Knowledge indexing started in background
+2026-10-21 01:06:54 | INFO     | rag | Knowledge dir not found: c:\users\administrator\kabla\.vendor\petta-omega\repos\omega\knowledge-priors, bypassing knowledge load...
+2026-10-21 01:06:54 | INFO     | plugin | "Loading MeTTa plugin kabla_plugin from C:\Users\Administrator\Kabla\.vendor\PeTTa-omega\repos\Omega\plugins\kabla\kabla_plugin.metta"
+2026-10-21 01:06:54 | INFO     | skills | "Add skill: Analyse a SYNTHETIC Kabla sample contract (c001, c002 or c003). Returns flags and a MeTTa trail. Does not give legal advice.: kabla-analyze sample_id"
+2026-10-21 01:06:54 | INFO     | skills | "Add skill: Ask whether a use of the SYNTHETIC work Asali ya Jioni is cleared. use is ad|sync-film|ai-training etc.: kabla-licence use territory months party"
+2026-10-21 01:06:54 | INFO     | skills | "Add skill: Set an artist's standing red line (ai-training never, or term-max-years N). Remembered across contracts.: kabla-redline-set artist kind value"
+2026-10-21 01:06:54 | INFO     | skills | "Add skill: Answer why a clause was flagged, grounded in the stored MeTTa trail for a contract id.: kabla-explain contract_id question"
+2026-10-21 01:06:54 | INFO     | kabla-plugin | "kabla-plugin loaded: 4 skills registered (calls FastAPI; MeTTa decides)"
+2026-10-21 01:06:54 | INFO     | plugin | "Plugin kabla_plugin is loaded"
+2026-10-21 01:06:54 | INFO     | plugin | _initPythonPlugin: loading kabla_llm plugin from C:\Users\Administrator\Kabla\.vendor\PeTTa-omega\repos\Omega\plugins\kabla\kabla_llm.py using Python module loader
+2026-10-21 01:06:54 | INFO     | providers | registerLLMProvider: registering LLM provider Kabla
+2026-10-21 01:06:54 | INFO     | plugin | _initPythonPlugin: loading kabla_chat plugin from C:\Users\Administrator\Kabla\.vendor\PeTTa-omega\repos\Omega\plugins\kabla\kabla_chat.py using Python module loader
+2026-10-21 01:06:54 | INFO     | channels | registerCommChannel: registering communication channel kabla
+2026-10-21 01:06:54 | INFO     | channels | "Initializing channels"
+2026-10-21 01:06:54 | INFO     | config | Configuration item resolved using config file: commchannel=kabla
+2026-10-21 01:06:54 | INFO     | kabla_llm | kabla_llm: no key set: OFFLINE router only (this is not an LLM)
+2026-10-21 01:06:54 | INFO     | loop | (---------iteration 1)
+2026-10-21 01:06:54 | INFO     | loop | "[NO NEW USER INPUT. CONTINUE AUTONOMOUS WORK. DO NOT REPEAT THE PREVIOUS RESPONSE. ONLY USE send FOR GENUINELY NEW INFORMATION OR WHEN USER INPUT IS NEEDED.]"
+2026-10-21 01:06:54 | INFO     | loop | (REQUEST: LLMRequest[messages=[LLMMessage[role='system',content='PROMPT: You are an Omega agentic harness in a continuous loop._newline_Understand and remember the user goals, and choose your own goals in ways that are assistive for the user._newline_Use send  ...[cut]
+2026-10-21 01:06:54 | INFO     | loop | (RESPONSE: LLMResponse[calls=[LLMToolCall[id='offline_1',name='nop',arguments={},error=None]],error=None])
+2026-10-21 01:06:54 | INFO     | loop | (RESPONSE: ((offline_1 (nop))))
+2026-10-21 01:06:54 | INFO     | skills | "NOP"
+2026-10-21 01:06:54 | INFO     | loop | (COMMAND_RETURN: ((nop) "SUCCESS, RETURN: [None]"))
+2026-10-21 01:06:56 | INFO     | loop | (---------iteration 2)
+2026-10-21 01:06:56 | INFO     | loop | "[NO NEW USER INPUT. CONTINUE AUTONOMOUS WORK. DO NOT REPEAT THE PREVIOUS RESPONSE. ONLY USE send FOR GENUINELY NEW INFORMATION OR WHEN USER INPUT IS NEEDED.]"
+2026-10-21 01:06:56 | INFO     | loop | (REQUEST: LLMRequest[messages=[LLMMessage[role='system',content='PROMPT: You are an Omega agentic harness in a continuous loop._newline_Understand and remember the user goals, and choose your own goals in ways that are assistive for the user._newline_Use send  ...[cut]
+
+## Plugin loading and tool results
+2026-10-21 01:06:54 | INFO     | rag | Knowledge dir not found: c:\users\administrator\kabla\.vendor\petta-omega\repos\omega\knowledge-priors, bypassing knowledge load...
+2026-10-21 01:06:54 | INFO     | plugin | "Loading MeTTa plugin kabla_plugin from C:\Users\Administrator\Kabla\.vendor\PeTTa-omega\repos\Omega\plugins\kabla\kabla_plugin.metta"
+2026-10-21 01:06:54 | INFO     | skills | "Add skill: Analyse a SYNTHETIC Kabla sample contract (c001, c002 or c003). Returns flags and a MeTTa trail. Does not give legal advice.: kabla-analyze sample_id"
+2026-10-21 01:06:54 | INFO     | skills | "Add skill: Ask whether a use of the SYNTHETIC work Asali ya Jioni is cleared. use is ad|sync-film|ai-training etc.: kabla-licence use territory months party"
+2026-10-21 01:06:54 | INFO     | skills | "Add skill: Set an artist's standing red line (ai-training never, or term-max-years N). Remembered across contracts.: kabla-redline-set artist kind value"
+2026-10-21 01:06:54 | INFO     | skills | "Add skill: Answer why a clause was flagged, grounded in the stored MeTTa trail for a contract id.: kabla-explain contract_id question"
+2026-10-21 01:06:54 | INFO     | kabla-plugin | "kabla-plugin loaded: 4 skills registered (calls FastAPI; MeTTa decides)"
+2026-10-21 01:06:54 | INFO     | plugin | "Plugin kabla_plugin is loaded"
+2026-10-21 01:06:54 | INFO     | plugin | _initPythonPlugin: loading kabla_llm plugin from C:\Users\Administrator\Kabla\.vendor\PeTTa-omega\repos\Omega\plugins\kabla\kabla_llm.py using Python module loader
+2026-10-21 01:06:54 | INFO     | providers | registerLLMProvider: registering LLM provider Kabla
+2026-10-21 01:06:54 | INFO     | plugin | _initPythonPlugin: loading kabla_chat plugin from C:\Users\Administrator\Kabla\.vendor\PeTTa-omega\repos\Omega\plugins\kabla\kabla_chat.py using Python module loader
+2026-10-21 01:06:54 | INFO     | channels | registerCommChannel: registering communication channel kabla
+2026-10-21 01:06:54 | INFO     | config | Configuration item resolved using config file: commchannel=kabla
+2026-10-21 01:06:54 | INFO     | kabla_llm | kabla_llm: no key set: OFFLINE router only (this is not an LLM)
+2026-10-21 01:06:54 | INFO     | loop | (---------iteration 1)
+2026-10-21 01:07:15 | INFO     | loop | (RESPONSE: LLMResponse[calls=[LLMToolCall[id='offline_11',name='kabla-redline-set',arguments={'artist': 'zawadi', 'kind': 'ai-training', 'value': 'never'},error=None]],error=None])
+2026-10-21 01:07:15 | INFO     | loop | (RESPONSE: ((offline_11 (kabla-redline-set "zawadi" "ai-training" "never"))))
+2026-10-21 01:07:15 | INFO     | loop | (COMMAND_RETURN: ((kabla-redline-set "zawadi" "ai-training" "never") "SUCCESS, RETURN: ['DIGEST: red line saved for zawadi: ai-training never (remembered across contracts)\n{\"artist\":\"zawadi\",\"kind\":\"ai-training\",\"value\":\"never\",\"set_on\":\"2026-1 ...[cut]
+2026-10-21 01:07:17 | INFO     | loop | (COMMAND_RETURN: ((send "[offline router, not an LLM] red line saved for zawadi: ai-training never (remembered across contracts)") "SUCCESS, RETURN: [None]"))
+2026-10-21 01:07:21 | INFO     | loop | (RESPONSE: LLMResponse[calls=[LLMToolCall[id='offline_14',name='kabla-analyze',arguments={'sample_id': 'c001'},error=None]],error=None])
+2026-10-21 01:07:21 | INFO     | loop | (RESPONSE: ((offline_14 (kabla-analyze "c001"))))
+2026-10-21 01:07:23 | INFO     | loop | (COMMAND_RETURN: ((kabla-analyze "c001") "SUCCESS, RETURN: ['DIGEST: c001: 8 flags ({ red : 4, amber : 4}) | remembered red lines: clause 7 R-AI-01 (red line set 2026-10-20); clause 5 R-TERM-01 (red line set 2026-10-19)\n{\"contract_id\":\"c001\",\"mode\":\"de ...[cut]
+2026-10-21 01:07:25 | INFO     | loop | (COMMAND_RETURN: ((send "[offline router, not an LLM] c001: 8 flags ({ red : 4, amber : 4}) | remembered red lines: clause 7 R-AI-01 (red line set 2026-10-20); clause 5 R-TERM-01 (red line set 2026-10-19)") "SUCCESS, RETURN: [None]"))
+2026-10-21 01:07:27 | INFO     | loop | (RESPONSE: LLMResponse[calls=[LLMToolCall[id='offline_16',name='kabla-explain',arguments={'contract_id': 'c001', 'question': 'why was c001 flagged'},error=None]],error=None])
+2026-10-21 01:07:27 | INFO     | loop | (RESPONSE: ((offline_16 (kabla-explain "c001" "why was c001 flagged"))))
+2026-10-21 01:07:28 | INFO     | loop | (COMMAND_RETURN: ((kabla-explain "c001" "why was c001 flagged") "SUCCESS, RETURN: ['DIGEST: R-GRANT-01 (clause 4): Clause 4 hands over the master recording rights for ever, in every country, exclusively. Clause 4 hands over the master recording rights for ever ...[cut]
+2026-10-21 01:07:30 | INFO     | loop | (COMMAND_RETURN: ((send "[offline router, not an LLM] R-GRANT-01 (clause 4): Clause 4 hands over the master recording rights for ever, in every country, exclusively. Clause 4 hands over the master recording rights for ever, in every country, exclusively. R-AI- ...[cut]
+2026-10-21 01:07:32 | INFO     | loop | (RESPONSE: LLMResponse[calls=[LLMToolCall[id='offline_18',name='kabla-licence',arguments={'use': 'ad', 'territory': 'KE', 'months': '12', 'party': 'Demo Brand Ltd'},error=None]],error=None])
+2026-10-21 01:07:32 | INFO     | loop | (RESPONSE: ((offline_18 (kabla-licence "ad" "KE" "12" "Demo Brand Ltd"))))
+2026-10-21 01:07:34 | INFO     | loop | (COMMAND_RETURN: ((kabla-licence "ad" "KE" "12" "Demo Brand Ltd") "SUCCESS, RETURN: ['DIGEST: cleared (R-LIC-OK): Cleared with conditions: every owner has a verified consent covering Kenya.\n{\"request_id\":\"r-ad-KE-12\",\"verdict\":\"cleared\",\"rule_id\":\" ...[cut]
+2026-10-21 01:07:36 | INFO     | loop | (COMMAND_RETURN: ((send "[offline router, not an LLM] cleared (R-LIC-OK): Cleared with conditions: every owner has a verified consent covering Kenya.") "SUCCESS, RETURN: [None]"))
+2026-10-21 01:07:38 | INFO     | loop | (COMMAND_RETURN: ((send "[offline router, not an LLM] I can: analyse a synthetic contract (say 'analyse c001'), explain a flag ('why was c001 flagged'), set an AI-training red line, or check a licence use ('is a 12-month ad in Kenya cleared'). All data here is ...[cut]
+2026-10-21 01:14:32 | INFO     | loop | (RESPONSE: LLMResponse[calls=[LLMToolCall[id='offline_70',name='kabla-analyze',arguments={'sample_id': 'c001'},error=None]],error=None])
+2026-10-21 01:14:32 | INFO     | loop | (RESPONSE: ((offline_70 (kabla-analyze "c001"))))
+2026-10-21 01:14:35 | INFO     | loop | (COMMAND_RETURN: ((kabla-analyze "c001") "SUCCESS, RETURN: ['DIGEST: c001: 8 flags ({ red : 4, amber : 4}) | remembered red lines: clause 7 R-AI-01 (red line set 2026-10-20); clause 5 R-TERM-01 (red line set 2026-10-19)\n{\"contract_id\":\"c001\",\"mode\":\"de ...[cut]
+2026-10-21 01:14:37 | INFO     | loop | (COMMAND_RETURN: ((send "[offline router, not an LLM] c001: 8 flags ({ red : 4, amber : 4}) | remembered red lines: clause 7 R-AI-01 (red line set 2026-10-20); clause 5 R-TERM-01 (red line set 2026-10-19)") "SUCCESS, RETURN: [None]"))
