@@ -49,32 +49,40 @@ export function Verify({ lang }: { lang: Lang }) {
 
   return (
     <Room>
-      <p className="text-[11px] uppercase tracking-[0.2em] text-gold">{t(lang, "customs")}</p>
-      <h1 className="font-display italic text-4xl mt-2">{t(lang, "verify")}</h1>
-      <div className="mt-8 flex items-center gap-6">
-        <div className={`lamp ${lamp}`} aria-hidden="true" />
-        <p className="text-sm opacity-70">{t(lang, "tray")}</p>
+      <div className="pb-3 border-b hair">
+        <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-gold">{t(lang, "customs")}</p>
+        <h1 className="font-display italic text-3xl md:text-4xl mt-1 leading-none">{t(lang, "verify")}</h1>
       </div>
-      <textarea
-        className="field mt-6 w-full min-h-[40vh] p-3 font-mono text-xs"
-        value={text}
-        onChange={(e) => setText(e.target.value)}
-        aria-label="Certificate JSON"
-      />
-      <div className="mt-4 flex flex-wrap gap-3">
-        <button type="button" onClick={run} className="stamp stamp-savanna">Verify</button>
-        <button type="button" onClick={tamper} className="stamp stamp-red">{t(lang, "tamper")}</button>
+      <div className="mt-5 grid lg:grid-cols-[minmax(0,1fr)_20rem] gap-6 items-start">
+        <div>
+          <p className="label">{t(lang, "tray")}</p>
+          <textarea
+            className="field mt-3 w-full min-h-[34vh] p-3 font-mono text-xs"
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            aria-label="Certificate JSON"
+          />
+          <div className="mt-3 flex flex-wrap gap-2">
+            <button type="button" onClick={run} className="stamp stamp-savanna">Verify</button>
+            <button type="button" onClick={tamper} className="stamp stamp-red">{t(lang, "tamper")}</button>
+          </div>
+          {err && <p className="text-flag-red text-sm mt-3" role="alert">{err}</p>}
+        </div>
+        <aside className="panel p-4 flex flex-col items-center text-center gap-3 sticky top-3">
+          <div className={`lamp ${lamp}`} aria-hidden="true" />
+          {result ? (
+            <p className={`font-display italic text-4xl leading-none ${ok ? "text-savanna" : "text-flag-red"}`} role="status">
+              {ok ? t(lang, "intact") : t(lang, "tampered")}
+              <span className="block text-sm font-sans not-italic mt-2 opacity-80 text-ink dark:text-lamp">
+                {ok ? t(lang, "mayPass") : t(lang, "brokenRecord")}
+                {result.reason ? ` — ${result.reason}` : ""}
+              </span>
+            </p>
+          ) : (
+            <p className="font-mono text-[11px] uppercase tracking-widest opacity-60">{t(lang, "customs")}</p>
+          )}
+        </aside>
       </div>
-      {result && (
-        <p className={`mt-10 font-display italic text-6xl ${ok ? "text-savanna" : "text-flag-red"}`} role="status">
-          {ok ? t(lang, "intact") : t(lang, "tampered")}
-          <span className="block text-lg font-sans not-italic mt-3 opacity-80">
-            {ok ? t(lang, "mayPass") : t(lang, "brokenRecord")}
-            {result.reason ? ` — ${result.reason}` : ""}
-          </span>
-        </p>
-      )}
-      {err && <p className="text-flag-red mt-4" role="alert">{err}</p>}
       <HowTo lang={lang} page="verify" />
     </Room>
   );

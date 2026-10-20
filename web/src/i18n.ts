@@ -77,6 +77,8 @@ const ui = {
     consentGaps: "Consent gaps",
     youSetThis: "You set this on",
     nextFinancier: "Open the financier view",
+    flagList: "Why these flags",
+    hideList: "Hide flags",
   },
   sw: {
     tagline: "Jua unachosaini. Thibitisha unachomiliki.",
@@ -155,6 +157,8 @@ const ui = {
     consentGaps: "Pengo la idhini",
     youSetThis: "Uliweka hii tarehe",
     nextFinancier: "Fungua mtazamo wa mfadhili",
+    flagList: "Kwa nini bendera hizi",
+    hideList: "Ficha bendera",
   },
 } as const;
 

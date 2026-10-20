@@ -50,21 +50,18 @@ export function Theater({ lang }: { lang: Lang }) {
 
   return (
     <Room wide>
-      <header className="border-y border-gold/30 py-4 flex flex-wrap justify-between gap-3">
+      <header className="pb-3 border-b hair flex flex-wrap items-end justify-between gap-3">
         <div>
-          <p className="text-[11px] uppercase tracking-[0.2em] text-gold">{t(lang, "playbill")}</p>
-          <h1 className="font-display italic text-4xl mt-1">{t(lang, "theater")}</h1>
+          <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-gold">{t(lang, "playbill")}</p>
+          <h1 className="font-display italic text-3xl md:text-4xl mt-1 leading-none">{t(lang, "theater")}</h1>
         </div>
-        {nego && (
-          <p className="font-mono text-sm self-end">
-            {t(lang, "act")} {nego.round}/{nego.max_rounds} · {nego.state}
-          </p>
-        )}
+        <p className="font-mono text-xs opacity-70 self-end">
+          {nego ? `${t(lang, "act")} ${nego.round}/${nego.max_rounds} · ${nego.state}` : "Kabla never agrees for you."}
+        </p>
       </header>
-      <p className="mt-4 text-sm opacity-80">Kabla never agrees for you. Stamp every concession.</p>
 
       {!nego && (
-        <button type="button" onClick={begin} disabled={busy} className="stamp stamp-savanna mt-8">
+        <button type="button" onClick={begin} disabled={busy} className="stamp stamp-savanna mt-6 self-start">
           {t(lang, "startRound")}
         </button>
       )}
@@ -72,13 +69,13 @@ export function Theater({ lang }: { lang: Lang }) {
       {nego && (
         <>
           {held && (
-            <p className="sticker mt-6 bg-flag-red text-paper -rotate-1">{t(lang, "heldLine")}</p>
+            <p className="sticker mt-4 bg-flag-red text-paper -rotate-1">{t(lang, "heldLine")}</p>
           )}
-          <div className="mt-6 grid md:grid-cols-2 gap-3 text-[11px] uppercase tracking-widest opacity-50">
-            <p>{t(lang, "artistDesk")}</p>
-            <p className="hidden md:block">{t(lang, "labelDesk")}</p>
+          <div className="mt-5 grid md:grid-cols-2 gap-4">
+            <p className="label">{t(lang, "artistDesk")}</p>
+            <p className="label hidden md:flex">{t(lang, "labelDesk")}</p>
           </div>
-          <div className="mt-2 grid md:grid-cols-2 gap-4">
+          <div className="mt-3 grid md:grid-cols-2 gap-3">
             {nego.topics.map((topic) => (
               <RoundCard
                 key={topic.topic}
@@ -91,14 +88,14 @@ export function Theater({ lang }: { lang: Lang }) {
             ))}
           </div>
           {nego.state === "open" && (
-            <button type="button" onClick={submit} disabled={busy} className="stamp stamp-terracotta mt-8">
+            <button type="button" onClick={submit} disabled={busy} className="stamp stamp-terracotta mt-5 self-start">
               {t(lang, "sendDecisions")}
             </button>
           )}
           {nego.lawyer_note && (
-            <p className="mt-6 text-sm border-l-4 border-flag-amber pl-3">{nego.lawyer_note}</p>
+            <p className="mt-4 text-sm border-l-2 border-flag-amber pl-3">{nego.lawyer_note}</p>
           )}
-          <ol className="tele mt-8 max-h-36 overflow-auto border-t border-current/10 pt-3 space-y-1 opacity-70">
+          <ol className="tele mt-5 max-h-32 overflow-auto border-t hair pt-2 space-y-0.5 opacity-70">
             {nego.ledger.map((m, i) => (
               <li key={i}>
                 {String(m.round)} · {String(m.actor)} · {String(m.topic)} · {String(m.action)} · {String(m.value)}
@@ -110,7 +107,7 @@ export function Theater({ lang }: { lang: Lang }) {
       )}
       {err && <p className="text-flag-red mt-4" role="alert">{err}</p>}
       {ready && (
-        <div className="mt-8 grid lg:grid-cols-2 gap-4">
+        <div className="mt-5 pt-3 border-t hair space-y-3">
           <SignReadiness lang={lang} data={ready} />
           <ChecklistGate lang={lang} items={ready.checklist} />
         </div>

@@ -38,59 +38,67 @@ export function Passport({ lang }: { lang: Lang }) {
 
   return (
     <Room>
-      <p className="text-[11px] uppercase tracking-[0.2em] text-gold">{t(lang, "booklet")}</p>
-      <h1 className="font-display italic text-4xl mt-2">{t(lang, "passport")}</h1>
-      <p className="mt-2 text-sm opacity-80">Evidence of agreed terms — not a legal instrument. SYNTHETIC.</p>
-      {ready && <div className="mt-6 max-w-lg"><ChecklistGate lang={lang} items={ready.checklist} /></div>}
-      <label className="mt-6 flex items-center gap-2 text-sm">
-        <input type="checkbox" checked={sell} onChange={(e) => setSell(e.target.checked)} />
-        {t(lang, "sell")}
-      </label>
-      <button type="button" onClick={go} className="stamp stamp-savanna mt-4">
-        {t(lang, "register")} → {t(lang, "issue")}
-      </button>
-      {data && (
-        <section className="panel mt-10 grid md:grid-cols-2 overflow-hidden border-gold/50">
-          <article className="p-6 border-b md:border-b-0 md:border-r border-dashed border-gold/30">
-            <p className="sticker">{t(lang, "synthetic").split("—")[0]}</p>
-            <p className="font-display italic text-3xl mt-6">{title}</p>
-            <p className="mt-4 font-mono text-sm break-all">
-              {shortHash(hash)}
-              <button
-                type="button"
-                className="ml-2 underline text-xs"
-                onClick={() => navigator.clipboard.writeText(hash)}
-              >
-                {t(lang, "copyHash")}
+      <div className="pb-3 border-b hair flex flex-wrap items-end justify-between gap-x-6 gap-y-2">
+        <div>
+          <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-gold">{t(lang, "booklet")}</p>
+          <h1 className="font-display italic text-3xl md:text-4xl mt-1 leading-none">{t(lang, "passport")}</h1>
+        </div>
+        <p className="font-mono text-[11px] opacity-60">Evidence of agreed terms — not a legal instrument · SYNTHETIC</p>
+      </div>
+      <div className="mt-5 grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1.4fr)] gap-x-8 gap-y-6 items-start">
+        <div>
+          {ready && <ChecklistGate lang={lang} items={ready.checklist} />}
+          <label className="mt-4 flex items-center gap-2 text-sm">
+            <input type="checkbox" checked={sell} onChange={(e) => setSell(e.target.checked)} />
+            {t(lang, "sell")}
+          </label>
+          <button type="button" onClick={go} className="stamp stamp-savanna mt-3">
+            {t(lang, "register")} → {t(lang, "issue")}
+          </button>
+          {err && <p className="text-flag-red text-sm mt-3" role="alert">{err}</p>}
+        </div>
+        {data && (
+          <section className="panel grid md:grid-cols-2 overflow-hidden border-gold/50">
+            <article className="p-4 border-b md:border-b-0 md:border-r border-dashed border-gold/30">
+              <p className="sticker">{t(lang, "synthetic").split("—")[0]}</p>
+              <p className="font-display italic text-2xl mt-4 leading-tight">{title}</p>
+              <p className="mt-3 font-mono text-xs break-all">
+                {shortHash(hash)}
+                <button
+                  type="button"
+                  className="ml-2 underline"
+                  onClick={() => navigator.clipboard.writeText(hash)}
+                >
+                  {t(lang, "copyHash")}
+                </button>
+              </p>
+              <p className="mt-4 font-mono text-[10px] uppercase tracking-widest opacity-50">Zawadi · consent to register</p>
+            </article>
+            <article className="p-4 space-y-4">
+              <BadgeShelf names={(data.badges || []).map((b) => b.badge.name)} />
+              <ScoreRing value={data.score.score} label={t(lang, "health")} />
+              <button type="button" className="underline text-xs" onClick={() => setWhy(!why)}>
+                {t(lang, "whyScore")}
               </button>
-            </p>
-            <p className="mt-6 text-xs uppercase tracking-widest opacity-50">Zawadi · consent to register</p>
-          </article>
-          <article className="p-6 space-y-6">
-            <BadgeShelf names={(data.badges || []).map((b) => b.badge.name)} />
-            <ScoreRing value={data.score.score} label={t(lang, "health")} />
-            <button type="button" className="underline text-sm" onClick={() => setWhy(!why)}>
-              {t(lang, "whyScore")}
-            </button>
-            {why && (
-              <ul className="text-sm space-y-1">
-                {data.score.reasons.map((r) => (
-                  <li key={r.event_id} className="font-mono text-xs">
-                    {r.event_id}: {r.points > 0 ? "+" : ""}{r.points} — {r.why}
-                  </li>
-                ))}
-              </ul>
-            )}
-            <div>
-              <h2 className="font-display text-xl">{t(lang, "next")}</h2>
-              <ul className="list-disc ml-5 text-sm mt-2">
-                {data.score.next_best_steps.map((s) => <li key={s}>{s}</li>)}
-              </ul>
-            </div>
-          </article>
-        </section>
-      )}
-      {err && <p className="text-flag-red mt-4" role="alert">{err}</p>}
+              {why && (
+                <ul className="space-y-1">
+                  {data.score.reasons.map((r) => (
+                    <li key={r.event_id} className="font-mono text-[11px]">
+                      {r.event_id}: {r.points > 0 ? "+" : ""}{r.points} — {r.why}
+                    </li>
+                  ))}
+                </ul>
+              )}
+              <div>
+                <p className="label">{t(lang, "next")}</p>
+                <ul className="list-disc ml-4 text-sm mt-2 space-y-0.5">
+                  {data.score.next_best_steps.map((s) => <li key={s}>{s}</li>)}
+                </ul>
+              </div>
+            </article>
+          </section>
+        )}
+      </div>
       {data && <NextStamp to="/financier">{t(lang, "nextFinancier")}</NextStamp>}
       <HowTo lang={lang} page="passport" />
     </Room>

@@ -10,27 +10,45 @@
   outline-offset: 3px;
 }
 
+/* Ledger paper: faint ruled lines so the room reads as a desk, not a web page. */
 .room-paper {
-  background-color: #F6F1E7;
-  background-image: radial-gradient(ellipse 80% 45% at 90% -10%, #ead8c0, transparent 60%);
+  background-color: #F4EEE2;
+  background-image:
+    radial-gradient(ellipse 80% 45% at 90% -10%, #e9d6bb, transparent 60%),
+    repeating-linear-gradient(to bottom, transparent 0 27px, rgb(27 26 23 / 0.045) 27px 28px);
   color: #1B1A17;
 }
 .dark .room-paper,
 .room-dusk {
   background-color: #1A1410;
-  background-image: radial-gradient(ellipse 70% 50% at 50% -8%, #4a3424, transparent 62%);
+  background-image:
+    radial-gradient(ellipse 70% 50% at 50% -8%, #46301f, transparent 62%),
+    repeating-linear-gradient(to bottom, transparent 0 27px, rgb(248 238 216 / 0.04) 27px 28px);
   color: #F8EED8;
 }
 
+/* Hairline card. No fill, no radius: a ruled box drawn on the paper. */
 .panel {
-  @apply rounded-sm border border-ink/15 bg-white/70;
+  border: 1px solid rgb(27 26 23 / 0.22);
+  background: rgb(255 255 255 / 0.35);
 }
 .dark .panel,
 .room-dusk .panel {
-  background: #32261D;
-  border-color: rgb(243 230 200 / 0.22);
+  background: rgb(0 0 0 / 0.18);
+  border-color: rgb(243 230 200 / 0.26);
   color: #F8EED8;
 }
+
+/* Section label: small mono caps with a rule running to the right edge. */
+.label {
+  @apply flex items-center gap-3 font-mono text-[10px] uppercase tracking-[0.2em];
+  color: #8A4A2A;
+}
+.label::after { content: ""; flex: 1; height: 1px; background: currentColor; opacity: 0.3; }
+.dark .label, .room-dusk .label { color: #D9A441; }
+
+.hair { border-color: rgb(27 26 23 / 0.18); }
+.dark .hair, .room-dusk .hair { border-color: rgb(243 230 200 / 0.22); }
 
 .field {
   @apply rounded-sm border border-ink/20 bg-blot text-ink;
@@ -70,7 +88,7 @@
 .dark .seal-green, .room-dusk .seal-green { color: #8FCFB8; background: rgb(47 93 80 / 0.28); }
 
 .stamp {
-  @apply inline-flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-semibold tracking-widest uppercase rounded-sm;
+  @apply inline-flex items-center justify-center gap-2 px-4 py-2 text-xs font-semibold tracking-[0.16em] uppercase rounded-sm;
   box-shadow: 0 3px 0 rgb(0 0 0 / 0.28);
   transition: transform 80ms ease, box-shadow 80ms ease;
 }
@@ -123,8 +141,8 @@
 }
 
 .folder {
-  @apply relative h-full w-full text-left rounded-sm p-5 pt-8;
-  box-shadow: 6px 8px 0 rgb(36 28 22 / 0.12);
+  @apply relative h-full w-full text-left rounded-sm p-4 pt-7;
+  box-shadow: 5px 6px 0 rgb(36 28 22 / 0.12);
   transition: transform 160ms ease, box-shadow 160ms ease;
 }
 .folder:hover:not(:disabled) {
@@ -172,15 +190,18 @@
 }
 
 .guide-card {
-  @apply rounded-sm border border-ink/15 bg-white/80 p-3.5;
-  box-shadow: 3px 4px 0 rgb(36 28 22 / 0.08);
+  @apply p-3 border-l-2;
+  border-color: #C4572D;
 }
 .dark .guide-card,
-.room-dusk .guide-card {
-  background: #2A211A;
-  border-color: rgb(243 230 200 / 0.22);
-  box-shadow: 3px 4px 0 rgb(0 0 0 / 0.35);
-}
+.room-dusk .guide-card { border-color: #D9A441; }
+
+/* Ledger list: key on the left, dotted leader, value on the right. */
+.ledger { @apply text-sm; }
+.ledger > div { @apply flex items-baseline gap-2 py-1; }
+.ledger > div > dt { @apply opacity-70 whitespace-nowrap; }
+.ledger > div::after { content: ""; order: 1; flex: 1; border-bottom: 1px dotted currentColor; opacity: 0.35; transform: translateY(-3px); }
+.ledger > div > dd { order: 2; @apply font-medium text-right whitespace-nowrap; }
 
 @media (prefers-reduced-motion: reduce) {
   .stamp, .folder, .lamp { transition: none; }

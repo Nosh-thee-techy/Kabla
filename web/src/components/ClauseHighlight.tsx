@@ -25,7 +25,7 @@ export function ClauseHighlight({ text, analysis, onPick, selected }: {
 }) {
   const blocks = splitClauses(text);
   return (
-    <div className="space-y-2 font-sans text-[16px] leading-7">
+    <div className="space-y-1.5 font-sans text-[15px] leading-6">
       {blocks.map((b) => {
         const sev = analysis?.clause_severity?.[String(b.n)];
         const dim = selected != null && selected !== b.n;
@@ -37,7 +37,7 @@ export function ClauseHighlight({ text, analysis, onPick, selected }: {
               <button
                 type="button"
                 onClick={() => onPick(b.n)}
-                className={`w-full text-left rounded-sm px-3 py-3 ${cls} ${live ? "ring-2 ring-terracotta" : ""}`}
+                className={`w-full text-left rounded-sm px-3 py-2 ${cls} ${live ? "ring-2 ring-terracotta" : ""}`}
               >
                 <span className="flex items-start gap-3">
                   <span className={`seal ${sev === "red" ? "seal-red" : "seal-amber"} mt-0.5`} aria-hidden="true">

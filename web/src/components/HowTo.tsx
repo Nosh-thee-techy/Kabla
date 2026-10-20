@@ -90,12 +90,12 @@ const STEPS = {
 export function HowTo({ lang, page }: { lang: Lang; page: keyof typeof STEPS.en }) {
   const steps = STEPS[lang][page];
   return (
-    <div className="mt-auto pt-10">
+    <div className="mt-auto pt-8">
       <aside className="guide-card max-w-sm" aria-label={t(lang, "howTo")}>
         <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-terracotta dark:text-gold">
           {t(lang, "howTo")}
         </p>
-        <ol className="mt-2 space-y-1.5">
+        <ol className="mt-1.5 space-y-1">
           {steps.map((line, i) => (
             <li key={i} className="text-xs leading-snug opacity-85">
               <span className="font-mono text-terracotta dark:text-gold mr-1.5">{i + 1}.</span>

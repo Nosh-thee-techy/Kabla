@@ -24,10 +24,12 @@ export function Simulator({ lang }: { lang: Lang }) {
 
   return (
     <Room>
-      <p className="sticker">{t(lang, "illustrate")}</p>
-      <h1 className="font-display italic text-4xl mt-6">{t(lang, "sim")}</h1>
-      <label className="block mt-8 text-sm">
-        {fmt(n)} streams
+      <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-2 pb-3 border-b hair">
+        <h1 className="font-display italic text-3xl md:text-4xl leading-none">{t(lang, "sim")}</h1>
+        <p className="sticker">{t(lang, "illustrate")}</p>
+      </div>
+      <label className="block mt-5 max-w-2xl">
+        <span className="label">{fmt(n)} streams</span>
         <input
           type="range"
           min={0}
@@ -39,7 +41,7 @@ export function Simulator({ lang }: { lang: Lang }) {
         />
       </label>
       {sim && (
-        <div className="mt-10 grid md:grid-cols-2 gap-4">
+        <div className="mt-6 grid md:grid-cols-2 gap-4 max-w-3xl">
           <Stage
             label={t(lang, "asWritten")}
             amount={sim.as_written.artist_keeps}
@@ -68,13 +70,13 @@ function Stage({ label, amount, max, tone, detail }: {
 }) {
   const bar = tone === "terracotta" ? "bg-terracotta" : "bg-savanna";
   return (
-    <article className="panel p-5">
-      <p className="text-[11px] uppercase tracking-widest opacity-60">{label}</p>
-      <p className="font-display italic text-3xl mt-1">{money(amount)}</p>
-      <div className="h-3 bg-ink/10 dark:bg-white/10 rounded-full mt-4 overflow-hidden">
-        <div className={`h-3 ${bar} rounded-full`} style={{ width: `${(amount / max) * 100}%` }} />
+    <article className="panel p-4">
+      <p className="label">{label}</p>
+      <p className="font-display italic text-3xl mt-2 leading-none">{money(amount)}</p>
+      <div className="h-2 bg-ink/10 dark:bg-white/10 mt-3 overflow-hidden">
+        <div className={`h-2 ${bar}`} style={{ width: `${(amount / max) * 100}%` }} />
       </div>
-      <p className="mt-3 font-mono text-[11px] opacity-60">{detail}</p>
+      <p className="mt-2 font-mono text-[11px] opacity-60">{detail}</p>
     </article>
   );
 }

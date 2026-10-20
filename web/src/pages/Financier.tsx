@@ -17,56 +17,56 @@ export function Financier({ lang }: { lang: Lang }) {
 
   return (
     <Room>
-      <p className="sticker">{t(lang, "backerBanner")}</p>
-      <p className="text-[11px] uppercase tracking-[0.2em] text-gold mt-6">{t(lang, "financier")}</p>
-      <h1 className="font-display italic text-4xl mt-2">{t(lang, "financier")}</h1>
+      <div className="pb-3 border-b hair flex flex-wrap items-end justify-between gap-x-6 gap-y-2">
+        <div>
+          <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-gold">{t(lang, "financier")}</p>
+          <h1 className="font-display italic text-3xl md:text-4xl mt-1 leading-none">
+            {data ? data.work_title : t(lang, "financier")}
+          </h1>
+          {data && <p className="font-mono text-[11px] mt-1.5 opacity-60">{data.artist}</p>}
+        </div>
+        <p className="guide-card max-w-xs font-mono text-[10px] uppercase tracking-wider leading-relaxed">{t(lang, "backerBanner")}</p>
+      </div>
       {data && (
-        <>
-          <p className="mt-3 text-sm opacity-80">{data.work_title} · {data.artist}</p>
-          <section className="panel mt-8 p-5">
-            <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-terracotta dark:text-gold">
-              {t(lang, "owners")}
-            </p>
-            <ul className="mt-3 space-y-2 text-sm">
+        <div className="mt-5 grid lg:grid-cols-2 gap-x-8 gap-y-6 items-start">
+          {/* Left column: who owns it and where the money could leak. */}
+          <section>
+            <p className="label">{t(lang, "owners")}</p>
+            <dl className="ledger mt-2">
               {data.owners.map((o) => (
-                <li key={`${o.right}-${o.person}`}>
-                  {o.name} · {o.right} · {o.share}%
-                  {" — "}
-                  {o.confirmed ? t(lang, "confirmed") : t(lang, "unconfirmed")}
-                </li>
+                <div key={`${o.right}-${o.person}`}>
+                  <dt>{o.name} · {o.right}</dt>
+                  <dd>
+                    {o.share}%{" "}
+                    <span className={`seal ${o.confirmed ? "seal-green" : "seal-amber"} !w-5 !h-5 !text-[10px] ml-1 align-middle`} title={o.confirmed ? t(lang, "confirmed") : t(lang, "unconfirmed")}>
+                      {o.confirmed ? "✓" : "!"}
+                    </span>
+                  </dd>
+                </div>
               ))}
-            </ul>
-          </section>
-          <section className="panel mt-4 p-5">
-            <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-terracotta dark:text-gold">
-              {t(lang, "riskToBacker")}
-            </p>
-            <ul className="mt-3 space-y-3 text-sm">
+            </dl>
+            <p className="label mt-6">{t(lang, "riskToBacker")}</p>
+            <ul className="mt-2 space-y-2 text-sm">
               {data.flags.map((f) => (
-                <li key={`${f.contract_id}-${f.rule_id}-${f.clause}`}>
-                  <span className={`seal ${f.severity === "red" ? "seal-red" : "seal-amber"} mr-2`}>
+                <li key={`${f.contract_id}-${f.rule_id}-${f.clause}`} className="flex gap-2 items-baseline">
+                  <span className={`seal ${f.severity === "red" ? "seal-red" : "seal-amber"} !w-6 !h-6 !text-[10px] shrink-0`}>
                     {f.clause}
                   </span>
-                  <span className="font-mono text-xs">{f.rule_id}</span>
-                  {" — "}
-                  {f.risk}
+                  <span><span className="font-mono text-[11px] opacity-70">{f.rule_id}</span> — {f.risk}</span>
                 </li>
               ))}
             </ul>
           </section>
-          <section className="panel mt-4 p-5">
-            <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-terracotta dark:text-gold">
-              {t(lang, "aiStance")}
-            </p>
+          {/* Right column: stance, gaps, score. */}
+          <section>
+            <p className="label">{t(lang, "aiStance")}</p>
             <p className="mt-2 text-sm">
               {data.ai_stance.value ?? "—"}
-              {data.ai_stance.set_on && ` · ${t(lang, "youSetThis")} ${data.ai_stance.set_on}`}
+              {data.ai_stance.set_on && <span className="opacity-60"> · {t(lang, "youSetThis")} {data.ai_stance.set_on}</span>}
             </p>
             {data.consent_gaps.length > 0 && (
               <>
-                <p className="font-mono text-[10px] uppercase tracking-[0.16em] mt-4 opacity-60">
-                  {t(lang, "consentGaps")}
-                </p>
+                <p className="label mt-6">{t(lang, "consentGaps")}</p>
                 <ul className="mt-2 space-y-1 text-sm">
                   {data.consent_gaps.map((g) => (
                     <li key={g.person}>{g.name} ({g.share}%) — {g.why}</li>
@@ -74,20 +74,21 @@ export function Financier({ lang }: { lang: Lang }) {
                 </ul>
               </>
             )}
+            <p className="label mt-6">{t(lang, "health")}</p>
+            <div className="mt-3 flex flex-wrap gap-5 items-center">
+              <ScoreRing value={data.score.score} label={t(lang, "health")} />
+              <ul className="text-[11px] font-mono space-y-0.5">
+                {data.score.reasons.map((r) => (
+                  <li key={r.event_id}>
+                    {r.points > 0 ? "+" : ""}{r.points} — {r.why}
+                  </li>
+                ))}
+              </ul>
+            </div>
           </section>
-          <section className="panel mt-4 p-5 flex flex-wrap gap-6 items-center">
-            <ScoreRing value={data.score.score} label={t(lang, "health")} />
-            <ul className="text-xs font-mono space-y-1">
-              {data.score.reasons.map((r) => (
-                <li key={r.event_id}>
-                  {r.points > 0 ? "+" : ""}{r.points} — {r.why}
-                </li>
-              ))}
-            </ul>
-          </section>
-        </>
+        </div>
       )}
-      {err && <p className="text-flag-red mt-4" role="alert">{err}</p>}
+      {err && <p className="text-flag-red text-sm mt-4" role="alert">{err}</p>}
       <NextStamp to="/verify">{t(lang, "nextVerify")}</NextStamp>
       <HowTo lang={lang} page="financier" />
     </Room>

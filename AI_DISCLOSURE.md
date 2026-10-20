@@ -34,3 +34,5 @@ Every use of AI in this project is logged here, append-only. Entries are never r
 | 2026-10-20 | Cursor agent (Grok 4.6) | Readiness review: best-case label before theater, standing facts marked already-true, live dates, two fair topics | Reviewed by team |
 | 2026-10-20 | Cursor agent (Grok 4.6) | README: honest chatbot comparison (no product names), why deterministic, moat-not-yet | Reviewed by team |
 | 2026-10-20 | Cursor agent (Grok 4.6) | Judge-facing README top; Financier view (existing facts only); red-line date sticker on clause map | Reviewed by team; pytest + web build |
+| 2026-10-20 | Cursor agent (Grok 4.6) | Clause map: fold flag list and score cards into a slim strip so the contract is readable | Reviewed by team |
+| 2026-10-20 | Cursor agent (Grok 4.6) | Design pass: tighter gutters, one-row header with numbered rail, ruled-paper rooms, hairline panels and ledger lists on every page; no logic changes | Reviewed by team; web build; headless screenshots |

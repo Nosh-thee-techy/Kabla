@@ -39,23 +39,23 @@ export default function App() {
             {t(lang, "skip")}
           </a>
           <SyntheticBanner lang={lang} />
-          <header className="w-full px-6 md:px-10 xl:px-14 py-4">
-            <div className="flex flex-wrap items-center gap-3">
+          <header className="w-full border-b hair">
+            <div className="max-w-[1240px] mx-auto px-4 md:px-6 py-2.5 flex flex-wrap items-center gap-x-6 gap-y-2">
               <Wordmark />
-              <div className="ml-auto flex items-center gap-3">
+              <div className="order-3 md:order-none basis-full md:basis-auto md:flex-1 md:flex md:justify-center">
+                <JourneyRail lang={lang} />
+              </div>
+              <div className="ml-auto flex items-center gap-2">
                 <LangToggle lang={lang} onChange={setLang} />
                 <button
                   type="button"
-                  className="stamp stamp-ghost text-xs"
+                  className="stamp stamp-ghost !px-3 !py-1.5 !text-[11px]"
                   aria-pressed={dark}
                   onClick={() => setDark(!dark)}
                 >
                   {dark ? t(lang, "lampOff") : t(lang, "lampOn")}
                 </button>
               </div>
-            </div>
-            <div className="mt-4 border-t border-current/25 pt-3">
-              <JourneyRail lang={lang} />
             </div>
           </header>
           <div id="main" className="flex-1 flex flex-col">
@@ -70,7 +70,7 @@ export default function App() {
               <Route path="/verify" element={<Verify lang={lang} />} />
             </Routes>
           </div>
-          <p className="text-center text-[11px] tracking-[0.2em] uppercase opacity-45 py-10">
+          <p className="text-center font-mono text-[10px] tracking-[0.2em] uppercase opacity-45 py-5 border-t hair">
             {t(lang, "whisper")}
           </p>
         </div>

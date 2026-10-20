@@ -128,3 +128,10 @@ They are not a durable host and are out of the License-stage demo.
 Compose must use `/app/.vendor/PeTTa` (where `setup_petta.py` clones inside
 `Dockerfile.api`). An earlier `/opt/petta` path would miss the engine. The web
 image proxies `/api/` to the api service so the browser stays same-origin.
+
+## 2026-10-20 — Clause-map compaction and design pass in one commit
+
+The slim flag strip and the room redesign touch the same files (ClauseMap,
+Theater, i18n). Splitting them would mean committing an intermediate state
+that was never built, so they ship as one web-only commit. No API, rule or
+scoring file changed.

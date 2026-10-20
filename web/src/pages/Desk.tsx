@@ -42,56 +42,64 @@ export function Desk({ lang }: { lang: Lang }) {
 
   return (
     <Room>
-      <div className="max-w-3xl">
+      <div className="flex flex-wrap items-end justify-between gap-x-8 gap-y-3 pb-4 border-b hair">
+        <div>
+          <h1 className="font-display italic text-5xl md:text-6xl leading-[1]">Kabla</h1>
+          <p className="mt-2 text-lg opacity-80">{t(lang, "tagline")}</p>
+        </div>
         <p className="sticker">{t(lang, "whisper")}</p>
-        <h1 className="font-display italic text-5xl md:text-7xl mt-6 leading-[1.05]">Kabla</h1>
-        <p className="mt-4 text-xl opacity-80">{t(lang, "tagline")}</p>
       </div>
 
-      <h2 className="mt-8 font-display text-2xl">{t(lang, "pick")}</h2>
-      {samples.length === 0 && !err && (
-        <p className="mt-6 text-sm opacity-60">{t(lang, "openingDrawers")}</p>
-      )}
-      <ul className="mt-8 grid md:grid-cols-3 gap-5 overflow-visible">
-        {samples.map((s) => {
-          const f = folder(s.id);
-          return (
-            <li key={s.id}>
-              <button
-                type="button"
-                onClick={() => run({ sample_id: s.id })}
-                disabled={busy}
-                className={`folder border ${f.tone} disabled:opacity-50`}
-              >
-                <span className="folder-tab" aria-hidden="true" />
-                <p className="font-mono text-[11px] uppercase tracking-widest opacity-70">{s.id}</p>
-                <h3 className="font-display italic text-2xl mt-1">{s.label}</h3>
-                <p className="mt-2 text-sm opacity-80">{s.blurb}</p>
-                <p className="mt-4 text-xs uppercase tracking-widest">
-                  {t(lang, f.tag)} · {s.kind} · SYNTHETIC
-                </p>
-              </button>
-            </li>
-          );
-        })}
-      </ul>
+      <div className="mt-6 grid lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)] gap-x-10 gap-y-8">
+        <section>
+          <p className="label">{t(lang, "pick")}</p>
+          {samples.length === 0 && !err && (
+            <p className="mt-4 text-sm opacity-60">{t(lang, "openingDrawers")}</p>
+          )}
+          <ul className="mt-6 grid sm:grid-cols-3 gap-4 overflow-visible">
+            {samples.map((s) => {
+              const f = folder(s.id);
+              return (
+                <li key={s.id}>
+                  <button
+                    type="button"
+                    onClick={() => run({ sample_id: s.id })}
+                    disabled={busy}
+                    className={`folder border ${f.tone} disabled:opacity-50`}
+                  >
+                    <span className="folder-tab" aria-hidden="true" />
+                    <p className="font-mono text-[10px] uppercase tracking-widest opacity-70">{s.id}</p>
+                    <h3 className="font-display italic text-xl mt-0.5">{s.label}</h3>
+                    <p className="mt-1.5 text-sm opacity-80 leading-snug">{s.blurb}</p>
+                    <p className="mt-3 font-mono text-[10px] uppercase tracking-widest">
+                      {t(lang, f.tag)} · {s.kind} · SYNTHETIC
+                    </p>
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
+        </section>
 
-      <h2 className="mt-14 font-display text-2xl">{t(lang, "paste")}</h2>
-      <textarea
-        className="field mt-3 w-full min-h-40 p-4"
-        value={text}
-        onChange={(e) => setText(e.target.value)}
-        aria-label={t(lang, "paste")}
-      />
-      <button
-        type="button"
-        disabled={busy || !text.trim()}
-        onClick={() => run({ text })}
-        className="stamp stamp-savanna mt-4"
-      >
-        {busy ? t(lang, "analysing") : t(lang, "analyse")}
-      </button>
-      {err && <p className="mt-3 text-flag-red" role="alert">{err}</p>}
+        <section>
+          <p className="label">{t(lang, "paste")}</p>
+          <textarea
+            className="field mt-3 w-full min-h-44 p-3 text-sm"
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            aria-label={t(lang, "paste")}
+          />
+          <button
+            type="button"
+            disabled={busy || !text.trim()}
+            onClick={() => run({ text })}
+            className="stamp stamp-savanna mt-3"
+          >
+            {busy ? t(lang, "analysing") : t(lang, "analyse")}
+          </button>
+          {err && <p className="mt-3 text-flag-red text-sm" role="alert">{err}</p>}
+        </section>
+      </div>
       <HowTo lang={lang} page="desk" />
     </Room>
   );
