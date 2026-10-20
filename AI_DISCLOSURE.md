@@ -39,3 +39,6 @@ Every use of AI in this project is logged here, append-only. Entries are never r
 | 2026-10-20 | Cursor agent (Grok 4.6) | Karani desk-clerk avatar (SVG) with state-aware one-line guidance at the top of every room; theater flow strip and decided-counter; EN/SW copy drafted by the agent, Swahili needs a fluent check | Reviewed by team; web build |
 | 2026-10-20 | Cursor agent (Grok 4.6) | Karani as a bottom-right card that pauses the room, with a CTA per state; `/voice` endpoint proxying ElevenLabs text-to-speech (key server-side, disk cache, browser-speech fallback); CTA copy EN/SW | Reviewed by team; pytest (47) + web build + headless screenshots |
 | 2026-10-20 | ElevenLabs text-to-speech (runtime, optional) | Reads Karani's guidance lines aloud when a key is configured. Does not read contracts or make any decision | Team enables via `.env` |
+| 2026-10-20 | Cursor agent (Claude) | Pasted-contract handling: plain 422 messages instead of a crash (deterministic mode and live mode without a key), 2 tests; Passport/Verify/Financier use the open contract's artist; Financier added to the journey rail | Reviewed by team; pytest + web build |
+| 2026-10-20 | Cursor agent (Claude) | Omega harness: plugin loader file, demo MeTTa script and scripts/omega_demo.py written. **Not yet shown to load**; see DECISIONS for status | Status recorded honestly in README |
+

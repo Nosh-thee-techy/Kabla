@@ -155,3 +155,16 @@ browser session (`karani-seen` in sessionStorage), e.g. `theater:open:2`.
 After that he waits in the corner. Voice auto-read is off by default and is a
 per-browser preference, because autoplay before the first click is refused by
 browsers and because a judge may be watching with sound off.
+
+## 2026-10-20 - Tonight's scope for the 23:59 deadline (confirmed with the team)
+
+Kept: pasted-contract clear errors, end-to-end fixes, one time-boxed attempt to load the Omega plugin, docs and SUBMISSION walk. Dropped to docs/NEXT.md: onboarding from pasted bio and handles (consent, no scraping), profile token, testnet smart contract, public hosting. The team's earlier word 'contracts live' was read as smart contracts; the pasted-legal-contract reading needs an LLM key in .env and is documented as such.
+
+## 2026-10-20 - Omega attempt and honest status
+
+The Omega image is about 2.3 GB and this network gave about 1 MB/s, so the download alone took over 90 minutes. README keeps saying the plugin is NOT loaded unless docs/evidence/omega-load.log exists and shows 'kabla-plugin loaded' and 'KABLA-DEMO done'. No claim of 'built on Omega' is made without that log.
+
+## 2026-10-20 - Open admin question
+
+Synthetic-only demo: confirm that invented contracts (no Incantio, HFAS, Harlem CLxR or AI for Peace data) are fine for Brief B. Record the organisers' answer here when received.
+

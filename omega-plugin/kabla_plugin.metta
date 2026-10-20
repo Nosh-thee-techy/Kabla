@@ -1,5 +1,10 @@
 ; Kabla Omega plugin. Entry point: loadOmegaPlugin (see Omega docs/reference-plugin-api.md).
-!(import! &self (library Omega ./kabla_plugin.py))
+;
+; Why it exists: Omega can call Kabla's four skills, and every skill is a thin HTTP call to the same
+; FastAPI the web app uses. MeTTa on PeTTa (inside the API) still decides flags, verdicts and scores;
+; this file only ferries facts and trails. It is mounted at <Omega>/plugins/kabla and listed in
+; <Omega>/config/plugins.yaml (see omega-plugin/README.md and scripts/omega_demo.py).
+!(import! &self (library Omega ./plugins/kabla/kabla_plugin.py))
 
 (= (loadOmegaPlugin)
    (progn
@@ -15,7 +20,7 @@
       (add-skill kabla-explain
          "Answer why a clause was flagged, grounded in the stored MeTTa trail for a contract id."
          (contract_id question))
-      (log INFO "kabla-plugin" "kabla-plugin skills registered (calls FastAPI; MeTTa decides)")))
+      (log INFO "kabla-plugin" "kabla-plugin loaded: 4 skills registered (calls FastAPI; MeTTa decides)")))
 
 (= (kabla-analyze $sample_id)
    (py-call (kabla_plugin.analyze $sample_id)))
