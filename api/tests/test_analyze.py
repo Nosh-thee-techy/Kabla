@@ -28,6 +28,22 @@ def test_c003_does_not_cry_wolf(fresh_store):
     assert body["flags"][0]["severity"] == "amber"
 
 
+def test_redline_carries_to_second_contract(fresh_store):
+    """Standing red lines are artist-scoped: c002 cites the same set-on date as c001."""
+    client = TestClient(app)
+    client.post("/contracts", json={"sample_id": "c001"})
+    first = client.post("/contracts/c001/analyze").json()
+    client.post("/contracts", json={"sample_id": "c002"})
+    second = client.post("/contracts/c002/analyze").json()
+    ai1 = next(f for f in first["flags"] if f["rule_id"] == "R-AI-01")
+    ai2 = next(f for f in second["flags"] if f["rule_id"] == "R-AI-02")
+    term2 = next(f for f in second["flags"] if f["rule_id"] == "R-TERM-01")
+    assert ai1["redline_set_on"] == "2026-10-19"
+    assert ai2["redline_set_on"] == "2026-10-19"
+    assert term2["redline_set_on"] == "2026-10-19"
+    assert any("2026-10-19" in line["text_en"] for line in ai2["trail"])
+
+
 def test_simulate_is_labelled_illustrative(fresh_store):
     client = TestClient(app)
     client.post("/contracts", json={"sample_id": "c001"})

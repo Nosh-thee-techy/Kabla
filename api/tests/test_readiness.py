@@ -12,10 +12,17 @@ def test_c001_readiness_as_written_worse_than_after(fresh_store):
     assert body["fairness"]["red"] == 4
     assert body["fairness"]["amber"] == 4
     assert "red" in body["fairness"]["line"]
+    assert " and " in body["fairness"]["line"]
     assert body["as_written"]["score"] < body["after"]["score"]
     assert any(r["type"] == "unresolved-red-signed" for r in body["as_written"]["reasons"])
     assert any(r["type"] == "contract-clean" for r in body["after"]["reasons"])
     assert body["projected"] is True
+    assert body["after_kind"] == "best_case"
+    standing = [r for r in body["as_written"]["reasons"] if r["type"] in
+                {"ai-stance-set", "contributors-listed", "ai-tools-disclosed", "splits-agreed"}]
+    assert standing
+    assert all(r["already_true"] and r["why"].startswith("Already true") for r in standing)
+    assert all(not r["why"].startswith("2026-10-19") for r in body["as_written"]["reasons"])
     keys = {i["key"] for i in body["checklist"]}
     assert keys == {"red-lines", "ai-stance", "splits", "consents"}
     assert all("ok" in i and "warning_en" in i for i in body["checklist"])
