@@ -36,6 +36,7 @@ export const api = {
     req("/works", { method: "POST", body: JSON.stringify({ work_id: "w-asali", consent_to_register: true, consent_to_sell }) }),
   issuePassport: (artist: string) => req<Passport>(`/passport/${artist}/issue`, { method: "POST" }),
   getPassport: (artist: string) => req<Passport>(`/passport/${artist}`),
+  financier: (artist: string) => req<FinancierView>(`/passport/${artist}/financier`),
   verify: (body: object) => req<VerifyResult>("/verify", { method: "POST", body: JSON.stringify(body) }),
   tamperDemo: (certificate: object) => req<VerifyResult>("/verify/tamper-demo", { method: "POST", body: JSON.stringify({ certificate }) }),
   readiness: (id: string) => req<Readiness>(`/contracts/${id}/readiness`),
@@ -49,6 +50,7 @@ export type Flag = {
   clause: number; rule_id: string; severity: "red" | "amber"; topic: string;
   title_en: string; title_sw: string; meaning_en: string; meaning_sw: string;
   cost_en: string; cost_sw: string; trail: TrailLine[];
+  redline_set_on?: string | null;
 };
 export type Clause = { n: number; type: string; attrs: (string | number)[]; quote: string };
 export type Analysis = {
@@ -84,11 +86,20 @@ export type Passport = {
 export type VerifyResult = { intact: boolean; reason: string; broken_seq?: number; mutated?: object };
 export type ScoreSlice = {
   score: number; label: string; hypothetical?: boolean;
-  reasons: { event_id: string; points: number; type: string; subject: string; why: string }[];
+  reasons: { event_id: string; points: number; type: string; subject: string; why: string; already_true?: boolean }[];
   next_best_steps: string[];
 };
 export type ChecklistItem = {
   key: string; ok: boolean; label_en: string; label_sw: string; warning_en: string; warning_sw: string;
+};
+export type FinancierView = {
+  artist: string; work_id: string; work_title: string; banner: string; label: string;
+  owners: { right: string; person: string; name: string; share: number; confirmed: boolean }[];
+  flags: { contract_id: string; rule_id: string; severity: string; clause: number; topic: string;
+    title_en: string; title_sw: string; risk: string; redline_set_on?: string | null }[];
+  ai_stance: { kind: string; value: string | null; set_on: string | null; said: string | null };
+  consent_gaps: { person: string; name: string; right: string; share: number; why: string }[];
+  score: { score: number; label: string; reasons: { event_id: string; points: number; why: string }[] };
 };
 export type Readiness = {
   contract_id: string; artist: string; label: string;
@@ -100,4 +111,5 @@ export type Readiness = {
   checklist: ChecklistItem[];
   remaining_reds: string[];
   projected: boolean;
+  after_kind?: "best_case" | "after";
 };

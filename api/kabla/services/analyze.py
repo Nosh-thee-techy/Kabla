@@ -49,8 +49,10 @@ def analyze(contract: dict) -> Analysis:
         lines = [TrailLine(rule_id=rule, clause_numbers=[] if n == 0 else [n],
                            facts=[" ".join(map(str, fact))],
                            text_en=texts["meaning_en"], text_sw=texts["meaning_sw"])]
+        set_on = None
         if (n, rule) in hits:
             kind, value, date = hits[(n, rule)]
+            set_on = date
             en, sw = i18n.redline_line(kind, value, date, n)
             lines.append(TrailLine(rule_id=rule, clause_numbers=[n],
                                    facts=[f"(redline {contract['artist']} {kind} {value} {date})"],
@@ -61,6 +63,7 @@ def analyze(contract: dict) -> Analysis:
             title_en=texts["title_en"], title_sw=texts["title_sw"],
             meaning_en=texts["meaning_en"], meaning_sw=texts["meaning_sw"],
             cost_en=texts["cost_en"], cost_sw=texts["cost_sw"], trail=lines,
+            redline_set_on=set_on,
         ))
 
     if not store.has_event(contract["artist"], "contract-analysed", cid):

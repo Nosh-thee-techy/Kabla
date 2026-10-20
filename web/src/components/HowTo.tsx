@@ -9,7 +9,7 @@ const STEPS = {
     ],
     map: [
       "Deal fairness is a flag count, not a new score — each point names a clause.",
-      "Tap as-written vs after-negotiation to see why the rights-health number moves.",
+      "Tap as-written vs best-case (if you negotiate every red) to see why the number moves.",
       "Red and amber seals mark clauses. Open one for the rule trail, then stamp on.",
     ],
     sim: [
@@ -37,6 +37,11 @@ const STEPS = {
       "Intact: green lamp, you may pass. Tampered: red lamp, it names the break.",
       "Change one character yourself if you want to see the clerk catch it.",
     ],
+    financier: [
+      "This sheet rearranges the passport: owners, open flags, AI stance, score.",
+      "It is not a credit score and not lending advice. SYNTHETIC only.",
+      "Each flag still names a rule id and a clause. Nothing new is decided here.",
+    ],
   },
   sw: {
     desk: [
@@ -46,7 +51,7 @@ const STEPS = {
     ],
     map: [
       "Haki ya mkataba ni hesabu ya bendera, si alama mpya — kila nukta ina kifungu.",
-      "Gusa kama-kilivyoandikwa dhidi ya baada-ya-majadiliano kuona kwa nini namba inabadilika.",
+      "Gusa kama-kilivyoandikwa dhidi ya hali-bora (ukijadili kila nyekundu) kuona kwa nini namba inabadilika.",
       "Muhuri mwekundu na wa njano unaashiria vifungu. Fungua moja kwa njia, kisha endelea.",
     ],
     sim: [
@@ -73,6 +78,11 @@ const STEPS = {
       "Bandika JSON ya cheti, au fanya jaribio la kuharibu baada ya kutoa pasipoti.",
       "Sahihi: taa kijani, unaweza kupita. Imeharibiwa: taa nyekundu, inataja kasoro.",
       "Badilisha herufi moja mwenyewe uone karani akishika.",
+    ],
+    financier: [
+      "Karatasi hii inapanga pasipoti: wamiliki, bendera, msimamo wa AI, alama.",
+      "Si alama ya mkopo wala ushauri wa kukopesha. DATA BANDIA tu.",
+      "Kila bendera bado ina sheria na kifungu. Hakuna uamuzi mpya hapa.",
     ],
   },
 } as const;

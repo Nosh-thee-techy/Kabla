@@ -11,6 +11,9 @@ export function TrailBody({ flag, lang }: { flag: Flag; lang: Lang }) {
       <p className="font-mono text-[11px] uppercase tracking-widest opacity-60">
         {flag.rule_id} · clause {flag.clause}
       </p>
+      {flag.redline_set_on && (
+        <p className="sticker mt-3">{t(lang, "youSetThis")} {flag.redline_set_on}</p>
+      )}
       <h2 id="trail-title" className="font-display italic text-2xl mt-2">
         <span className={`seal ${red ? "seal-red" : "seal-amber"} mr-2 align-middle`} aria-hidden="true">
           {red ? "▲" : "■"}

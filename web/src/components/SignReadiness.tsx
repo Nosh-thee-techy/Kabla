@@ -19,7 +19,7 @@ export function SignReadiness({ lang, data }: { lang: Lang; data: Readiness }) {
           onClick={() => setOpen(open === "as_written" ? null : "as_written")}
         />
         <ScoreButton
-          label={t(lang, "after")}
+          label={data.after_kind === "best_case" || data.projected ? t(lang, "bestCase") : t(lang, "after")}
           slice={data.after}
           pressed={open === "after"}
           onClick={() => setOpen(open === "after" ? null : "after")}
@@ -29,6 +29,7 @@ export function SignReadiness({ lang, data }: { lang: Lang; data: Readiness }) {
         <ul className="mt-4 text-xs space-y-1 font-mono">
           {(open === "as_written" ? data.as_written : data.after).reasons.map((r) => (
             <li key={r.event_id}>
+              {r.already_true && <span className="opacity-60">{t(lang, "alreadyTrue")} · </span>}
               {r.points > 0 ? "+" : ""}{r.points} · {r.type} · {r.why}
             </li>
           ))}

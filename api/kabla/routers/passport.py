@@ -2,6 +2,7 @@ from fastapi import APIRouter, HTTPException
 
 from kabla.models import VerifyRequest, WorkCreate
 from kabla.services import samples
+from kabla.services.financier import financier
 from kabla.services.passport import issue, passport, register, tamper, verify
 
 router = APIRouter(tags=["passport"])
@@ -28,6 +29,12 @@ def issue_passport(artist: str, work_id: str = "w-asali") -> dict:
 @router.get("/passport/{artist}")
 def get_passport(artist: str) -> dict:
     return passport(artist)
+
+
+@router.get("/passport/{artist}/financier")
+def financier_view(artist: str, work_id: str = "w-asali") -> dict:
+    """Read-only rearrangement of owners, flags, stance, gaps and the existing score."""
+    return financier(artist, work_id)
 
 
 @router.post("/verify")

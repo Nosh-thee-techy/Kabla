@@ -91,7 +91,7 @@ export function Passport({ lang }: { lang: Lang }) {
         </section>
       )}
       {err && <p className="text-flag-red mt-4" role="alert">{err}</p>}
-      {data && <NextStamp to="/verify">{t(lang, "nextVerify")}</NextStamp>}
+      {data && <NextStamp to="/financier">{t(lang, "nextFinancier")}</NextStamp>}
       <HowTo lang={lang} page="passport" />
     </Room>
   );

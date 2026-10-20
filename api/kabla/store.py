@@ -78,6 +78,13 @@ def get_contract(cid: str) -> dict | None:
     return _get("contracts", cid)
 
 
+def list_contracts() -> list[dict]:
+    """Every stored contract. Used by the read-only financier view, not a new dataset."""
+    with connect() as c:
+        rows = c.execute("SELECT body FROM contracts ORDER BY id").fetchall()
+    return [json.loads(r["body"]) for r in rows]
+
+
 def put_negotiation(session: dict) -> None:
     _put("negotiations", session["id"], session, contract_id=session["contract_id"])
 

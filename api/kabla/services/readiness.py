@@ -24,25 +24,27 @@ def readiness(contract: dict, work_id: str = "w-asali") -> dict:
     remaining = _remaining_reds(reds, nego)
 
     standing = _standing_events(artist, work_id)
+    day = store.today()
     as_written_extra = standing + [
         {"id": f"hyp-red-{f.rule_id}", "type": "unresolved-red-signed",
-         "subject": f.rule_id, "date": "2026-10-19"}
+         "subject": f.rule_id, "date": day}
         for f in reds
     ]
     if not reds:
         as_written_extra.append({"id": "hyp-clean-now", "type": "contract-clean",
-                                 "subject": contract["id"], "date": "2026-10-19"})
+                                 "subject": contract["id"], "date": day})
     after_extra = standing + [
         {"id": f"hyp-red-{f.rule_id}", "type": "unresolved-red-signed",
-         "subject": f.rule_id, "date": "2026-10-19"}
+         "subject": f.rule_id, "date": day}
         for f in remaining
     ]
     if not remaining:
         after_extra.append({"id": "hyp-clean", "type": "contract-clean",
-                            "subject": contract["id"], "date": "2026-10-19"})
+                            "subject": contract["id"], "date": day})
 
-    as_written = score_from_events(artist, merge_hypothetical(artist, as_written_extra))
-    after = score_from_events(artist, merge_hypothetical(artist, after_extra))
+    as_written = _annotate(score_from_events(artist, merge_hypothetical(artist, as_written_extra)))
+    after = _annotate(score_from_events(artist, merge_hypothetical(artist, after_extra)))
+    projected = nego is None
     return {
         "contract_id": contract["id"],
         "artist": artist,
@@ -52,7 +54,8 @@ def readiness(contract: dict, work_id: str = "w-asali") -> dict:
         "fairness": _fairness(analysis),
         "checklist": checklist(artist, work_id),
         "remaining_reds": [f.rule_id for f in remaining],
-        "projected": nego is None,
+        "projected": projected,
+        "after_kind": "best_case" if projected else "after",
         "synthetic": True,
     }
 
@@ -96,10 +99,7 @@ def _fairness(analysis) -> dict:
     fair = [t for t in TOPICS if t not in flagged]
     red = analysis.summary["red"]
     amber = analysis.summary["amber"]
-    if fair:
-        line = f"{red} red, {amber} amber, fair on {fair[0].replace('-', ' ')}"
-    else:
-        line = f"{red} red, {amber} amber, no clean topic"
+    line = _fairness_line(red, amber, fair)
     return {
         "red": red,
         "amber": amber,
@@ -154,3 +154,29 @@ def checklist(artist: str, work_id: str = "w-asali") -> list[dict]:
         },
     ]
     return items
+
+
+STANDING_TYPES = {
+    "ai-stance-set", "contributors-listed", "ai-tools-disclosed", "splits-agreed",
+}
+
+
+def _annotate(slice_: dict) -> dict:
+    """Standing demo facts stay visible as already-true, not as new events."""
+    for r in slice_["reasons"]:
+        if r["type"] in STANDING_TYPES:
+            r["already_true"] = True
+            if not str(r["why"]).startswith("Already true"):
+                r["why"] = f"Already true — {r['why']}"
+        else:
+            r["already_true"] = False
+    return slice_
+
+
+def _fairness_line(red: int, amber: int, fair: list[str]) -> str:
+    names = [t.replace("-", " ") for t in fair[:2]]
+    if not names:
+        return f"{red} red, {amber} amber, no clean topic"
+    if len(names) == 1:
+        return f"{red} red, {amber} amber, fair on {names[0]}"
+    return f"{red} red, {amber} amber, fair on {names[0]} and {names[1]}"

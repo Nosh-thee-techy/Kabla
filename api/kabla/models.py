@@ -48,6 +48,7 @@ class Flag(BaseModel):
     cost_en: str
     cost_sw: str
     trail: list[TrailLine]
+    redline_set_on: str | None = None
 
 
 class ContractCreate(BaseModel):

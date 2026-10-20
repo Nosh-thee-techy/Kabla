@@ -16,9 +16,6 @@ REASONS = {
     "licence-missing-consent": "Licence granted without a required consent",
 }
 
-DATE = "2026-10-19"
-
-
 def score(artist: str) -> dict:
     return score_from_events(artist, store.list_events(artist))
 
@@ -60,7 +57,7 @@ def merge_hypothetical(artist: str, extras: list[dict]) -> list[dict]:
             "artist": artist,
             "type": extra["type"],
             "subject": extra["subject"],
-            "date": extra.get("date") or DATE,
+            "date": extra.get("date") or store.today(),
         })
     return out
 

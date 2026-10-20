@@ -12,9 +12,10 @@ import { Passport } from "./pages/Passport";
 import { Simulator } from "./pages/Simulator";
 import { Theater } from "./pages/Theater";
 import { Verify } from "./pages/Verify";
+import { Financier } from "./pages/Financier";
 import { KablaProvider } from "./state";
 
-const DUSK = new Set(["/theater", "/passport", "/verify"]);
+const DUSK = new Set(["/theater", "/passport", "/financier", "/verify"]);
 
 export default function App() {
   const [lang, setLang] = useState<Lang>("en");
@@ -65,6 +66,7 @@ export default function App() {
               <Route path="/theater" element={<Theater lang={lang} />} />
               <Route path="/licence" element={<LicenceDesk lang={lang} />} />
               <Route path="/passport" element={<Passport lang={lang} />} />
+              <Route path="/financier" element={<Financier lang={lang} />} />
               <Route path="/verify" element={<Verify lang={lang} />} />
             </Routes>
           </div>
