@@ -1,6 +1,8 @@
 import { useState } from "react";
 import type { Readiness } from "../api";
-import { t, type Lang } from "../i18n";
+import { t, tf, type Lang } from "../i18n";
+import { plainFlagTitle } from "../plain";
+import { topicName } from "../lib/tug";
 
 /** One-line flag summary. The clause map already paints every flag; the list stays folded. */
 export function FairnessMeter({ lang, data }: { lang: Lang; data: Readiness["fairness"] }) {
@@ -24,9 +26,7 @@ export function FairnessMeter({ lang, data }: { lang: Lang; data: Readiness["fai
             <li key={`${f.rule_id}-${f.clause}`} className="flex gap-2">
               <span className={`seal ${f.severity === "red" ? "seal-red" : "seal-amber"}`}>{f.clause}</span>
               <span className="self-center">
-                <span className="font-mono">{f.rule_id}</span>
-                {" — "}
-                {lang === "sw" ? f.title_sw : f.title_en}
+                {plainFlagTitle(lang, f.rule_id, lang === "sw" ? f.title_sw : f.title_en)}
               </span>
             </li>
           ))}
@@ -36,10 +36,9 @@ export function FairnessMeter({ lang, data }: { lang: Lang; data: Readiness["fai
   );
 }
 
+/** "Serious problems: 4. To check: 2. Fair on: Your cut and Checking the books." Topic names are the plain ones. */
 function fairnessLine(lang: Lang, data: Readiness["fairness"]): string {
-  const names = data.fair_topics.slice(0, 2).map((topic) => topic.replace(/-/g, " "));
-  const fair = names.length === 0
-    ? t(lang, "noCleanTopic")
-    : `${t(lang, "fairOn")} ${names.join(lang === "sw" ? " na " : " and ")}`;
-  return `${data.red} ${t(lang, "red")}, ${data.amber} ${t(lang, "amber")}, ${fair}`;
+  const names = data.fair_topics.slice(0, 2).map((topic) => topicName(lang, topic));
+  if (names.length === 0) return tf(lang, "fairLineNone", { red: data.red, amber: data.amber });
+  return tf(lang, "fairLine", { red: data.red, amber: data.amber, fair: names.join(t(lang, "fairAnd")) });
 }

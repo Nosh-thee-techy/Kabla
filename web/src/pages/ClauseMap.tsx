@@ -29,14 +29,14 @@ export function ClauseMap({ lang }: { lang: Lang }) {
         <div>
           <h1 className="font-display italic text-3xl md:text-4xl leading-none">{contract.title}</h1>
           <p className="font-mono text-[11px] mt-1.5 opacity-60">
-            {contract.label} · {t(lang, "metta")} · {analysis.extraction_source}
+            {contract.label} · {t(lang, "metta")}
           </p>
         </div>
-        <p className="flex gap-2 text-sm">
+        <p className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm">
           <span className="seal seal-red">{analysis.summary.red}</span>
-          <span className="self-center">{t(lang, "red")}</span>
+          <span className="self-center">{t(lang, "redExplain")}</span>
           <span className="seal seal-amber ml-2">{analysis.summary.amber}</span>
-          <span className="self-center">{t(lang, "amber")}</span>
+          <span className="self-center">{t(lang, "amberExplain")}</span>
         </p>
       </div>
       <Clerk
