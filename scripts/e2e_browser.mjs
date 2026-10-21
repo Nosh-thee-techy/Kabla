@@ -48,6 +48,7 @@ async function nav(label) {
 }
 const btn = (re) => page.getByRole("button", { name: re }).first();
 const see = (re) => page.getByText(re).first().waitFor({ timeout: T });
+const shot = (file) => page.screenshot({ path: path.join(shots, file) }).catch(() => {});
 
 const browser = await chromium.launch({ channel: "chrome", headless: true });
 page = await browser.newPage({ viewport: { width: 1280, height: 900 } });
@@ -106,11 +107,32 @@ await room("04 during: simulator", async () => {
 await room("05 during: theater negotiation", async () => {
   await nav("Theater");
   await dismiss();
+  await page.waitForTimeout(500);
+  await shot("05a-theater-before-curtain.png");          // curtain still down
+  await dismiss();
   if (await btn(/Raise the curtain/i).isVisible().catch(() => false)) await btn(/Raise the curtain/i).click();
   await see(/Counter-offers from the label|counter-offers/i);
   await dismiss();
-  await btn(/Stamp these decisions/i).click();
+  await page.waitForTimeout(1800);                        // let the curtain finish opening
+  await shot("05b-theater-mid-round.png");               // stage, tug-of-war bars, contract cards
+  await dismiss();
+  // Stamp round after round until the curtain comes down (agreed, standoff or walk-away); a round can be slow (the engine runs).
+  for (let i = 0; i < 5; i++) {
+    await dismiss();
+    if (!(await btn(/Stamp these decisions/i).isVisible().catch(() => false))) break;
+    await btn(/Stamp these decisions/i).click();
+    await page.waitForTimeout(900);
+    await page.waitForFunction(() => {
+      const b = [...document.querySelectorAll("button")].find((x) => /Stamp these decisions/.test(x.textContent || ""));
+      return !b || !b.disabled;
+    }, null, { timeout: T });
+  }
   await see(/Ledger|agreed|standoff|walk-away|Act 2/i);
+  await dismiss();
+  await page.waitForTimeout(1800);
+  await see(/who gave up what/i);                        // the ending scene is on screen
+  await page.evaluate(() => window.scrollTo(0, 0));
+  await page.screenshot({ path: path.join(shots, "05c-theater-curtain-down.png"), fullPage: true }).catch(() => {});            // ending scene: ledger, before/after, licence desk button
 });
 
 await room("06 after: licence desk verdict", async () => {
