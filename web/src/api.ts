@@ -99,6 +99,7 @@ export type Nego = { id: string; contract_id: string; round: number; max_rounds:
 export type Preset = { id: string; label: string; request: LicenceReq };
 export type LicenceReq = { work_id: string; use: string; territory: string; months: number; party: string };
 export type LicenceVerdict = {
+  request_id?: string; // r-<use>-<territory>-<months>; the plain licence text reads the question back from it
   verdict: "cleared" | "not-cleared" | "needs-consent"; rule_id: string;
   headline_en: string; headline_sw: string;
   missing: { person: string; name: string; right: string; share: number }[];
@@ -108,7 +109,7 @@ export type LicenceVerdict = {
 export type Passport = {
   certificate?: Record<string, unknown>; certificates?: Record<string, unknown>[];
   badges: { badge: { name: string }; evidence: { id: string }[] }[];
-  score: { score: number; label: string; reasons: { event_id: string; points: number; why: string }[]; next_best_steps: string[] };
+  score: { score: number; label: string; reasons: { event_id: string; points: number; type?: string; why: string }[]; next_best_steps: string[] };
   ledger?: object[];
 };
 export type VerifyResult = { intact: boolean; reason: string; broken_seq?: number; mutated?: object };
@@ -127,7 +128,7 @@ export type FinancierView = {
     title_en: string; title_sw: string; risk: string; redline_set_on?: string | null }[];
   ai_stance: { kind: string; value: string | null; set_on: string | null; said: string | null };
   consent_gaps: { person: string; name: string; right: string; share: number; why: string }[];
-  score: { score: number; label: string; reasons: { event_id: string; points: number; why: string }[] };
+  score: { score: number; label: string; reasons: { event_id: string; points: number; type?: string; why: string }[] };
 };
 export type Readiness = {
   contract_id: string; artist: string; label: string;
