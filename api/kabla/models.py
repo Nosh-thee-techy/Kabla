@@ -5,6 +5,8 @@ from typing import Literal
 
 from pydantic import BaseModel, Field
 
+from kabla.services.audience import AudienceInput
+
 Severity = Literal["red", "amber", "green"]
 Lang = Literal["en", "sw"]
 
@@ -217,3 +219,5 @@ class ArtistCreate(BaseModel):
     consent: bool = False
     bio: str = Field(default="", max_length=4000)
     lang: Lang = "en"
+    # Optional audience numbers the artist TYPES (self-reported, never fetched from a platform).
+    audience: AudienceInput | None = None

@@ -17,7 +17,7 @@ from nacl.signing import VerifyKey
 from kabla import store
 from kabla.config import get_settings
 from kabla.models import ArtistCreate
-from kabla.services import samples
+from kabla.services import audience, samples
 from kabla.services.metta_bridge import Sym, fact, query, run_engine
 from kabla.services.passport import GENESIS, canonical, ensure_keys, sha256_hex
 
@@ -135,6 +135,10 @@ def _seal(profile: dict) -> dict:
         "handles": profile["handles"], "facts": profile["facts"],
         "consent": profile["consent"], "source": profile["source"], "prev_hash": prev,
     }
+    if profile.get("audience"):
+        # Only the typed numbers are sealed (SELF-REPORTED). Profiles without them seal exactly as before.
+        unsigned["audience"] = {k: profile["audience"][k] for k in ("followers", "avg_likes", "note")}
+        unsigned["audience"]["self_reported"] = True
     sig = key.sign(canonical(unsigned).encode("utf-8"))
     certificate = {**unsigned, "signature": {
         "alg": "Ed25519", "pubkey": key.verify_key.encode(HexEncoder).decode("ascii"), "sig": sig.signature.hex()}}
@@ -167,6 +171,9 @@ def create_profile(body: ArtistCreate) -> dict:
         "bio_chars": len(body.bio), "redlines": [{"kind": r["kind"], "value": r["value"]} for r in redlines],
     }
     profile["gaps"] = _gaps(artist_id, facts["works"], handles, redlines)
+    typed_audience = audience.build(body.audience)
+    if typed_audience:
+        profile["audience"] = typed_audience
     record = _seal(profile)
     profile["seal"] = {"seq": record["seq"], "record_hash": record["record_hash"],
                        "payload_hash": record["payload_hash"]}
@@ -177,6 +184,14 @@ def create_profile(body: ArtistCreate) -> dict:
 
 def get_profile(artist_id: str) -> dict | None:
     return store.get_profile(artist_id)
+
+
+def get_audience(artist_id: str) -> dict:
+    """The typed audience numbers and their reading. Profiles saved before this existed simply have none."""
+    profile = store.get_profile(artist_id)
+    typed = (profile or {}).get("audience")
+    return {"artist": artist_id, "audience": typed, "self_reported": True, "verified": False,
+            "label": audience.LABEL, "synthetic": True}
 
 
 def verify_seals(artist_id: str) -> dict:

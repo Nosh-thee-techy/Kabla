@@ -4,6 +4,7 @@ from kabla.models import VerifyRequest, WorkCreate
 from kabla.services import samples
 from kabla.services.financier import financier
 from kabla.services.passport import issue, passport, register, tamper, verify
+from kabla.services.readiness import work_check
 
 router = APIRouter(tags=["passport"])
 
@@ -54,6 +55,15 @@ def tamper_demo(body: VerifyRequest) -> dict:
     mutated = tamper(body.certificate)
     result = verify(mutated, None)
     return {"mutated": mutated, **result}
+
+
+@router.get("/works/{work_id}/check")
+def work_ready_check(work_id: str, artist: str = "zawadi") -> dict:
+    """Before stage: owners, splits, consents and the ready-check for a work, with no contract needed."""
+    try:
+        return work_check(artist, work_id)
+    except FileNotFoundError as exc:
+        raise HTTPException(404, f"No work called {work_id}.") from exc
 
 
 @router.get("/works/{work_id}")

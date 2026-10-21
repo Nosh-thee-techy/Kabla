@@ -156,6 +156,39 @@ def checklist(artist: str, work_id: str = "w-asali") -> list[dict]:
     return items
 
 
+def work_check(artist: str, work_id: str = "w-asali") -> dict:
+    """Before stage: the work's owners, splits, consents and the ready-check, with NO contract needed.
+
+    Everything is read from the synthetic work file and the artist's standing red lines. It adds no
+    score and no rule: the checklist is the same list the Sign check shows.
+    """
+    work = samples.work(work_id)
+    confirmed = {c["person"] for c in work.get("split_confirmations", [])}
+    owners = [
+        {"right": o["right"], "person": o["person"], "name": samples.artist_name(o["person"]),
+         "share": o["share"], "confirmed": o["person"] in confirmed}
+        for o in work.get("owners", [])
+    ]
+    composition_total = sum(o["share"] for o in owners if o["right"] == "composition")
+    ai = next((r for r in store.list_redlines(artist) if r["kind"] == "ai-training"), None)
+    return {
+        "work_id": work["id"],
+        "title": work["title"],
+        "artist": artist,
+        "registered": store.get_work(work["id"]) is not None,
+        "owners": owners,
+        "composition_total": composition_total,
+        "consents": [
+            {**c, "name": samples.artist_name(c["person"])} for c in work.get("consents", [])
+        ],
+        "ai_tools": work.get("ai_tools", ["none"]),
+        "ai_stance": {"value": ai["value"] if ai else None, "set_on": ai.get("set_on") if ai else None},
+        "checklist": checklist(artist, work_id),
+        "label": "rights-health, not credit",
+        "synthetic": True,
+    }
+
+
 STANDING_TYPES = {
     "ai-stance-set", "contributors-listed", "ai-tools-disclosed", "splits-agreed",
 }

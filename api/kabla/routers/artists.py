@@ -26,6 +26,12 @@ def get_artist(artist_id: str) -> dict:
     return profile
 
 
+@router.get("/artists/{artist_id}/audience")
+def get_artist_audience(artist_id: str) -> dict:
+    """SELF-REPORTED audience numbers and a plain band. Never fetched from a platform, never in the Rights check."""
+    return onboarding.get_audience(artist_id)
+
+
 @router.get("/artists/{artist_id}/seal/verify")
 def verify_artist_seals(artist_id: str) -> dict:
     return onboarding.verify_seals(artist_id)
