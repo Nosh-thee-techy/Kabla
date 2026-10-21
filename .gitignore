@@ -33,10 +33,7 @@ Thumbs.db
 .idea/
 .vscode/
 
-# local hosting sketches (not part of the License-stage demo)
-/Dockerfile
-/fly.toml
-/railway.toml
+# local hosting sketch (the Dockerfile, fly.toml and railway.toml are now tracked: they deploy the public demo)
 /web/vercel.json
 
 # Live, ever-growing agent log; the committed evidence is docs/evidence/omega-agent-excerpt.log

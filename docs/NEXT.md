@@ -18,7 +18,7 @@ plugin, a chat bridge, and a browser click-through of every room.
   answers, one needless clarifying question). Kabla's provider now routes by keyword and uses the model only to phrase. A stronger model,
   or a tighter Omega prompt, may make full tool choice reliable; re-run `scripts/omega_smoke.py` to find out.
 - **Fluent-speaker review** of every Swahili string (all AI-drafted, including the onboarding and agent-chat copy).
-- **Public hosting** so judges can open the app without running it locally.
+- **Public hosting is up** at https://kabla-desk.fly.dev (see docs/DECISIONS.md). Redeploy with `fly deploy --app kabla-desk --remote-only --ha=false`. Check it still answers before you record or submit.
 - **Organisers' answer** on synthetic-only data (see docs/DECISIONS.md).
 
 ## Known limits to fix next

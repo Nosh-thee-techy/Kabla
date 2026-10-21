@@ -1,0 +1,29 @@
+# Public demo host for the License-stage build (API + built UI). Deterministic mode, no API keys, no Omega agent.
+app = "kabla-desk"
+primary_region = "jnb"          # Johannesburg: closest Fly region to Nairobi
+
+[build]
+  dockerfile = "Dockerfile"
+
+[env]
+  KABLA_MODE = "deterministic"   # the public site never calls a model, so there is no key to leak or abuse
+  PORT = "8080"
+
+# The SQLite store and the signing keys live on a volume so a passport issued now still verifies after the
+# machine sleeps or is redeployed. (Without it /data resets on every start and open demos would break.)
+[mounts]
+  source = "kabla_data"
+  destination = "/data"
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  auto_stop_machines = "stop"    # sleeps when idle; the first visit after a sleep takes a few seconds
+  auto_start_machines = true
+  min_machines_running = 0
+  processes = ["app"]
+
+[[vm]]
+  memory = "1gb"
+  cpu_kind = "shared"
+  cpus = 1

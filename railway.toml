@@ -1,0 +1,9 @@
+[build]
+builder = "DOCKERFILE"
+dockerfilePath = "Dockerfile"
+
+[deploy]
+healthcheckPath = "/health"
+healthcheckTimeout = 300
+restartPolicyType = "ON_FAILURE"
+startCommand = "sh -c 'python3 -m kabla.cli init && python3 -m uvicorn kabla.web:app --host 0.0.0.0 --port ${PORT:-8000}'"
