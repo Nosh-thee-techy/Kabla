@@ -13,7 +13,7 @@ const { chromium } = createRequire(path.join(root, ".vendor", "e2e", "package.js
 const BASE = process.env.KABLA_WEB || "http://localhost:5173";
 const out = path.join(root, "docs", "evidence", "e2e");
 mkdirSync(out, { recursive: true });
-const T = 45000;
+const T = Number(process.env.KABLA_E2E_T) || 45000;
 
 const browser = await chromium.launch({ channel: "chrome", headless: true });
 for (const [tag, width, height] of [["desktop", 1280, 900], ["phone", 390, 844]]) {
@@ -42,11 +42,37 @@ for (const [tag, width, height] of [["desktop", 1280, 900], ["phone", 390, 844]]
   await page.getByPlaceholder(/your first name/i).fill("Test Visitor");
   await btn(/^Continue$/).click();
   await btn(/^Next$/).click();
+  await page.locator('[data-aud="instagram"]').fill("4200");     // step 2: audience numbers (typed, self-reported)
+  await page.locator('[data-aud="tiktok"]').fill("800");
+  await page.locator('[data-aud="spotify"]').fill("1500");
+  await page.locator('[data-aud="likes"]').fill("150");
+  await shot("0a-wizard-audience");
   await btn(/^Next$/).click();
   await btn(/Fill in the demo artist/i).click();
   await page.getByRole("checkbox").first().check();
   await btn(/Seal my profile/i).click();
   await see(/You are ready/i);
+  await shot("0b-wizard-ready");
+
+  // Before stage: the Desk warns first (the work is not registered), then register, then the work passport.
+  await page.goto(`${BASE}/desk`, { waitUntil: "domcontentloaded" });
+  await later();
+  // The second pass (phone) runs on a store where the first pass already registered the work, so the note may be absent.
+  await page.getByTestId("desk-register-note").waitFor({ timeout: 15000 }).catch(() => console.log(`  (no register note on the Desk, ${tag}: work already registered)`));
+  await shot("1a-desk-note");
+  await page.goto(`${BASE}/passport`, { waitUntil: "domcontentloaded" });
+  await see(/Who owns what/i);
+  await page.waitForTimeout(1200);
+  await shot("6-register");
+  await page.getByRole("checkbox").first().check().catch(() => {});
+  await btn(/Register my work and make my passport/i).click();
+  await page.waitForURL(/\/passport\/issued/);
+  await see(/Why this number/);
+  await page.getByTestId("audience-card").getByText(/^Growing$/).waitFor({ timeout: T });
+  await shot("7-passport");
+  await btn(/Why this number/).click();
+  await page.waitForTimeout(500);
+  await shot("7b-passport-why");
 
   await page.goto(`${BASE}/desk`, { waitUntil: "domcontentloaded" });
   await later();
@@ -93,18 +119,6 @@ for (const [tag, width, height] of [["desktop", 1280, 900], ["phone", 390, 844]]
   await page.locator("button").filter({ hasText: /request|sync|ad |AI|licen/i }).first().click();
   await see(/Cleared|Not cleared|Needs consent/);
   await shot("5b-licence-verdict");
-
-  await page.goto(`${BASE}/passport`, { waitUntil: "domcontentloaded" });
-  await page.waitForTimeout(1200);
-  await shot("6-register");
-  await page.getByRole("checkbox").first().check().catch(() => {});
-  await btn(/Issue passport/i).click();
-  await page.waitForURL(/\/passport\/issued/);
-  await see(/Why this number/);
-  await shot("7-passport");
-  await btn(/Why this number/).click();
-  await page.waitForTimeout(500);
-  await shot("7b-passport-why");
 
   await page.goto(`${BASE}/financier`, { waitUntil: "domcontentloaded" });
   await see(/Not a credit score/i);

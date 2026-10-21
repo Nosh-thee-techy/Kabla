@@ -21,6 +21,18 @@ plugin, a chat bridge, and a browser click-through of every room.
 - **Public hosting is up** at https://kabla-desk.fly.dev (see docs/DECISIONS.md). Redeploy with `fly deploy --app kabla-desk --remote-only --ha=false`. Check it still answers before you record or submit.
 - **Organisers' answer** on synthetic-only data (see docs/DECISIONS.md).
 
+## Work-first roadmap (added 2026-10-21 with the Before-stage reorder)
+
+- **A work passport you can anchor on a public chain (an NFT-style token), so the musician owns it outside Kabla.** Today there is no token and no chain: the passport is a signed, hash-linked record kept by the demo server, and nothing is minted. Anchoring would need:
+  - a wallet for the musician (and a clear story for people with no wallet);
+  - a **testnet** first, with test tokens and a faucet, never real money;
+  - contract tests and an audit of a contract. `contracts/KablaPassport.sol` is only a compile-checked sketch of a non-transferable token; it has not run on any chain;
+  - **legal review** before any mainnet token: what the token claims, who may hold it, privacy of what is anchored (anchor a hash, not the work), and consumer-protection rules;
+  - a way to anchor the record's hash so the token still proves nothing more than "this record existed, unchanged".
+- **A real work form for Register.** Today the Register page shows the one invented song. A real version lets the musician add a title, co-writers, shares and a file, and sends each co-writer an invitation to say yes, so every consent is theirs and not typed by someone else.
+- **Verified audience data.** Today the audience numbers are typed by the musician and shown as "Self-reported, not verified". A better version reads them through each platform's **official API with the musician's OAuth consent** (no scraping: it breaks their terms and needs the owner's consent), and adds **anti-fraud checks for fake followers** (sudden jumps, follower and like patterns). Until then the card must keep its self-reported label and must never feed the Rights check.
+- **Move the audience band into the rule engine** (a MeTTa file with the same thresholds) if the team wants it to sit next to the other decisions. The thresholds are illustrative today and need review with a real lender or a music-industry adviser.
+
 ## Known limits to fix next
 
 - **Real accounts are the next step; today there are none.** The landing page's "Start" / "Sign in" lead to a local demo sign-in (a display name kept in this tab's sessionStorage, no password, nothing sent to the API). A real version needs a user table and sessions on the API, magic-link or OAuth sign-in (so no passwords are stored), consent and delete-my-data flows, per-user ownership of profiles and passports, rate limits and a privacy notice. See docs/DECISIONS.md, "Landing page and a demo sign-in".

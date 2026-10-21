@@ -48,7 +48,7 @@ The agent does **not** submit and has **not pushed**. Human pushes and submits o
 | Item | Status |
 |---|---|
 | Track and challenge recorded in README | **passed** (Track 4 / Brief B / License) |
-| Scope is License stage | **passed with a flag**: the build is License **plus a Protect-lite Before step** (self-declared onboarding) because the team asked for it. README and `docs/DECISIONS.md` say so. Team to confirm they are happy to be judged on that |
+| Scope is License stage | **passed with a flag**: the build is License **plus a Protect-lite Before step** (self-declared onboarding) because the team asked for it. README and `docs/DECISIONS.md` say so. Team to confirm they are happy to be judged on that. Update 2026-10-21: the student chose "Reorder" in chat, so the Before stage now leads the journey (You, Register your work, Your work passport, then Desk, Clause map, Simulator, Theater, Sign check, Licence desk, Financier, Verify); no track or challenge change. Audience numbers are self-reported and unverified; no NFT or chain is claimed |
 | README: what, setup, run, test, team | **passed** (README "Honest status" updated) |
 | Setup tested on a clean clone | **passed** for commit d9640f6: `tasks.py setup`, then `tasks.py test` (76 MeTTa checks, 59 API tests, web build green). The one-shot `verify` wrapper died between the two steps on this machine, so they were run separately. Later commits only change docs and the contract sketch |
 | AI_DISCLOSURE.md kept | **passed** |

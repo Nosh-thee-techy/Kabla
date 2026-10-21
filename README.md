@@ -17,7 +17,7 @@ cleared, not cleared, or needs consent from a named person.
 > **Hackathon:** BASIX State of the Art Hackathon 2026
 > **Official page column:** Omega AI Agents → **BASIX.MARKET — Mature Build**
 > **Recorded in this repo:** Track 4 — BASIX.MARKET Builds · **Brief B:** Managing originals (Art IP and Music IP)
-> **Stage built:** **License**, plus a **Protect-lite "Before" step** (self-declared onboarding with consent, MeTTa gap rules, sealed profile) that the team asked to add. Not full Protect (no identity verification, no scraping) and not Earn (no on-chain mint).
+> **Stage built:** **License**, plus a **Protect-lite "Before" step** (self-declared onboarding with consent, MeTTa gap rules, sealed profile) that the team asked to add. Since 2026-10-21 (the student chose "Reorder" in chat) that Before stage also holds **Register your work** and **Your work passport**, ahead of the contract rooms, with self-reported audience numbers beside the Rights check. Not full Protect (no identity verification, no scraping) and not Earn (**no NFT and no chain**: the work passport is a signed, hash-linked record kept by the demo server; anchoring it on a public chain is on the roadmap).
 > **Team:** solo (record institution or Independent on the BASIX profile)
 > **Live demo:** https://kabla-desk.fly.dev (Fly.io, Johannesburg; deterministic mode, synthetic data, no API keys on the host, **no Omega agent** so the Desk chat panel says the agent is offline). It sleeps when idle: the first visit after a quiet spell can take ~10 s. Browser check against it: [`docs/evidence/e2e-fly.md`](docs/evidence/e2e-fly.md) (13 of 13).
 > **Engine:** **MeTTa on PeTTa.** The product (web + API) runs on its own and does not need Omega. Separately, **Omega's real agent loop runs natively on Windows** (PeTTa v1.0.4, Omega `main`) with Kabla's plugin: Omega's loop and memory host Kabla's four skills, which call this API, and MeTTa decides. Chat reaches it from the Desk page. Evidence: [`docs/evidence/omega-agent-excerpt.log`](docs/evidence/omega-agent-excerpt.log) and [`docs/evidence/omega-chat.md`](docs/evidence/omega-chat.md). **With a model key the chat runs live (5 of 5 test turns, 6-12 s each, NVIDIA Nemotron 3 Super through OpenRouter on 2026-10-21), but the model only phrases**: a keyword router picks the skill, the model rewrites the skill's one-line result, and any reply that drops a rule id, invents a number or leaks its own reasoning is replaced by the raw result. Without a key (or if the model is slow or down) the agent falls back to that router and labels every reply "[offline router, not an LLM]". We first let the model choose Omega's tools itself and it wandered (wrong-message answers, memory queries instead of answers); that is why. Staged-copy patches to Omega and the Windows limits (no sandbox) are in `docs/DECISIONS.md`. Do not describe this as "built on Omega".
@@ -98,24 +98,30 @@ confirm this clause" check when confidence is low.
 
 ## What the desk does (UI → API → engine)
 
-The web app is seven screens. It does not compute flags itself. Every click
-that matters is a `fetch` to the FastAPI backend; the backend writes
-`facts.metta`, runs PeTTa, and returns structured results the UI paints.
+The web app is built **work first** (the student confirmed this order on 2026-10-21, choosing "Reorder"): a musician
+registers a work and clears splits and consents *before* any contract, then the contract flow. It does not compute flags
+itself. Every click that matters is a `fetch` to the FastAPI backend; the backend writes `facts.metta`, runs PeTTa, and
+returns structured results the UI paints.
 
 ```
-Desk → Clause map → Simulator → Theater → Sign check → Licence desk → Passport → Verify
+BEFORE  You (profile, links, audience) → Register your work (/passport) → Your work passport (/passport/issued)
+DURING  Desk → Clause map → Simulator → Theater → Sign check
+AFTER   Licence desk → Financier view → Verify
 ```
 
 | Screen | What the artist does | What the backend does |
 |---|---|---|
-| **Desk** | Pick a sample contract or paste text. Set language EN/SW. | Load contract + artist/work. Extraction is a fixture (deterministic) or a validated LLM parse (live). |
+| **You** (`/onboard`, or the set-up wizard `/welcome`) | Type a profile, music links and **audience numbers** (followers, listeners, average likes). | `POST /artists` seals the profile. The audience numbers are **self-reported, not verified**; nothing is fetched from any platform (no scraping). `GET /artists/{id}/audience` returns them with a plain band (Just starting, Growing, Established) from a small, documented, illustrative calculation. It never changes the Rights check. |
+| **Register your work** (`/passport`) | See the work, who owns what, that every co-writer said yes, the AI rule and the ready-check, then register with consent. **No contract needed.** | `GET /works/{id}/check`, then `POST /works` and `POST /passport/{artist}/issue`. The work is the synthetic "Asali ya Jioni". |
+| **Your work passport** (`/passport/issued`) | See the passport card and, side by side, the **Rights check (not a credit score)** and the **Audience credibility** card ("Self-reported, not verified"). | Same issued passport; no new score. **No NFT and no chain**: it is a signed, hash-linked record kept by the demo server. "On the roadmap": anchoring it on a public chain. |
+| **Desk** | Pick a sample contract or paste text. Set language EN/SW. If the work is not registered yet, a note says so (a warning, never a block). | Load contract + artist/work. Extraction is a fixture (deterministic) or a validated LLM parse (live). |
 | **Clause map** | Open a flag. Read fairness (flag count, clause trail) and tap as-written vs after-negotiation scores. | `POST /analyze` + `GET /readiness` → MeTTa `flags-of` and `score.metta` on hypothetical events. Fairness is a summary of flags, not a new model. |
 | **Simulator** | Try stream counts. Compare as-written vs after. | `POST /simulate` → MeTTa recoupment + cross-collateral. Illustrative only. |
 | **Theater** | Approve or reject each concession. A small card links on to the Sign check. | `POST /negotiate` → MeTTa artist/label moves. Artist is the only one who applies a concession. Max 4 rounds. |
 | **Sign check** | See "as written" vs "after negotiation", what is holding the number back and how to fix it, the before-you-sign checklist (warnings only), and the number round by round. | `GET /readiness` (same call as before). Nothing new is scored. |
 | **Licence desk** | Ask "can they use this work for X?" | `POST /licence` → MeTTa verdicts (`R-LIC-AI`, `R-LIC-TERM`, `R-LIC-CONSENT`, `R-LIC-OK`, …). |
-| **Passport** | Review the pre-sign checklist, then issue the certificate after agreed terms. | Hash work, sign with Ed25519, append hash-linked ledger, emit Open Badges v2-shaped badges + ERC-721-shaped metadata. **Nothing is minted.** Checklist never blocks. |
-| **Financier view** | Read a backer sheet: owners, open flags, AI stance, consent gaps, the same score. | `GET /passport/{artist}/financier` rearranges existing facts. No new score. Banner: not credit, not lending advice, SYNTHETIC. |
+| *(Passport, now in Before)* | Registering and issuing moved to the first stage (rows above). | Hash work, sign with Ed25519, append hash-linked ledger, emit Open Badges v2-shaped badges + ERC-721-shaped metadata. **Nothing is minted.** Checklist never blocks. |
+| **Financier view** | Read a backer sheet: owners, open flags, AI stance, consent gaps, the same score, and the self-reported Audience credibility card beside it. | `GET /passport/{artist}/financier` rearranges existing facts. No new score. Banner: not credit, not lending advice, SYNTHETIC. |
 | **Verify** | Run the tamper test (or check a certificate). | `POST /verify` → `intact` or `tampered: record N …`. |
 
 State is held in the API (SQLite) and in the browser session (`web/src/state.tsx`).
@@ -212,7 +218,7 @@ Artists: **Zawadi** (red line: never AI training; term cap 7 years) and
 
 - **MeTTa rules** on [PeTTa](https://github.com/trueagi-io/PeTTa) (`fea83178`, MIT) via SWI-Prolog ≥ 9.3
 - **FastAPI** + SQLite (`api/kabla/`)
-- **React + Vite + Tailwind** (`web/`) — Landing, demo sign-in and set-up wizard (front door), Onboard (Before), Desk, ClauseMap, Simulator, Theater (During), LicenceDesk, Passport, Financier, Verify (After)
+- **React + Vite + Tailwind** (`web/`) — Landing, demo sign-in and set-up wizard (front door), Onboard, Register your work (`/passport`), Your work passport (`/passport/issued`) (Before), Desk, ClauseMap, Simulator, Theater, Sign check (During), LicenceDesk, Financier, Verify (After)
 - **Ed25519** (PyNaCl) hash-linked ledger; Open Badges v2-shaped badges
 - **EN/SW** deterministic templates (`api/kabla/i18n/`) — Swahili is AI-drafted and must be checked by a fluent speaker
 - **Omega plugin** (`omega-plugin/`) — Kabla skills, an LLM provider (router picks the skill, a live model only phrases the result, offline router if no key or on failure; timeout, retry, circuit breaker, output vetting) and a file chat channel. `python scripts/omega_run.py` runs the real Omega agent loop under a watchdog; `python scripts/omega_smoke.py` talks to it through the API. Earlier skill-registry-only harness: `scripts/omega_native.py`.

@@ -19,6 +19,16 @@ anything it says.
 - Every point is traced to a verified event in the artist's own log; weights are documented
   constants in `docs/PASSPORT.md`.
 
+## Work passport and audience numbers
+
+- **No NFT and no chain.** The work passport is a signed, hash-linked record kept by the demo server. Nothing is
+  minted. "Anchor it on a public chain" is on the roadmap (`docs/NEXT.md`).
+- **Audience numbers are typed by the musician: self-reported, not verified.** Kabla never opens or scrapes Instagram,
+  TikTok, Facebook, Spotify or YouTube. The "Audience credibility" band (Just starting, Growing, Established) is plain
+  arithmetic with illustrative thresholds, says nothing about money or creditworthiness, and never changes the Rights
+  check. Fake followers are not detected.
+- **Register uses one invented song** ("Asali ya Jioni"). A real work form with co-writer invitations is not built.
+
 ## Numbers
 
 - The earnings simulator uses **illustrative synthetic rate profiles**, not market data.
