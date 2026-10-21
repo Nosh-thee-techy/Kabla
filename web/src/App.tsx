@@ -10,6 +10,8 @@ import { Desk } from "./pages/Desk";
 import { LicenceDesk } from "./pages/LicenceDesk";
 import { Onboard } from "./pages/Onboard";
 import { Passport } from "./pages/Passport";
+import { PassportIssued } from "./pages/PassportIssued";
+import { SignCheck } from "./pages/SignCheck";
 import { Simulator } from "./pages/Simulator";
 import { Theater } from "./pages/Theater";
 import { Verify } from "./pages/Verify";
@@ -84,8 +86,10 @@ export default function App() {
               <Route path="/map" element={<ClauseMap lang={lang} />} />
               <Route path="/simulate" element={<Simulator lang={lang} />} />
               <Route path="/theater" element={<Theater lang={lang} />} />
+              <Route path="/check" element={<SignCheck lang={lang} />} />
               <Route path="/licence" element={<LicenceDesk lang={lang} />} />
               <Route path="/passport" element={<Passport lang={lang} />} />
+              <Route path="/passport/issued" element={<PassportIssued lang={lang} />} />
               <Route path="/financier" element={<Financier lang={lang} />} />
               <Route path="/verify" element={<Verify lang={lang} />} />
             </Routes>

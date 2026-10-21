@@ -11,13 +11,15 @@ const STEPS = [
   { to: "/map", key: "map" as const, group: "groupDuring" as const, done: (s: S) => !!s.analysis },
   { to: "/simulate", key: "sim" as const, group: "groupDuring" as const, done: (s: S) => !!s.contract },
   { to: "/theater", key: "theater" as const, group: "groupDuring" as const, done: (s: S) => !!s.nego },
+  { to: "/check", key: "signCheck" as const, group: "groupDuring" as const, done: (s: S) => !!s.nego },
   { to: "/licence", key: "licence" as const, group: "groupAfter" as const, done: (s: S) => !!s.licence },
-  { to: "/passport", key: "passport" as const, group: "groupAfter" as const, done: (s: S) => !!s.passport },
+  { to: "/passport", key: "regStep" as const, group: "groupAfter" as const, done: (s: S) => !!s.passport },
+  { to: "/passport/issued", key: "passport" as const, group: "groupAfter" as const, done: (s: S) => !!s.passport },
   { to: "/financier", key: "financier" as const, group: "groupAfter" as const, done: (s: S) => !!s.passport },
   { to: "/verify", key: "verify" as const, group: "groupAfter" as const, done: (s: S) => !!s.verify },
 ];
 
-/** Numbered ledger line, grouped by stage: Before 01 · During 02-05 · After 06-09. */
+/** Numbered ledger line, grouped by stage: Before 01 · During 02-06 · After 07-11. */
 export function JourneyRail({ lang }: { lang: Lang }) {
   const store = useKabla();
   const { pathname } = useLocation();
@@ -25,7 +27,9 @@ export function JourneyRail({ lang }: { lang: Lang }) {
     <nav aria-label={t(lang, "journey")} className="overflow-x-auto relative">
       <ol className="flex items-center gap-4 md:gap-5 min-w-max text-xs">
         {STEPS.map((step, i) => {
-          const here = pathname === step.to || (step.to !== "/" && pathname.startsWith(step.to));
+          // A nested room (/passport/issued) must not also light up its parent (/passport): an exact step match wins.
+          const exactStep = STEPS.some((s) => s.to === pathname);
+          const here = pathname === step.to || (!exactStep && step.to !== "/" && pathname.startsWith(step.to));
           const done = step.done(store) && !here;
           const startsGroup = i === 0 || STEPS[i - 1].group !== step.group;
           return (

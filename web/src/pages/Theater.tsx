@@ -1,12 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { api, type Readiness } from "../api";
-import { ChecklistGate } from "../components/ChecklistGate";
 import { CurtainDown } from "../components/CurtainDown";
 import { EmptyGate } from "../components/EmptyGate";
 import { Clerk } from "../components/HowTo";
 import { Room } from "../components/Room";
 import { RoundCard } from "../components/RoundCard";
-import { SignReadiness, type TrailPoint } from "../components/SignReadiness";
+import { ReadyCard, type TrailPoint } from "../components/SignReadiness";
 import { Stage } from "../components/Stage";
 import { t, tf, type Lang } from "../i18n";
 import { saveStart } from "../lib/tug";
@@ -33,7 +32,10 @@ export function Theater({ lang }: { lang: Lang }) {
   const [busy, setBusy] = useState(false);
   const [pending, setPending] = useState<Record<string, "approve" | "reject">>({});
   const [err, setErr] = useState<string | null>(null);
-  const [trail, setTrail] = useState<Trail>(() => loadTrail(contract?.id));
+  // The trail is only written here; the Sign check page reads it back from sessionStorage and draws it.
+  const [, setTrail] = useState<Trail>(() => loadTrail(contract?.id));
+  const listRef = useRef<HTMLDivElement>(null);
+  const seen = useRef<Map<string, number>>(new Map());
   async function begin() {
     if (!contract) return;
     setBusy(true); setErr(null);
@@ -109,6 +111,41 @@ export function Theater({ lang }: { lang: Lang }) {
   const station = !nego ? 0 : !isOpen ? 3 : decidedCount > 0 ? 2 : 1;
   const flow = ["flowRaise", "flowDecide", "flowStamp", "flowLicence"] as const;
 
+  // One card at a time: the one being talked about first, then the ones waiting, then the answered pile (in the
+  // order you answered). Answering moves a card down the list and the next one comes up.
+  const waiting = openTopics.filter((topic) => !pending[topic.topic] && topic.topic !== spotlight?.topic);
+  const answered = Object.keys(pending)
+    .map((k) => openTopics.find((topic) => topic.topic === k))
+    .filter((x): x is NonNullable<typeof x> => Boolean(x));
+  const ordered = !nego ? [] : !isOpen ? nego.topics : [
+    ...(spotlight ? [spotlight] : []),
+    ...waiting,
+    ...answered,
+    ...nego.topics.filter((topic) => topic.status !== "open"),
+  ];
+  const orderKey = ordered.map((topic) => topic.topic).join("|");
+
+  // Slide cards to their new place instead of jumping (skipped if the visitor prefers less motion).
+  useLayoutEffect(() => {
+    const root = listRef.current;
+    if (!root) return;
+    const still = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+    const next = new Map<string, number>();
+    root.querySelectorAll<HTMLElement>("[data-flip]").forEach((el) => {
+      const key = el.dataset.flip as string;
+      const top = el.offsetTop;
+      next.set(key, top);
+      const was = seen.current.get(key);
+      if (!still && was !== undefined && was !== top && el.animate) {
+        el.animate(
+          [{ transform: `translateY(${was - top}px)` }, { transform: "translateY(0)" }],
+          { duration: 520, easing: "cubic-bezier(0.22, 0.9, 0.3, 1)" },
+        );
+      }
+    });
+    seen.current = next;
+  }, [orderKey]);
+
   return (
     <Room wide>
       <header className="pb-3 border-b hair flex flex-wrap items-end justify-between gap-3">
@@ -172,8 +209,8 @@ export function Theater({ lang }: { lang: Lang }) {
               )}
             </div>
           </div>
-          <div className="mt-3 grid md:grid-cols-2 gap-4">
-            {nego.topics.map((topic) => (
+          <div className="deck mt-3" data-focus={spotlight ? "1" : undefined} ref={listRef}>
+            {ordered.map((topic) => (
               <RoundCard
                 key={topic.topic}
                 topic={topic}
@@ -182,6 +219,7 @@ export function Theater({ lang }: { lang: Lang }) {
                 spotlight={spotlight?.topic === topic.topic}
                 selected={pending[topic.topic]}
                 onDecide={(name, d) => setPending((p) => ({ ...p, [name]: d }))}
+                onUndo={(name) => setPending((p) => { const { [name]: _drop, ...rest } = p; return rest; })}
               />
             ))}
           </div>
@@ -211,13 +249,7 @@ export function Theater({ lang }: { lang: Lang }) {
         </>
       )}
       {err && <p className="text-flag-red mt-4" role="alert">{err}</p>}
-      {ready && (
-        <div className="mt-5 pt-3 border-t hair space-y-3">
-          <p className="label">{t(lang, "afterAct")}</p>
-          <SignReadiness lang={lang} data={ready} trail={trail.points} />
-          <ChecklistGate lang={lang} items={ready.checklist} />
-        </div>
-      )}
+      {ready && <ReadyCard lang={lang} data={ready} />}
     </Room>
   );
 }

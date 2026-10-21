@@ -1,0 +1,122 @@
+/* Sign check room and the small readiness card on the Theater. Works on paper and in the dusk/lamp rooms. */
+.ck-room, .ready-card {
+  --ck-accent: #C4572D;   /* after-negotiation line and number */
+  --ck-good: #2F5D50;
+  --ck-bad: #B3261E;
+  --ck-soft: rgb(27 26 23 / 0.6);
+}
+.dark .ck-room, .room-dusk .ck-room, .dark .ready-card, .room-dusk .ready-card {
+  --ck-accent: #D9A441;
+  --ck-good: #8FCFB8;
+  --ck-bad: #F0A39C;
+  --ck-soft: rgb(248 238 216 / 0.65);
+}
+
+/* Compact card in the Theater */
+.ready-card {
+  margin-top: 1.25rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid rgb(243 230 200 / 0.26);
+  background: rgb(0 0 0 / 0.18);
+  display: flex; flex-wrap: wrap; align-items: center; gap: 0.6rem 1.5rem;
+}
+.ready-card-kicker { margin: 0; font: 600 10px/1 "IBM Plex Mono", ui-monospace, monospace; text-transform: uppercase; letter-spacing: 0.2em; color: var(--ck-accent); }
+.ready-card-nums { display: flex; align-items: flex-end; gap: 0.9rem; flex: 1; min-width: 12rem; }
+.ready-card-nums p { margin: 0; display: flex; flex-direction: column; gap: 0.15rem; }
+.ready-card-nums span { font-size: 10px; text-transform: uppercase; letter-spacing: 0.14em; opacity: 0.65; }
+.ready-card-nums b { font: italic 600 1.7rem/1 Fraunces, Georgia, serif; }
+.ready-card-nums p:last-of-type b { color: var(--ck-accent); }
+.ready-card-arrow { opacity: 0.5; padding-bottom: 0.2rem; }
+.ready-card-go { white-space: nowrap; }
+.ck-chip { align-self: flex-end; margin-bottom: 0.2rem; padding: 0.1rem 0.45rem; border-radius: 999px; font: 600 11px/1.4 "IBM Plex Mono", ui-monospace, monospace; color: #fff; background: #2F5D50; }
+.ck-chip[data-dir="down"] { background: #B3261E; }
+
+/* Page */
+.ck-room { max-width: 52rem; }
+.ck-section { margin-top: 2rem; }
+.ck-section > .label { margin-bottom: 0.9rem; }
+
+/* 1. Headline */
+.ck-head { margin-top: 1.5rem; }
+.ck-nums { display: flex; align-items: stretch; justify-content: flex-start; gap: 0.75rem; flex-wrap: nowrap; }
+.ck-big {
+  flex: 1 1 0; min-width: 0; max-width: 16rem; text-align: left;
+  display: flex; flex-direction: column; gap: 0.15rem; padding: 0.8rem 1rem 0.7rem;
+  border: 1px solid rgb(27 26 23 / 0.22); background: rgb(255 255 255 / 0.35);
+  border-bottom-width: 4px; border-bottom-color: transparent; cursor: pointer;
+  transition: border-color 120ms ease, background 120ms ease;
+}
+.dark .ck-big, .room-dusk .ck-big { border-color: rgb(243 230 200 / 0.26); background: rgb(0 0 0 / 0.18); border-bottom-color: transparent; }
+.ck-big:hover { border-bottom-color: var(--ck-accent); }
+.ck-big[aria-pressed="true"] { border-bottom-color: var(--ck-accent); }
+.ck-big-label { font: 600 10px/1.2 "IBM Plex Mono", ui-monospace, monospace; text-transform: uppercase; letter-spacing: 0.14em; opacity: 0.75; }
+.ck-big-num { font: italic 600 4rem/1 Fraunces, Georgia, serif; margin-top: 0.2rem; }
+.ck-nums .ck-big:last-child .ck-big-num { color: var(--ck-accent); }
+.ck-big-of { font-size: 11px; opacity: 0.6; }
+.ck-diff { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.2rem; min-width: 2.6rem; font-size: 1.4rem; opacity: 0.9; }
+.ck-diff b { font: 700 12px/1 "IBM Plex Mono", ui-monospace, monospace; padding: 0.2rem 0.45rem; border-radius: 999px; color: #fff; background: #2F5D50; }
+.ck-diff b[data-dir="down"] { background: #B3261E; }
+.ck-sentence { margin: 0.9rem 0 0; font-size: 1.05rem; line-height: 1.4; max-width: 38rem; }
+.ck-hint { margin: 0.4rem 0 0; font-size: 12px; color: var(--ck-soft); }
+
+/* 2. What is holding it back */
+.ck-cards { display: grid; gap: 0.75rem; margin: 0; padding: 0; list-style: none; }
+.ck-card {
+  padding: 0.9rem 1rem; border: 1px solid rgb(27 26 23 / 0.22); border-left: 4px solid var(--ck-bad);
+  background: rgb(255 255 255 / 0.35);
+}
+.dark .ck-card, .room-dusk .ck-card { border-color: rgb(243 230 200 / 0.26); border-left-color: var(--ck-bad); background: rgb(0 0 0 / 0.18); }
+.ck-card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; }
+.ck-card-title { margin: 0; font-size: 1rem; font-weight: 600; line-height: 1.3; }
+.ck-card-pts { flex-shrink: 0; text-align: right; font: italic 600 1.6rem/1 Fraunces, Georgia, serif; color: var(--ck-bad); }
+.ck-card-sub { margin: 0.2rem 0 0; font-size: 12px; color: var(--ck-soft); }
+.ck-clauses { margin: 0.5rem 0 0; padding: 0; list-style: none; font-size: 13px; }
+.ck-clauses li { padding: 0.15rem 0; }
+.ck-clauses li span { font: 600 10px/1 "IBM Plex Mono", ui-monospace, monospace; text-transform: uppercase; letter-spacing: 0.12em; opacity: 0.65; margin-right: 0.5rem; }
+.ck-fix { margin: 0.7rem 0 0; font-size: 14px; line-height: 1.4; }
+.ck-fix span { font: 600 10px/1 "IBM Plex Mono", ui-monospace, monospace; text-transform: uppercase; letter-spacing: 0.14em; color: var(--ck-accent); margin-right: 0.5rem; }
+.ck-details { margin-top: 0.6rem; font-size: 12px; }
+.ck-details summary { cursor: pointer; font: 600 10px/1.4 "IBM Plex Mono", ui-monospace, monospace; text-transform: uppercase; letter-spacing: 0.14em; opacity: 0.6; }
+.ck-details ul { margin: 0.4rem 0 0; padding: 0; list-style: none; font: 500 11px/1.5 "IBM Plex Mono", ui-monospace, monospace; opacity: 0.75; overflow-wrap: anywhere; }
+.ck-none { margin: 0; padding: 0.8rem 1rem; border: 1px dashed currentColor; border-color: rgb(27 26 23 / 0.3); font-size: 14px; }
+.dark .ck-none, .room-dusk .ck-none { border-color: rgb(243 230 200 / 0.3); }
+
+/* 3. Already in good shape (collapsed) */
+.ck-good > summary { cursor: pointer; display: flex; align-items: center; gap: 0.6rem; list-style: none; padding: 0.7rem 1rem; border: 1px solid rgb(27 26 23 / 0.22); background: rgb(255 255 255 / 0.35); font-size: 14px; font-weight: 600; }
+.dark .ck-good > summary, .room-dusk .ck-good > summary { border-color: rgb(243 230 200 / 0.26); background: rgb(0 0 0 / 0.18); }
+.ck-good > summary::-webkit-details-marker { display: none; }
+.ck-good > summary::before { content: "▸"; color: var(--ck-accent); transition: transform 120ms ease; }
+.ck-good[open] > summary::before { transform: rotate(90deg); }
+.ck-good-list { margin: 0; padding: 0 1rem; list-style: none; border: 1px solid rgb(27 26 23 / 0.22); border-top: 0; }
+.dark .ck-good-list, .room-dusk .ck-good-list { border-color: rgb(243 230 200 / 0.26); }
+.ck-good-list li { display: flex; align-items: baseline; gap: 0.7rem; padding: 0.55rem 0; border-bottom: 1px dotted rgb(27 26 23 / 0.25); font-size: 14px; }
+.dark .ck-good-list li, .room-dusk .ck-good-list li { border-bottom-color: rgb(243 230 200 / 0.25); }
+.ck-good-list li:last-child { border-bottom: 0; }
+.ck-good-list b { flex-shrink: 0; min-width: 2.6rem; color: var(--ck-good); font: 600 12px/1 "IBM Plex Mono", ui-monospace, monospace; }
+
+/* 5. Trail chart */
+.ck-trail { margin: 0; max-width: 34rem; }
+.ck-trail svg { width: 100%; height: auto; display: block; overflow: visible; }
+.ck-grid { stroke: currentColor; stroke-opacity: 0.18; stroke-width: 1; stroke-dasharray: 2 4; }
+.ck-axis { fill: currentColor; fill-opacity: 0.6; font: 500 9px "IBM Plex Mono", ui-monospace, monospace; }
+.ck-line-after { fill: none; stroke: var(--ck-accent); stroke-width: 2.4; }
+.ck-line-written { fill: none; stroke: currentColor; stroke-opacity: 0.5; stroke-width: 1.6; stroke-dasharray: 4 4; }
+.ck-dot-after { fill: var(--ck-accent); }
+.ck-dot-written { fill: none; stroke: currentColor; stroke-opacity: 0.6; stroke-width: 1.6; }
+.ck-val { fill: currentColor; font: 700 11px "IBM Plex Mono", ui-monospace, monospace; }
+.ck-round { fill: currentColor; fill-opacity: 0.75; font: 600 9px "IBM Plex Mono", ui-monospace, monospace; text-transform: uppercase; letter-spacing: 0.08em; }
+.ck-legend { display: flex; flex-wrap: wrap; gap: 0.4rem 1.2rem; margin-top: 0.4rem; font-size: 12px; color: var(--ck-soft); }
+.ck-legend span { display: inline-flex; align-items: center; gap: 0.4rem; }
+.ck-legend i { display: inline-block; width: 1.4rem; height: 0; border-top: 2.4px solid var(--ck-accent); }
+.ck-legend i.ck-key-written { border-top: 1.6px dashed currentColor; opacity: 0.6; }
+
+/* Phones */
+@media (max-width: 520px) {
+  .ck-nums { gap: 0.4rem; }
+  .ck-big { padding: 0.65rem 0.7rem 0.55rem; }
+  .ck-big-num { font-size: 3rem; }
+  .ck-big-label { font-size: 9px; letter-spacing: 0.1em; }
+  .ck-diff { min-width: 1.6rem; font-size: 1.1rem; }
+  .ck-card-pts { font-size: 1.35rem; }
+  .ready-card-go { width: 100%; }
+}

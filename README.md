@@ -103,7 +103,7 @@ that matters is a `fetch` to the FastAPI backend; the backend writes
 `facts.metta`, runs PeTTa, and returns structured results the UI paints.
 
 ```
-Desk → Clause map → Simulator → Theater → Licence desk → Passport → Verify
+Desk → Clause map → Simulator → Theater → Sign check → Licence desk → Passport → Verify
 ```
 
 | Screen | What the artist does | What the backend does |
@@ -111,7 +111,8 @@ Desk → Clause map → Simulator → Theater → Licence desk → Passport → 
 | **Desk** | Pick a sample contract or paste text. Set language EN/SW. | Load contract + artist/work. Extraction is a fixture (deterministic) or a validated LLM parse (live). |
 | **Clause map** | Open a flag. Read fairness (flag count, clause trail) and tap as-written vs after-negotiation scores. | `POST /analyze` + `GET /readiness` → MeTTa `flags-of` and `score.metta` on hypothetical events. Fairness is a summary of flags, not a new model. |
 | **Simulator** | Try stream counts. Compare as-written vs after. | `POST /simulate` → MeTTa recoupment + cross-collateral. Illustrative only. |
-| **Theater** | Approve or reject each concession. See the checklist (warnings only). | `POST /negotiate` → MeTTa artist/label moves. Artist is the only one who applies a concession. Max 4 rounds. |
+| **Theater** | Approve or reject each concession. A small card links on to the Sign check. | `POST /negotiate` → MeTTa artist/label moves. Artist is the only one who applies a concession. Max 4 rounds. |
+| **Sign check** | See "as written" vs "after negotiation", what is holding the number back and how to fix it, the before-you-sign checklist (warnings only), and the number round by round. | `GET /readiness` (same call as before). Nothing new is scored. |
 | **Licence desk** | Ask "can they use this work for X?" | `POST /licence` → MeTTa verdicts (`R-LIC-AI`, `R-LIC-TERM`, `R-LIC-CONSENT`, `R-LIC-OK`, …). |
 | **Passport** | Review the pre-sign checklist, then issue the certificate after agreed terms. | Hash work, sign with Ed25519, append hash-linked ledger, emit Open Badges v2-shaped badges + ERC-721-shaped metadata. **Nothing is minted.** Checklist never blocks. |
 | **Financier view** | Read a backer sheet: owners, open flags, AI stance, consent gaps, the same score. | `GET /passport/{artist}/financier` rearranges existing facts. No new score. Banner: not credit, not lending advice, SYNTHETIC. |
