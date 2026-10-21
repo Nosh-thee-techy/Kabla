@@ -23,6 +23,8 @@ plugin, a chat bridge, and a browser click-through of every room.
 
 ## Known limits to fix next
 
+- **Real accounts are the next step; today there are none.** The landing page's "Start" / "Sign in" lead to a local demo sign-in (a display name kept in this tab's sessionStorage, no password, nothing sent to the API). A real version needs a user table and sessions on the API, magic-link or OAuth sign-in (so no passwords are stored), consent and delete-my-data flows, per-user ownership of profiles and passports, rate limits and a privacy notice. See docs/DECISIONS.md, "Landing page and a demo sign-in".
+
 - **State is kept per tab, not per person.** A reload keeps the open contract, analysis, profile and passport (sessionStorage); a new tab
   or visit starts clean at Before, and nothing is saved to an account. The browser check has a reload row (03b).
 - **Typed profiles hold facts and gaps only.** The Passport, Financier and Verify rooms still run on the synthetic work

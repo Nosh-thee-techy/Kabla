@@ -1,7 +1,15 @@
 ﻿import { createContext, useCallback, useContext, useState, type ReactNode } from "react";
 import type { Analysis, Contract, LicenceVerdict, Nego, Passport, Profile, VerifyResult } from "./api";
 
+/** The local "demo sign-in": a display name and an optional contact, kept only in this browser tab.
+ *  Not an account: no password, nothing is sent to the API. See docs/DECISIONS.md (landing + demo sign-in). */
+export type Account = { name: string; contact: string; at: string; onboarded: boolean };
+
 type Store = {
+  account: Account | null;
+  setAccount: (a: Account | null) => void;
+  /** "Sign out / start fresh": forgets the demo sign-in and every other kabla:* value kept in this tab. */
+  signOut: () => void;
   contract: Contract | null;
   analysis: Analysis | null;
   nego: Nego | null;
@@ -55,8 +63,18 @@ export function KablaProvider({ children }: { children: ReactNode }) {
   const [passport, setPassport] = usePersisted<Passport>("passport");
   const [verify, setVerify] = usePersisted<VerifyResult>("verify");
   const [profile, setProfile] = usePersisted<Profile>("profile");
+  const [account, setAccount] = usePersisted<Account>("account");
+  const signOut = useCallback(() => {
+    // Clear every kabla:* key (also any a future room adds), then the in-memory copies.
+    try {
+      for (const k of Object.keys(sessionStorage)) if (k.startsWith("kabla:")) sessionStorage.removeItem(k);
+    } catch { /* storage blocked: the in-memory reset below still works */ }
+    setAccount(null); setProfile(null); setContract(null); setAnalysis(null);
+    setNego(null); setLicence(null); setPassport(null); setVerify(null);
+  }, [setAccount, setProfile, setContract, setAnalysis, setNego, setLicence, setPassport, setVerify]);
   return (
     <Ctx.Provider value={{
+      account, setAccount, signOut,
       contract, analysis, nego, licence, passport, verify, profile, setProfile,
       setContract, setAnalysis, setNego, setLicence, setPassport, setVerify,
     }}>

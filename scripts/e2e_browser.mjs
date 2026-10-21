@@ -58,20 +58,57 @@ page.on("pageerror", (e) => consoleErrors.push(String(e).slice(0, 160)));
 
 await room("00 load", async () => {
   await page.goto(BASE, { waitUntil: "domcontentloaded" });
-  await see(/Know what you.re signing/i);
+  await see(/Read your music contract with someone on your side/i);   // the landing page is the front door
   await see(/SYNTHETIC/);
+  await see(/Demo sign-in/);                                            // honest label: no password, no real account
+  await see(/What Kabla is not/i);
+  await shot("landing-desktop.png");
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.waitForTimeout(300);
+  await page.screenshot({ path: path.join(shots, "landing-390.png"), fullPage: true }).catch(() => {});
+  await page.setViewportSize({ width: 1280, height: 900 });
 });
 
-await room("01 before: onboard + seal", async () => {
-  await nav("You");
+await room("00b landing: Sign in with nothing stored says so", async () => {
+  await page.getByRole("link", { name: /^Sign in$/ }).first().click();
+  await see(/No demo profile on this device/i);
+  await see(/Real accounts: planned next/i);
+  await page.goBack();
+});
+
+// Landing -> Start -> demo sign-in -> 3-step wizard -> Ready. The last step makes the same API call as the You room.
+await room("01 before: landing, demo sign-in, wizard + seal", async () => {
+  await page.getByRole("link", { name: /^Start$/ }).first().click();
+  await see(/Demo sign-in: stays on this device, no password, no real account/);
+  await see(/Real accounts: planned next/i);
+  await page.getByPlaceholder(/your first name/i).fill("Test Visitor");
+  await shot("signin.png");
+  await btn(/^Continue$/).click();
+  await see(/Step 1 of 3/);
+  await shot("wizard-1.png");
+  await btn(/^Next$/).click();
+  await see(/Step 2 of 3/);
+  await see(/Kabla never opens these accounts/i);
+  await shot("wizard-2.png");
+  await btn(/^Next$/).click();
+  await see(/Step 3 of 3/);
   await btn(/Fill in the demo artist/i).click();
   await page.getByRole("checkbox").first().check();
+  await shot("wizard-3.png");
   await btn(/Seal my profile/i).click();
-  await see(/Profile sealed/i);
-  await dismiss();
+  await see(/You are ready/i);
+  await shot("wizard-ready.png");
   await btn(/Check the seal/i).click();
   await see(/Seal intact/i);
   await see(/still missing/i);
+});
+
+await room("01b before: You room still works (profile edit)", async () => {
+  await btn(/Open the Desk/i).click();
+  await page.waitForURL(/\/desk/, { timeout: T });
+  await nav("You");
+  await see(/Tell Kabla who you are/i);
+  await see(/Profile sealed/i);                   // the wizard's profile is the same state the You room reads
 });
 
 await room("02 during: desk reads a contract", async () => {
@@ -170,10 +207,23 @@ await room("10 chat: Omega agent panel", async () => {
   await see(/Agent online|offline or asleep/i);
 });
 
-await room("11 swahili toggle", async () => {
+await room("11 sign out / start fresh clears everything", async () => {
+  await dismiss();
+  const before = await page.evaluate(() => Object.keys(sessionStorage).filter((k) => k.startsWith("kabla:")));
+  if (!before.includes("kabla:account") || !before.includes("kabla:profile")) throw new Error(`expected account + profile in storage, saw ${before.join(",")}`);
+  await page.getByRole("button", { name: /Sign out \/ start fresh/ }).first().click();
+  await see(/Read your music contract with someone on your side/i);
+  const after = await page.evaluate(() => Object.keys(sessionStorage).filter((k) => k.startsWith("kabla:")));
+  if (after.length) throw new Error(`kabla:* keys left after sign out: ${after.join(",")}`);
+  return `cleared ${before.length} key(s)`;
+});
+
+await room("12 swahili toggle", async () => {
   await page.goto(BASE, { waitUntil: "domcontentloaded" });
   await page.getByRole("button", { name: /^(SW|Kiswahili|Swahili)$/i }).first().click();
-  await see(/Jua unachosaini/i);
+  await see(/Soma mkataba wako wa muziki/i);
+  await see(/Kuingia kwa onyesho/);
+  await shot("landing-sw.png");
 });
 
 await browser.close();

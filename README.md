@@ -211,7 +211,7 @@ Artists: **Zawadi** (red line: never AI training; term cap 7 years) and
 
 - **MeTTa rules** on [PeTTa](https://github.com/trueagi-io/PeTTa) (`fea83178`, MIT) via SWI-Prolog ≥ 9.3
 - **FastAPI** + SQLite (`api/kabla/`)
-- **React + Vite + Tailwind** (`web/`) — Onboard (Before), Desk, ClauseMap, Simulator, Theater (During), LicenceDesk, Passport, Financier, Verify (After)
+- **React + Vite + Tailwind** (`web/`) — Landing, demo sign-in and set-up wizard (front door), Onboard (Before), Desk, ClauseMap, Simulator, Theater (During), LicenceDesk, Passport, Financier, Verify (After)
 - **Ed25519** (PyNaCl) hash-linked ledger; Open Badges v2-shaped badges
 - **EN/SW** deterministic templates (`api/kabla/i18n/`) — Swahili is AI-drafted and must be checked by a fluent speaker
 - **Omega plugin** (`omega-plugin/`) — Kabla skills, an LLM provider (router picks the skill, a live model only phrases the result, offline router if no key or on failure; timeout, retry, circuit breaker, output vetting) and a file chat channel. `python scripts/omega_run.py` runs the real Omega agent loop under a watchdog; `python scripts/omega_smoke.py` talks to it through the API. Earlier skill-registry-only harness: `scripts/omega_native.py`.
@@ -237,8 +237,9 @@ Docker (API + web; no Omega): `docker compose up --build`. Web is on
 http://localhost:5173 and proxies `/api` to the API.
 
 - API health: http://localhost:8000/health
-- Desk: http://localhost:5173
-- Demo jump (Mawingu): http://localhost:5173/?sample=c001
+- Landing page (demo sign-in, no real accounts): http://localhost:5173
+- Desk: http://localhost:5173/desk
+- Demo jump (Mawingu): http://localhost:5173/desk?sample=c001
 
 `KABLA_MODE=deterministic` (default) uses fixtures and templates — no LLM, no
 network. Copy `.env.example` to `.env` for live mode; never commit secrets.

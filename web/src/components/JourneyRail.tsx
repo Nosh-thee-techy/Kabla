@@ -7,7 +7,7 @@ type S = ReturnType<typeof useKabla>;
 /** Three stages of an artist's story: Before a contract, During it, After it. */
 const STEPS = [
   { to: "/onboard", key: "onboard" as const, group: "groupBefore" as const, done: (s: S) => !!s.profile },
-  { to: "/", key: "desk" as const, group: "groupDuring" as const, done: () => true },
+  { to: "/desk", key: "desk" as const, group: "groupDuring" as const, done: () => true },
   { to: "/map", key: "map" as const, group: "groupDuring" as const, done: (s: S) => !!s.analysis },
   { to: "/simulate", key: "sim" as const, group: "groupDuring" as const, done: (s: S) => !!s.contract },
   { to: "/theater", key: "theater" as const, group: "groupDuring" as const, done: (s: S) => !!s.nego },

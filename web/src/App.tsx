@@ -15,8 +15,14 @@ import { Theater } from "./pages/Theater";
 import { Verify } from "./pages/Verify";
 import { Financier } from "./pages/Financier";
 import { KablaProvider } from "./state";
+import { AccountChip } from "./components/AccountChip";
+import { Landing } from "./pages/Landing";
+import { Onboarding } from "./pages/Onboarding";
+import { SignIn } from "./pages/SignIn";
 
-const DUSK = new Set(["/theater", "/passport", "/financier", "/verify"]);
+// The front door (landing, demo sign-in, set-up wizard) is a dark "night desk" room and has no journey rail.
+const FRONT = new Set(["/", "/signin", "/welcome"]);
+const DUSK = new Set(["/", "/signin", "/welcome", "/theater", "/passport", "/passport/issued", "/financier", "/verify"]);
 
 export default function App() {
   // The language is a preference, so it survives reloads and new visits (localStorage, like the lamp).
@@ -52,9 +58,10 @@ export default function App() {
             <div className="max-w-[1240px] mx-auto px-4 md:px-6 py-2.5 flex flex-wrap items-center gap-x-6 gap-y-2">
               <Wordmark />
               <div className="order-3 md:order-none basis-full md:basis-auto min-w-0 max-w-full md:flex-1 md:flex md:justify-center">
-                <JourneyRail lang={lang} />
+                {!FRONT.has(pathname) && <JourneyRail lang={lang} />}
               </div>
               <div className="ml-auto flex items-center gap-2">
+                <AccountChip lang={lang} />
                 <LangToggle lang={lang} onChange={setLang} />
                 <button
                   type="button"
@@ -70,7 +77,10 @@ export default function App() {
           <div id="main" className="flex-1 flex flex-col">
             <Routes>
               <Route path="/onboard" element={<Onboard lang={lang} />} />
-              <Route path="/" element={<Desk lang={lang} />} />
+              <Route path="/" element={<Landing lang={lang} />} />
+              <Route path="/signin" element={<SignIn lang={lang} />} />
+              <Route path="/welcome" element={<Onboarding lang={lang} setLang={setLang} />} />
+              <Route path="/desk" element={<Desk lang={lang} />} />
               <Route path="/map" element={<ClauseMap lang={lang} />} />
               <Route path="/simulate" element={<Simulator lang={lang} />} />
               <Route path="/theater" element={<Theater lang={lang} />} />

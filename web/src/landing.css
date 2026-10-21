@@ -1,0 +1,53 @@
+/* Landing page, demo sign-in and set-up wizard. Night-desk look: dark paper, gold labels, ruled cards. */
+
+.lp-hero-title { font-size: clamp(2.1rem, 6.2vw, 4rem); line-height: 1.04; }
+
+/* Three steps as one ticket strip: a numbered card per stage, joined by a dashed rail with an arrow. */
+.lp-steps { display: grid; gap: 1rem; grid-template-columns: 1fr; position: relative; }
+@media (min-width: 768px) {
+  .lp-steps { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.75rem; }
+  .lp-step:not(:last-child)::after {
+    content: "";
+    position: absolute; top: 2.6rem; right: -1.6rem; width: 1.45rem; height: 0;
+    border-top: 2px dashed #D9A441;
+  }
+  .lp-step:not(:last-child)::before {
+    content: "";
+    position: absolute; top: calc(2.6rem - 5px); right: -1.65rem; width: 0; height: 0;
+    border-left: 8px solid #D9A441; border-top: 6px solid transparent; border-bottom: 6px solid transparent;
+  }
+}
+.lp-step { position: relative; padding: 1.1rem 1.1rem 1.25rem; }
+.lp-step-num {
+  display: grid; place-items: center; width: 2.6rem; height: 2.6rem; border-radius: 999px;
+  border: 2px solid #D9A441; color: #D9A441; font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 0.8rem;
+}
+.lp-step-tag { font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: #D9A441; }
+
+/* "What Kabla is not": ruled box, each line led by a small crossed seal. */
+.lp-not li { display: flex; gap: 0.7rem; align-items: baseline; padding: 0.4rem 0; }
+.lp-not .seal { width: 1.35rem; height: 1.35rem; font-size: 0.7rem; }
+
+/* Placeholders must read as examples, not as typed text. */
+.ph-dim::placeholder { opacity: 0.55; font-style: italic; }
+
+.lp-demo {
+  border-left: 3px solid #D9A441;
+  background: rgb(217 164 65 / 0.09);
+}
+
+/* Wizard progress: four numbered stations, current one underlined, finished ones gold. */
+.wz-prog { display: flex; flex-wrap: wrap; gap: 0.35rem 1.4rem; font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; }
+.wz-prog li { display: flex; gap: 0.4rem; align-items: baseline; padding-bottom: 2px; border-bottom: 2px solid transparent; opacity: 0.5; }
+.wz-prog li[aria-current="step"] { opacity: 1; border-color: #D9A441; }
+.wz-prog li.done { opacity: 0.85; color: #D9A441; }
+.wz-bar { height: 4px; background: rgb(243 230 200 / 0.16); }
+.wz-bar > div { height: 100%; background: #D9A441; transition: width 200ms ease; }
+
+.wz-lang { display: inline-flex; border: 1px solid rgb(243 230 200 / 0.3); border-radius: 2px; }
+.wz-lang label { padding: 0.45rem 1rem; cursor: pointer; font-size: 0.85rem; }
+.wz-lang input { position: absolute; opacity: 0; pointer-events: none; }
+.wz-lang input:checked + span { color: #1A1410; background: #D9A441; display: block; margin: -0.45rem -1rem; padding: 0.45rem 1rem; }
+.wz-lang label:focus-within { outline: 3px solid #D9A441; outline-offset: 2px; }
+
+@media (prefers-reduced-motion: reduce) { .wz-bar > div { transition: none; } }

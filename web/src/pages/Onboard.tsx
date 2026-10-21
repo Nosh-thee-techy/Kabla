@@ -9,7 +9,7 @@ import { useKabla } from "../state";
 const PLATFORMS = ["instagram", "facebook", "tiktok", "spotify", "youtube"] as const;
 
 /** Plain-language line for each gap id MeTTa can return (engine/profile.metta). */
-function gapText(lang: Lang, g: ProfileGap): string {
+export function gapText(lang: Lang, g: ProfileGap): string {
   switch (g.id) {
     case "splits-unstated": return tf(lang, "gapSplitsUnstated", { detail: g.detail });
     case "no-works-listed": return t(lang, "gapNoWorks");
@@ -64,7 +64,7 @@ export function Onboard({ lang }: { lang: Lang }) {
         page="onboard"
         cue={profile ? "onboard:done" : "onboard"}
         say={t(lang, profile ? "sayOnboardDone" : "sayOnboard")}
-        cta={profile ? { label: t(lang, "ctaToDesk"), to: "/" } : { label: t(lang, "ctaOnbDemo"), onClick: fillDemo }}
+        cta={profile ? { label: t(lang, "ctaToDesk"), to: "/desk" } : { label: t(lang, "ctaOnbDemo"), onClick: fillDemo }}
       />
 
       <div className="mt-5 grid lg:grid-cols-2 gap-x-10 gap-y-6 items-start">
@@ -142,7 +142,7 @@ export function Onboard({ lang }: { lang: Lang }) {
                 {seal.intact ? t(lang, "onbSealOk") : t(lang, "onbSealBad")} ({seal.records})
               </p>
             )}
-            <NextStamp to="/">{t(lang, "onbNext")}</NextStamp>
+            <NextStamp to="/desk">{t(lang, "onbNext")}</NextStamp>
           </section>
         )}
       </div>

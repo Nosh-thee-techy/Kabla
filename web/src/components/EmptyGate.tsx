@@ -7,7 +7,7 @@ export function EmptyGate({ lang, title }: { lang: Lang; title: string }) {
       <p className="seal seal-gold mx-auto" aria-hidden="true">K</p>
       <h1 className="font-display italic text-3xl mt-4">{title}</h1>
       <p className="mt-2 text-sm opacity-80">{t(lang, "emptyHint")}</p>
-      <Link to="/" className="stamp stamp-terracotta mt-6">
+      <Link to="/desk" className="stamp stamp-terracotta mt-6">
         {t(lang, "openMawingu")}
       </Link>
     </main>
