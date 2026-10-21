@@ -19,7 +19,7 @@ cleared, not cleared, or needs consent from a named person.
 > **Recorded in this repo:** Track 4 — BASIX.MARKET Builds · **Brief B:** Managing originals (Art IP and Music IP)
 > **Stage built:** **License**, plus a **Protect-lite "Before" step** (self-declared onboarding with consent, MeTTa gap rules, sealed profile) that the team asked to add. Not full Protect (no identity verification, no scraping) and not Earn (no on-chain mint).
 > **Team:** solo (record institution or Independent on the BASIX profile)
-> **Engine:** **MeTTa on PeTTa.** The product (web + API) runs on its own and does not need Omega. Separately, **Omega's real agent loop runs natively on Windows** (PeTTa v1.0.4, Omega `main`) with Kabla's plugin: Omega's loop, memory and tool-calling drive Kabla's four skills, which call this API, and MeTTa decides. Chat reaches it from the Desk page. Evidence: [`docs/evidence/omega-agent-excerpt.log`](docs/evidence/omega-agent-excerpt.log) and [`docs/evidence/omega-chat.md`](docs/evidence/omega-chat.md). **No LLM key was set**, so the agent's "model" is a labelled offline keyword router, not an LLM; a real model is used automatically when a key is added to `.env`. Staged-copy patches to Omega and the Windows limits (no sandbox) are in `docs/DECISIONS.md`. Do not describe this as "built on Omega".
+> **Engine:** **MeTTa on PeTTa.** The product (web + API) runs on its own and does not need Omega. Separately, **Omega's real agent loop runs natively on Windows** (PeTTa v1.0.4, Omega `main`) with Kabla's plugin: Omega's loop and memory host Kabla's four skills, which call this API, and MeTTa decides. Chat reaches it from the Desk page. Evidence: [`docs/evidence/omega-agent-excerpt.log`](docs/evidence/omega-agent-excerpt.log) and [`docs/evidence/omega-chat.md`](docs/evidence/omega-chat.md). **With a model key the chat runs live (5 of 5 test turns, 6-12 s each, NVIDIA Nemotron 3 Super through OpenRouter on 2026-10-21), but the model only phrases**: a keyword router picks the skill, the model rewrites the skill's one-line result, and any reply that drops a rule id, invents a number or leaks its own reasoning is replaced by the raw result. Without a key (or if the model is slow or down) the agent falls back to that router and labels every reply "[offline router, not an LLM]". We first let the model choose Omega's tools itself and it wandered (wrong-message answers, memory queries instead of answers); that is why. Staged-copy patches to Omega and the Windows limits (no sandbox) are in `docs/DECISIONS.md`. Do not describe this as "built on Omega".
 
 ### Why not just ask a chatbot?
 
@@ -213,7 +213,7 @@ Artists: **Zawadi** (red line: never AI training; term cap 7 years) and
 - **React + Vite + Tailwind** (`web/`) — Onboard (Before), Desk, ClauseMap, Simulator, Theater (During), LicenceDesk, Passport, Financier, Verify (After)
 - **Ed25519** (PyNaCl) hash-linked ledger; Open Badges v2-shaped badges
 - **EN/SW** deterministic templates (`api/kabla/i18n/`) — Swahili is AI-drafted and must be checked by a fluent speaker
-- **Omega plugin** (`omega-plugin/`) — Kabla skills, an LLM provider (live model if a key exists, otherwise an offline router, with timeout, retry and circuit breaker) and a file chat channel. `python scripts/omega_run.py` runs the real Omega agent loop under a watchdog; `python scripts/omega_smoke.py` talks to it through the API. Earlier skill-registry-only harness: `scripts/omega_native.py`.
+- **Omega plugin** (`omega-plugin/`) — Kabla skills, an LLM provider (router picks the skill, a live model only phrases the result, offline router if no key or on failure; timeout, retry, circuit breaker, output vetting) and a file chat channel. `python scripts/omega_run.py` runs the real Omega agent loop under a watchdog; `python scripts/omega_smoke.py` talks to it through the API. Earlier skill-registry-only harness: `scripts/omega_native.py`.
 
 Architecture sketch: [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
 
@@ -271,7 +271,7 @@ and do not claim a prize, a placement, or co-ownership.
 
 | Claim | Truth |
 |---|---|
-| "Built on Omega" | **No.** The product runs on MeTTa on PeTTa. What is true: the real Omega agent loop runs with Kabla's plugin and answers chat through Kabla's MeTTa-backed skills (log and chat transcript in `docs/evidence/`), but with an offline router instead of an LLM until a key is added, and without Omega's Linux sandbox. |
+| "Built on Omega" | **No.** The product runs on MeTTa on PeTTa. What is true: the real Omega agent loop runs with Kabla's plugin and answers chat through Kabla's MeTTa-backed skills (log and chat transcript in `docs/evidence/`), but Omega's own tool-choosing by an LLM is **not** what answers (a keyword router picks the skill; the model only phrases, or an offline router answers when there is no key), and there is no Omega Linux sandbox. |
 | "The Before step verifies who you are" | **No.** It is self-declared and consent-recorded; the seal proves the text did not change after sealing. Nothing is read from any social platform. |
 | "AI reads the contract and decides" | **No.** MeTTa decides. LLM is extract/phrase only, and off in the demo. |
 | "This is legal advice" | **No.** See [LIMITATIONS.md](LIMITATIONS.md). |

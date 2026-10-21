@@ -8,7 +8,12 @@ Omega `main`) with this plugin, Omega's memory, and the files below. `python scr
 messages through the API and records the answers in `docs/evidence/omega-chat.md`. The log excerpt is
 `docs/evidence/omega-agent-excerpt.log`.
 
-What this is **not**: no LLM was used in that run (no key was set): the provider answered with a labelled keyword router.
+With a key in `.env` (tested: NVIDIA Nemotron 3 Super via OpenRouter, `OMEGA_LLM_URL=https://openrouter.ai/api/v1`) the chat
+runs live: the router picks the skill, the model only phrases the skill's result, and a reply is used only if it keeps every
+rule id, adds no number and does not leak reasoning (else the raw result is relayed). Without a key, or on timeout, error or an
+open circuit, a labelled keyword router answers. Letting the model pick Omega's tools itself was tried and wandered.
+
+What this is **not**: not "Omega drives everything with an LLM", no Landlock sandbox on Windows, and the web product does not depend on it.
 There is no Landlock sandbox on Windows. The web product does not depend on Omega. Do not say "built on Omega". The
 patches made to the staged Omega copy are listed in `docs/DECISIONS.md`.
 
@@ -18,7 +23,7 @@ patches made to the staged Omega copy are listed in `docs/DECISIONS.md`.
 |---|---|
 | `kabla_plugin.metta` | MeTTa plugin: registers the four skills (`loadOmegaPlugin`) |
 | `kabla_skills.py` | HTTP helpers behind the skills; each result starts with a one-line `DIGEST:` |
-| `kabla_llm.py` | Provider `Kabla`: live model if `ANTHROPIC_API_KEY` / `OPENAI_API_KEY` is set, otherwise (or on timeout, error, open circuit) an offline keyword router. Never logs a key |
+| `kabla_llm.py` | Provider `Kabla`: router picks the skill; with `ANTHROPIC_API_KEY` / `OPENAI_API_KEY` (+ optional `OMEGA_LLM_URL`, `OMEGA_LLM_MODEL`) a live model phrases the result, vetted; otherwise (or on timeout, error, open circuit) the offline router answers. Idle ticks cost nothing. Never logs a key |
 | `kabla_chat.py` | Channel `kabla`: `var/omega/inbox.json` in, `var/omega/outbox.jsonl` out; the API bridges it at `/omega/chat` |
 | `demo/kabla_agent.metta` | Omega's `lib_omega` imports as direct paths, then `(omega)` |
 | `demo/kabla_native.metta` | Earlier skill-registry-only harness (`scripts/omega_native.py`) |

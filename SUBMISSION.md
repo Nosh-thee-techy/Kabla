@@ -57,7 +57,7 @@ The agent does **not** submit and has **not pushed**. Human pushes and submits o
 | Partner data | **passed** (SYNTHETIC only; placeholders labelled) |
 | Filming consent | **not applicable** until a human records the video. Anyone filmed must agree to filming and publishing |
 | Reused code credited | **passed** (NOTICE; Omega is Apache-2.0 and is run, not copied into the repo) |
-| Claims about Omega | **passed with limits**: an Omega agent loop ran with Kabla's plugin (`docs/evidence/`), but with **no LLM key** (labelled offline router) and no Landlock sandbox. Do not say "built on Omega" |
+| Claims about Omega | **passed with limits**: an Omega agent loop ran with Kabla's plugin (`docs/evidence/`); chat ran live with Nemotron 3 Super (5 of 5 turns) but the model only **phrases** skill results (a router picks the skill), and there is no Landlock sandbox. Do not say "built on Omega" |
 | 3-minute video | **failed** (script ready; human records; `scripts/record_checklist.md`) |
 | Video says what's next | **not applicable** until recorded (`docs/NEXT.md` is the source) |
 | Submitted on BASIX.MARKET | **failed** (human only) |

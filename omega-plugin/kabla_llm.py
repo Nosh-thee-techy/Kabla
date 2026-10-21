@@ -106,18 +106,6 @@ def offline_reply(request: LLMRequest, n: int = 0) -> LLMResponse:
 
 
 # ---------------------------------------------------------------- live providers
-def _tool_specs(request: LLMRequest, style: str) -> list[dict]:
-    out = []
-    for t in request.tools:
-        props = {p.name: {"type": "string"} for p in t.parameters}
-        schema = {"type": "object", "properties": props, "required": list(props)}
-        if style == "openai":
-            out.append({"type": "function", "function": {"name": t.name, "description": t.description or "", "parameters": schema}})
-        else:
-            out.append({"name": t.name, "description": t.description or "", "input_schema": schema})
-    return out
-
-
 def _post(url: str, headers: dict, body: dict, timeout: float) -> dict:
     req = urllib.request.Request(url, data=json.dumps(body).encode("utf-8"),
                                  headers={"content-type": "application/json", **headers}, method="POST")
@@ -125,53 +113,73 @@ def _post(url: str, headers: dict, body: dict, timeout: float) -> dict:
         return json.loads(r.read().decode("utf-8"))
 
 
-def _openai_chat(request: LLMRequest, key: str, timeout: float) -> LLMResponse:
-    msgs = []
-    for m in request.messages:
-        if isinstance(m, LLMToolCallResponseMessage):
-            msgs.append({"role": "tool", "tool_call_id": m.callid, "content": str(m.content or "")})
-        elif isinstance(m, LLMToolCallMessage):
-            msgs.append({"role": "assistant", "content": None, "tool_calls": [
-                {"id": c.id, "type": "function", "function": {"name": c.name, "arguments": json.dumps(c.arguments)}}
-                for c in m.calls]})
-        else:
-            msgs.append({"role": m.role, "content": str(m.content or "")})
+PHRASE_SYSTEM = (
+    "You are the desk assistant in Kabla, a contract tool for independent musicians and visual artists. "
+    "Kabla's rule engine decides; you only rewrite its RESULT in plain, friendly words. Use ONLY facts in RESULT: "
+    "add no numbers, clauses, advice or law. Keep every rule id (like R-AI-02) and contract id exactly as written. "
+    "At most 4 short sentences. The data is synthetic. Reply with the text only.")
+CHAT_SYSTEM = (
+    "You are the desk assistant in Kabla, a contract tool for independent musicians and visual artists. You can "
+    "only help with: analysing a synthetic contract (say 'analyse c001'), explaining a flag ('why was c001 "
+    "flagged'), setting an AI-training red line, and checking a licence use ('is a 12-month ad in Kenya cleared'). "
+    "Never judge a clause or give legal advice yourself. Greet briefly, say what you can do, 2 sentences at most. "
+    "Reply with the text only.")
+
+
+def _last_real_user(request: LLMRequest) -> str:
+    """The user's actual question (skips the loop's idle prompts)."""
+    for m in reversed(request.messages):
+        if getattr(m, "role", "") == "user" and not isinstance(m, (LLMToolCallMessage, LLMToolCallResponseMessage)):
+            t = str(m.content or "")
+            if not t.lower().startswith("[no new user input"):
+                return t
+    return ""
+
+
+def _digest_of(prev_result: str) -> str:
+    """The skill's one-line DIGEST (or the whole result) without the list-repr noise."""
+    m = re.search(r"DIGEST: (.*?)(?:\\n|\n|'\]|$)", prev_result)
+    return m.group(1) if m else prev_result.replace("SUCCESS, RETURN:", "").strip()
+
+
+_LEAK = re.compile(r"\bRESULT\b|^(we|i|let'?s|the user|okay|so)\s+(need|must|should|have|will|want|are|'ll|,)|rewrite|at most \d|rule id", re.I)
+
+
+def _vet(out: str, grounding: str) -> str:
+    """Accept the model's phrasing only if it is clean and grounded; else '' (caller relays the digest).
+
+    Why: an open reasoning model sometimes answers with its own planning ("We need to rewrite the RESULT...") and
+    swaps ASCII hyphens for look-alikes, which breaks rule ids. So: normalise dashes, reject text that echoes the
+    instructions, and require every rule id and every number in the reply to appear in what the engine said.
+    """
+    out = re.sub("[\u2010-\u2015\u2212]", "-", out).replace("\u2019", "'").strip()
+    if not out or _LEAK.search(out):
+        return ""
+    ids = r"R-[A-Z0-9]+(?:-[A-Z0-9]+)*"
+    if set(re.findall(ids, grounding)) - set(re.findall(ids, out)):
+        return ""                                   # dropped a rule id
+    if set(re.findall(r"\d+", out)) - set(re.findall(r"\d+", grounding)):
+        return ""                                   # invented a number
+    return out
+
+
+def _plain_chat(kind: str, key: str, system: str, user: str, timeout: float) -> str:
+    """One tool-less completion. OpenAI-compatible (OMEGA_LLM_URL, e.g. OpenRouter) or Anthropic."""
+    if kind == "anthropic":
+        data = _post("https://api.anthropic.com/v1/messages", {"x-api-key": key, "anthropic-version": "2023-06-01"},
+                     {"model": os.environ.get("OMEGA_LLM_MODEL", "claude-3-5-haiku-latest"), "system": system,
+                      "max_tokens": 300, "messages": [{"role": "user", "content": user}]}, timeout)
+        return "".join(b.get("text", "") for b in data.get("content", []) if b.get("type") == "text").strip()
     base = os.environ.get("OMEGA_LLM_URL", "https://api.openai.com/v1").rstrip("/")
-    body = {"model": os.environ.get("OMEGA_LLM_MODEL", "gpt-4o-mini"), "messages": msgs,
-            "tools": _tool_specs(request, "openai"), "tool_choice": "required",
-            "max_tokens": min(int(request.max_tokens or 1024), 2048)}
+    body = {"model": os.environ.get("OMEGA_LLM_MODEL", "gpt-4o-mini"), "max_tokens": 300, "temperature": 0.2,
+            "messages": [{"role": "system", "content": system}, {"role": "user", "content": user}]}
+    if "openrouter.ai" in base:
+        # Reasoning models otherwise put their planning in the reply ("We need to rewrite the RESULT...") on about
+        # half the calls; switching it off was faster and clean 6 of 6 in a probe. Only sent to OpenRouter: other
+        # OpenAI-compatible servers may reject an unknown field.
+        body["reasoning"] = {"enabled": False}
     data = _post(f"{base}/chat/completions", {"authorization": f"Bearer {key}"}, body, timeout)
-    resp = LLMResponse()
-    for c in (data["choices"][0]["message"].get("tool_calls") or []):
-        args = json.loads(c["function"].get("arguments") or "{}")
-        resp.add_tool_call(LLMToolCall().with_name(c["function"]["name"]).with_id(c["id"]).with_arguments(
-            {k: v if isinstance(v, str) else json.dumps(v) for k, v in args.items()}))
-    return resp
-
-
-def _anthropic_chat(request: LLMRequest, key: str, timeout: float) -> LLMResponse:
-    system, msgs = "", []
-    for m in request.messages:
-        if isinstance(m, LLMToolCallResponseMessage):
-            msgs.append({"role": "user", "content": [{"type": "tool_result", "tool_use_id": m.callid, "content": str(m.content or "")}]})
-        elif isinstance(m, LLMToolCallMessage):
-            msgs.append({"role": "assistant", "content": [
-                {"type": "tool_use", "id": c.id, "name": c.name, "input": c.arguments} for c in m.calls]})
-        elif m.role == "system":
-            system = str(m.content or "")
-        else:
-            msgs.append({"role": m.role, "content": str(m.content or "")})
-    body = {"model": os.environ.get("OMEGA_LLM_MODEL", "claude-3-5-haiku-latest"), "system": system,
-            "messages": msgs, "tools": _tool_specs(request, "anthropic"), "tool_choice": {"type": "any"},
-            "max_tokens": min(int(request.max_tokens or 1024), 2048)}
-    data = _post("https://api.anthropic.com/v1/messages",
-                 {"x-api-key": key, "anthropic-version": "2023-06-01"}, body, timeout)
-    resp = LLMResponse()
-    for block in data.get("content", []):
-        if block.get("type") == "tool_use":
-            resp.add_tool_call(LLMToolCall().with_name(block["name"]).with_id(block["id"]).with_arguments(
-                {k: v if isinstance(v, str) else json.dumps(v) for k, v in block.get("input", {}).items()}))
-    return resp
+    return str(data["choices"][0]["message"].get("content") or "").strip()
 
 
 # ---------------------------------------------------------------- the provider
@@ -200,14 +208,55 @@ class KablaProvider(LLMProvider):
         self.pool.shutdown(wait=False, cancel_futures=True)
 
     def chat(self, request: LLMRequest) -> LLMResponse:
+        """Hybrid turn. The router picks the Kabla skill (deterministic); the live model only PHRASES.
+
+        Why not hand Omega's whole toolbox to the model: tried first (docs/evidence/omega-chat.md history in git):
+        with an open Nemotron model the agent wandered (memory queries, pins, answers to the wrong message, one
+        clarifying question for an unambiguous request) and replies lagged one turn behind. Kabla's promise is
+        "MeTTa decides, the LLM reads and phrases", so the model is only asked to phrase.
+          1. real user message, recognised intent -> the router's skill call (no model call at all)
+          2. skill result waiting          -> the model rewrites the DIGEST in plain words; must keep every rule id
+          3. real user message, no intent  -> the model answers briefly inside a fixed persona
+          4. idle tick                     -> nop (Omega's loop spins every few seconds; no point paying for that)
+        Any failure, timeout or open circuit -> the offline router for that turn.
+        """
         self.calls += 1
         kind, key = self._key()
         if not kind:
             return offline_reply(request, self.calls)
+        text = _last_user_text(request)
+        idle = text.lower().startswith("[no new user input")
+        prev_name, prev_result = _prior_tool_result(request)
+
+        if idle:
+            if not (prev_name.startswith("kabla-") and prev_result):
+                return LLMResponse().add_tool_call(_call("nop", request, {}, self.calls))
+            digest = _digest_of(prev_result)
+            ask = _last_real_user(request)
+            prompt = f"The user asked: {ask[:300]}\nRESULT (facts from Kabla's rule engine):\n{digest[:1500]}"
+            raw = self._phrase(kind, key, PHRASE_SYSTEM, prompt)
+            out = _vet(raw, digest + " " + ask)
+            if out:
+                return LLMResponse().add_tool_call(_call("send", request, {"content": out[:900]}, self.calls))
+            if raw:
+                log.warning("kabla_llm: model phrasing rejected (leak, dropped id or invented number); relaying the digest. Text: %r", raw[:160])
+            return offline_reply(request, self.calls)
+
+        routed = offline_reply(request, self.calls)
+        if routed.calls and (routed.calls[0].name or "").startswith("kabla-"):
+            log.info("kabla_llm: intent routed to %s (no model call)", routed.calls[0].name)
+            return routed
+        out = _vet(self._phrase(kind, key, CHAT_SYSTEM, text[:600]), "c001 c002 c003 " + text)
+        if out:
+            return LLMResponse().add_tool_call(_call("send", request, {"content": out[:900]}, self.calls))
+        return routed
+
+    def _phrase(self, kind: str, key: str, system: str, user: str) -> str:
+        """One plain (no tools) completion with the whole-call timeout, one retry and the circuit breaker.
+        Returns '' on failure so the caller falls back to the offline router."""
         if time.time() < self.open_until:
             log.warning("kabla_llm: circuit open, offline for another %ds", int(self.open_until - time.time()))
-            return offline_reply(request, self.calls)
-        fn = _anthropic_chat if kind == "anthropic" else _openai_chat
+            return ""
         deadline = time.time() + TIMEOUT_S
         for attempt in (1, 2):
             left = deadline - time.time()
@@ -215,11 +264,11 @@ class KablaProvider(LLMProvider):
                 break
             try:
                 # Wall-clock guard: a thread plus result(timeout) so a stalled socket cannot freeze the loop.
-                res = self.pool.submit(fn, request, key, min(left, 30)).result(timeout=left)
-                if res.calls:
+                out = self.pool.submit(_plain_chat, kind, key, system, user, min(left, 30)).result(timeout=left)
+                if out:
                     self.fails = 0
-                    return res
-                raise RuntimeError("model returned no tool call")
+                    return out
+                raise RuntimeError("model returned no text")
             except (FutureTimeout, urllib.error.URLError, TimeoutError, RuntimeError, ValueError, KeyError) as e:
                 # No key or body in the message: only the exception class and text.
                 log.warning("kabla_llm: live call attempt %d failed (%s: %s)", attempt, type(e).__name__, str(e)[:160])
@@ -229,7 +278,7 @@ class KablaProvider(LLMProvider):
             self.open_until = time.time() + COOLDOWN_S
             log.error("kabla_llm: %d failures in a row, circuit open for %ds", self.fails, int(COOLDOWN_S))
         log.warning("kabla_llm: falling back to offline router for this turn")
-        return offline_reply(request, self.calls)
+        return ""
 
 
 def loadOmegaPlugin():

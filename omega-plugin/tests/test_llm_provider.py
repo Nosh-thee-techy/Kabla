@@ -120,17 +120,17 @@ def test_relays_a_digest_once_then_idles(kl):
 
 
 def test_no_key_means_offline_and_no_network(kl, monkeypatch):
-    monkeypatch.setattr(kl, "_openai_chat", lambda *a, **k: pytest.fail("network used without a key"))
+    monkeypatch.setattr(kl, "_plain_chat", lambda *a, **k: pytest.fail("network used without a key"))
     assert kl.KablaProvider().chat(_req(kl, "hello")).calls[0].name == "send"
 
 
 def test_slow_live_call_falls_back_within_the_budget(kl, monkeypatch):
     monkeypatch.setenv("OPENAI_API_KEY", "test-not-real")
     monkeypatch.setattr(kl, "TIMEOUT_S", 3.0)
-    monkeypatch.setattr(kl, "_openai_chat", lambda *a, **k: time.sleep(30))
+    monkeypatch.setattr(kl, "_plain_chat", lambda *a, **k: time.sleep(30))
     t0 = time.time()
-    res = kl.KablaProvider().chat(_req(kl, "analyse c001"))
-    assert time.time() - t0 < 6 and res.calls[0].name == "kabla-analyze"  # answered offline, did not hang
+    res = kl.KablaProvider().chat(_req(kl, "hello"))
+    assert time.time() - t0 < 6 and res.calls[0].name == "send"  # answered offline, did not hang
 
 
 def test_circuit_opens_after_repeated_failures(kl, monkeypatch):
@@ -143,7 +143,7 @@ def test_circuit_opens_after_repeated_failures(kl, monkeypatch):
         calls["n"] += 1
         raise ValueError("endpoint down")
 
-    monkeypatch.setattr(kl, "_openai_chat", boom)
+    monkeypatch.setattr(kl, "_plain_chat", boom)
     prov = kl.KablaProvider()
     prov.chat(_req(kl, "hello"))
     prov.chat(_req(kl, "hello"))
@@ -151,3 +151,47 @@ def test_circuit_opens_after_repeated_failures(kl, monkeypatch):
     seen = calls["n"]
     prov.chat(_req(kl, "hello"))
     assert calls["n"] == seen  # circuit open: the dead endpoint is not called again
+
+
+def _pending_result_req(kl, ask, digest):
+    """Transcript shape when a Kabla skill has just returned and the loop is idle again."""
+    p = kl._prov
+    req = _req(kl, "x")
+    req.messages = [p._Msg("system", "s"), p._Msg("user", ask),
+                    p.LLMToolCallMessage([p.LLMToolCall().with_name("kabla-explain").with_id("a")]),
+                    p.LLMToolCallResponseMessage(f"SUCCESS, RETURN: ['DIGEST: {digest}\\n{{}}']"),
+                    p._Msg("user", "[NO NEW USER INPUT. CONTINUE]")]
+    return req
+
+
+def test_recognised_intent_needs_no_model_call(kl, monkeypatch):
+    monkeypatch.setenv("OPENAI_API_KEY", "test-not-real")
+    monkeypatch.setattr(kl, "_plain_chat", lambda *a, **k: pytest.fail("model called for a routed intent"))
+    assert kl.KablaProvider().chat(_req(kl, "analyse c001")).calls[0].name == "kabla-analyze"  # the router picks the skill
+
+
+def test_model_phrases_a_result_but_must_keep_the_rule_id(kl, monkeypatch):
+    monkeypatch.setenv("OPENAI_API_KEY", "test-not-real")
+    digest = "R-AI-02 (clause 8): open-ended AI wording"
+    monkeypatch.setattr(kl, "_plain_chat", lambda *a, **k: "Clause 8 (R-AI-02) is open-ended about AI use.")
+    call = kl.KablaProvider().chat(_pending_result_req(kl, "why?", digest)).calls[0]
+    assert call.name == "send" and "R-AI-02" in call.arguments["content"] and "not an LLM" not in call.arguments["content"]
+    # A model that drops the rule id is not trusted: the digest is relayed instead, labelled as offline.
+    monkeypatch.setattr(kl, "_plain_chat", lambda *a, **k: "Looks fine to me.")
+    call = kl.KablaProvider().chat(_pending_result_req(kl, "why?", digest)).calls[0]
+    assert "R-AI-02" in call.arguments["content"] and "not an LLM" in call.arguments["content"]
+
+
+def test_idle_ticks_cost_nothing(kl, monkeypatch):
+    monkeypatch.setenv("OPENAI_API_KEY", "test-not-real")
+    monkeypatch.setattr(kl, "_plain_chat", lambda *a, **k: pytest.fail("model called on an idle tick"))
+    assert kl.KablaProvider().chat(_req(kl, "[NO NEW USER INPUT. CONTINUE]")).calls[0].name == "nop"
+
+
+def test_vet_rejects_leaks_and_inventions_and_fixes_dashes(kl):
+    g = "R-LIC-OK: cleared for Kenya, 12 months"
+    assert kl._vet("We need to rewrite the RESULT in plain words.", g) == ""        # model echoing its instructions
+    assert kl._vet("Cleared for Kenya for 24 months (R-LIC-OK).", g) == ""         # invented number
+    assert kl._vet("Cleared for Kenya, 12 months.", g) == ""                       # dropped the rule id
+    ok = kl._vet("Cleared for Kenya, 12 months (R\u2011LIC\u2011OK).", g)         # look-alike hyphens normalised
+    assert ok == "Cleared for Kenya, 12 months (R-LIC-OK)."

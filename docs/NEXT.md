@@ -6,10 +6,14 @@ plugin, a chat bridge, and a browser click-through of every room.
 
 ## Needs the team
 
-- **LLM key.** Put `ANTHROPIC_API_KEY` or `OPENAI_API_KEY` in `.env` and restart `scripts/omega_run.py`: the Omega agent then
-  uses a real model (the offline keyword router is only a fallback). The same key enables `KABLA_MODE=live`, which is what
-  reads **pasted contracts** and a **pasted bio** in free text. Without a key, pasted text outside the three samples gets a plain
-  422 message and nothing is decided. Not yet tried end to end with a real key.
+- **Rotate the LLM key.** The OpenRouter key used for the 2026-10-21 live chat test was pasted into a chat window; replace it in `.env`
+  and restart `scripts/omega_run.py`. The agent chat is live (Nemotron 3 Super via OpenRouter, 5 of 5 turns) but the model only phrases.
+  **Not done:** `KABLA_MODE=live` (reading **pasted contracts** and a **pasted bio**) was not tried with this model, and the API's
+  extractor (`api/kabla/services/llm.py`) still calls api.openai.com / api.anthropic.com directly, so it needs a base-URL setting before an
+  OpenRouter key works there. Without live mode, pasted text outside the three samples gets a plain 422 message and nothing is decided.
+- **Let the model choose Omega's tools?** Tried first, with Nemotron: it wandered (answers to the previous message, memory queries instead of
+  answers, one needless clarifying question). Kabla's provider now routes by keyword and uses the model only to phrase. A stronger model,
+  or a tighter Omega prompt, may make full tool choice reliable; re-run `scripts/omega_smoke.py` to find out.
 - **Fluent-speaker review** of every Swahili string (all AI-drafted, including the onboarding and agent-chat copy).
 - **Public hosting** so judges can open the app without running it locally.
 - **Organisers' answer** on synthetic-only data (see docs/DECISIONS.md).
