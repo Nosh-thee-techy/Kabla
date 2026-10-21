@@ -237,6 +237,34 @@ The Theater was a list of forms. It is now a small show, built only from data th
 - **Found on the way.** On a phone the journey rail made every room 900 px wide, which pushed Karani's card off screen; fixed with `min-w-0` on the rail's wrapper and `relative` on its nav.
 
 Browser check: the click-through now also saves three Theater screenshots (before the curtain, mid-round, curtain down) and waits for the ending scene; all 13 rows pass. Honest limits: the demo contract's readiness numbers hardly move until the deal ends (the "after" number jumps at the end), so the +/- chip is exercised in the browser with a test-only mocked response, not by the live demo; the tug bar is a picture, not a measurement.
+## 2026-10-21 - Theater: one card at a time, simpler words
+
+The Theater showed every counter-offer at once, so it was hard to tell which one was being talked about. Now only one card is in the light.
+
+- **Focus.** The card being discussed is big and sharp, with the Approve and Reject buttons. Cards still waiting are blurred and cannot be clicked ("Next in line"). Answering stamps the card, slides it down into a small answered pile, and the next card pops up in the light. "Change my answer" on an answered card puts it back in the queue. The slide is a small FLIP animation in Theater.tsx; it is skipped with prefers-reduced-motion.
+- **Order and rules unchanged.** Same decisions go to the same API call; anything left unanswered is still sent as approved (the page still says so). No engine, scoring or readiness change.
+- **Simpler words.** Advice, values and labels rewritten in everyday language ("Say no. This is your red line.", "an AI copy of your voice", "only with your OK, and paid", "the label can extend 3 times", "Offers from the label"). The engine's policy line (for example "Mawingu policy 2.1 - ...") moved behind a small "Why this advice?" fold on the focused card. **New Swahili strings are AI-drafted and need a fluent check; most existing Swahili value/advice phrases were left as they were.**
+
+## 2026-10-21 - Sign check: the readiness block gets its own room
+
+The bottom of the Theater was a long raw list (rule ids, "Already true" lines, a tiny trail) with no order. It is now a separate page, `/check`, "Sign check", between Theater and Licence desk in the journey rail (and in Karani's how-to steps).
+
+- **Fixed order.** (1) Two big numbers, "As written" and "After negotiation" (or "Best case" before any round), with the difference and one plain sentence. (2) "What is holding it back": only items that cost points, one card per kind (for example "6 times, -10 points each, -60"), a one-line "How to fix", and for red warnings the clause and its title. (3) "Already in good shape": collapsed by default. (4) "Before you sign": tick rows (warnings only). (5) "Round by round": a labelled line chart (Start, Round 1, ...) on a 0-100 scale.
+- **Raw rule ids** (for example `licence-missing-consent`) are not in the main view; each card has a small "Details" fold that lists them with the event ids.
+- **"Tap a number for why"** is now a switch: tap "As written" or "After negotiation" and the lists below show the reasons for that number.
+- **Theater** keeps only a compact card (the two numbers, the difference, and a "See your sign check" button). The curtain-down ending scene and its "Go to the licence desk" button are unchanged.
+- **Nothing new decided.** Only fields the API already returns are used; scoring, readiness rules and MeTTa are untouched. The "How to fix" sentences are fixed text per kind of reason (two kinds cost points today); a new kind falls back to the API's own sentence with no fix line. The trail is read from the same sessionStorage key the Theater writes (`kabla:trail:<contractId>`), so a new tab shows an empty chart until a round is played.
+- **Words.** Plain English; **the Swahili strings for this page are AI-drafted and have not been checked by a fluent speaker.**
+
+## 2026-10-21 - Passport split into two rooms: Register and Your passport
+
+Getting ready to register and holding the issued passport are two different jobs, and a preview card beside the form was confusing. The old `/passport` room is now two pages.
+
+- **Register (`/passport`, rail step "Register").** Only: the "Before you sign" ready-check (warnings only), a short plain note on what registering does (a dated, tamper-evident record of agreed terms; evidence, not a legal instrument; SYNTHETIC demo data), a consent line, the "Also list for sale" tick and the "Register this work (I consent) -> Issue passport" button. On success it goes to the next page. If a passport already exists it shows a small "View your passport" link. The button label, the register call (`POST /works`) and the issue call (`POST /passport/<artist>/issue`) are unchanged.
+- **Your passport (`/passport/issued`, rail step "Passport").** Fixed order: passport card (SYNTHETIC label, title, hash with Copy, the four stamps), score ring, "Why this number" (a switch; long lists scroll), "Next best steps", then "Open the financier view" and "Back to Register". It makes no API call; it reads the passport kept in sessionStorage (`kabla:passport`), so it survives a reload. With no passport it shows an empty state with a button back to Register.
+- **Rail.** One new step, so the numbers after Licence desk shift by one. A nested route no longer lights up its parent step (exact step match wins).
+- **Nothing else changed.** Scoring, readiness, MeTTa and the API are untouched. The browser check now has rows 07 (register) and 07b (page 2, with a full-page screenshot and a reload); `scripts/shots_passport.mjs` takes desktop and 390px screenshots of both pages and the empty state.
+- **Words.** Plain English. **The Swahili strings for these two pages are AI-drafted and have not been checked by a fluent speaker.**
 
 ## 2026-10-21 - Landing page and a demo sign-in (no real accounts)
 
@@ -248,3 +276,12 @@ The first screen used to be the "You" room (a form), which asked for a name and 
 - **What real auth would need** (listed in `docs/NEXT.md`): a user table and sessions on the API, a magic-link or OAuth sign-in (no passwords to store), consent and deletion flows, per-user ownership of profiles and passports (today a profile is keyed by the artist name and the demo fixtures are shared), rate limits, and a privacy notice. Until then the sign-in only decides what name the demo greets.
 - **Set-up wizard (`/welcome`).** Step 1 About you (name, artist or band name, EN/SW), step 2 Where your music lives (the same five typed fields), step 3 Your catalogue (the same bio box, with "Mwanga is 50% mine" as a labelled placeholder, the same consent line), then Ready. The last step makes the **same call** as the You room (`POST /artists`, `api.createArtist`) and stores the **same Profile** (`setProfile`), so the Desk, the seal check and every later room read it as before. The wizard is honest that this step sends the typed text to the demo server to seal it; only the sign-in stays on the device. The You room (`/onboard`, rail "You") stays as the way to edit the profile.
 - **Nothing else changed.** No scoring, MeTTa or API change; no new dependency. Old links to the Desk now read `/desk` (`/desk?sample=c001` is the demo jump). **The new Swahili strings are AI-drafted and need a fluent-speaker check.**
+
+## 2026-10-21 - Plainer words on every card
+
+The cards used short, dense lines ("Rights-health", "Take it to customs", "red line", rule titles such as "R-AI-01"). A working musician with no legal or tech background should be able to read each one and know what it means and what to do.
+
+- **Rewritten:** the card text across Desk, Theater (topics, value words, advice, tug-bar captions, policy fold), Sign check, Register, Your passport (stamps, why, next steps), Licence desk, Financier, Verify, Karani's guide lines and the checklist. Short full sentences, everyday words, about grade 6. A term that cannot be avoided is explained once in a few words (for example "Reversion: when your rights come back to you"). "Red line" is now "your limit".
+- **API text is untouched.** Flag titles and meanings, policy lines, checklist items, score reasons, next steps, backer risks and licence conditions still come from the API, the MeTTa files and the ledger exactly as before. `web/src/plain.ts` maps them (by rule id, topic, key or the exact original line) to plain wording, each entry a `{ en, sw }` pair so a missing Swahili line is a type error. If nothing matches, the original text is shown. The original technical text sits behind a small "Show the exact rule" / "Details" fold, so nothing is hidden.
+- **Honest wording kept.** "Evidence of agreed terms, not a legal instrument", "Kabla never agrees for you", "SYNTHETIC", "illustrative" and "not legal advice" are unchanged in meaning. No score, readiness, MeTTa or API change.
+- **EN and SW stay in step** in `web/src/i18n.ts` (the typed lookup fails the build if Swahili lacks a key). **The Swahili is AI-drafted and needs a fluent reviewer.** It was written to be equally plain, but nobody has checked it.

@@ -148,7 +148,7 @@ await room("05 during: theater negotiation", async () => {
   await shot("05a-theater-before-curtain.png");          // curtain still down
   await dismiss();
   if (await btn(/Raise the curtain/i).isVisible().catch(() => false)) await btn(/Raise the curtain/i).click();
-  await see(/Counter-offers from the label|counter-offers/i);
+  await see(/Offers from the label|counter-offers/i);
   await dismiss();
   await page.waitForTimeout(1800);                        // let the curtain finish opening
   await shot("05b-theater-mid-round.png");               // stage, tug-of-war bars, contract cards
@@ -170,6 +170,29 @@ await room("05 during: theater negotiation", async () => {
   await see(/who gave up what/i);                        // the ending scene is on screen
   await page.evaluate(() => window.scrollTo(0, 0));
   await page.screenshot({ path: path.join(shots, "05c-theater-curtain-down.png"), fullPage: true }).catch(() => {});            // ending scene: ledger, before/after, licence desk button
+  await see(/See your sign check/i);                      // the readiness block is now one small card with a way to the Sign check room
+  await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+  await page.waitForTimeout(300);
+  await shot("05d-theater-bottom.png");                   // bottom of the Theater: just the compact readiness card
+});
+
+await room("05e during: sign check room", async () => {
+  await dismiss();
+  await page.getByRole("link", { name: /See your sign check/i }).first().click();
+  await page.waitForURL(/\/check/, { timeout: T });
+  await dismiss();
+  await see(/As written/);
+  await see(/What is holding it back/i);
+  await see(/Already in good shape/i);
+  await see(/Before you sign/i);
+  await see(/Round by round/i);
+  await page.evaluate(() => window.scrollTo(0, 0));
+  await page.screenshot({ path: path.join(shots, "05e-sign-check-desktop.png"), fullPage: true }).catch(() => {});
+  await page.getByText(/^Details$/).first().click().catch(() => {});       // raw rule ids hide behind this toggle
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.waitForTimeout(300);
+  await page.screenshot({ path: path.join(shots, "05f-sign-check-phone.png"), fullPage: true }).catch(() => {});
+  await page.setViewportSize({ width: 1280, height: 900 });
 });
 
 await room("06 after: licence desk verdict", async () => {
@@ -179,12 +202,30 @@ await room("06 after: licence desk verdict", async () => {
   await see(/Cleared|Not cleared|Needs consent/);
 });
 
-await room("07 after: passport issue", async () => {
-  await nav("Passport");
+// The passport job is two pages: Register (/passport) holds the ready-check and the button; Your passport (/passport/issued) holds the result.
+await room("07 after: register the work", async () => {
+  await nav("Register");
+  await see(/Register your work/i);
+  await see(/What registering does/i);
+  await see(/set your limits/i);                     // the ready-check (needs the open contract) has loaded
   await page.getByRole("checkbox").first().check().catch(() => {});
   await dismiss();
+  await shot("07a-register.png");
   await btn(/Issue passport/i).click();
-  await see(/Intact|hash|Rights passport/i);
+  await page.waitForURL(/\/passport\/issued/, { timeout: T });   // success moves on to page 2
+  await see(/Your passport/i);
+});
+
+await room("07b after: your passport (page 2) survives a reload", async () => {
+  await dismiss();
+  await see(/Why this number/i);
+  await see(/What to do next/i);
+  await see(/You read it first|AI rule chosen|Read Before Signing|AI-Training Locked/i);
+  await page.evaluate(() => window.scrollTo(0, 0));
+  await page.screenshot({ path: path.join(shots, "07b-passport-issued.png"), fullPage: true }).catch(() => {});
+  await page.reload({ waitUntil: "domcontentloaded" });
+  await dismiss();
+  await see(/Why this number/i);                   // the passport is kept in sessionStorage, so page 2 is still filled in
 });
 
 await room("08 after: financier view", async () => {
@@ -196,7 +237,7 @@ await room("09 after: verify + tamper test", async () => {
   await nav("Verify");
   await dismiss();
   await btn(/Tamper test/i).click();
-  await see(/Tampered|broken/i);
+  await page.getByRole("status").filter({ hasText: /Tampered/ }).first().waitFor({ timeout: T });
 });
 
 await room("10 chat: Omega agent panel", async () => {
