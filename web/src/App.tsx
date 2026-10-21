@@ -51,7 +51,7 @@ export default function App() {
           <header className="w-full border-b hair">
             <div className="max-w-[1240px] mx-auto px-4 md:px-6 py-2.5 flex flex-wrap items-center gap-x-6 gap-y-2">
               <Wordmark />
-              <div className="order-3 md:order-none basis-full md:basis-auto md:flex-1 md:flex md:justify-center">
+              <div className="order-3 md:order-none basis-full md:basis-auto min-w-0 max-w-full md:flex-1 md:flex md:justify-center">
                 <JourneyRail lang={lang} />
               </div>
               <div className="ml-auto flex items-center gap-2">

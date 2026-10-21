@@ -22,7 +22,7 @@ export function JourneyRail({ lang }: { lang: Lang }) {
   const store = useKabla();
   const { pathname } = useLocation();
   return (
-    <nav aria-label={t(lang, "journey")} className="overflow-x-auto">
+    <nav aria-label={t(lang, "journey")} className="overflow-x-auto relative">
       <ol className="flex items-center gap-4 md:gap-5 min-w-max text-xs">
         {STEPS.map((step, i) => {
           const here = pathname === step.to || (step.to !== "/" && pathname.startsWith(step.to));
