@@ -1,14 +1,31 @@
 import { useEffect, useState } from "react";
 import { api, type Readiness } from "../api";
 import { ChecklistGate } from "../components/ChecklistGate";
+import { CurtainDown } from "../components/CurtainDown";
 import { EmptyGate } from "../components/EmptyGate";
 import { Clerk } from "../components/HowTo";
-import { NextStamp } from "../components/NextStamp";
 import { Room } from "../components/Room";
 import { RoundCard } from "../components/RoundCard";
-import { SignReadiness } from "../components/SignReadiness";
+import { SignReadiness, type TrailPoint } from "../components/SignReadiness";
+import { Stage } from "../components/Stage";
 import { t, tf, type Lang } from "../i18n";
+import { saveStart } from "../lib/tug";
 import { useKabla } from "../state";
+import "../theater.css";
+
+type Trail = { nego: string | null; points: TrailPoint[] };
+const trailKey = (contractId: string) => `kabla:trail:${contractId}`;
+
+/** The readiness trail survives a reload the same way the rest of the demo state does (sessionStorage, same
+ *  lifetime). If storage is blocked it just starts again; nothing here is needed for the page to work. */
+function loadTrail(contractId: string | undefined): Trail {
+  if (!contractId) return { nego: null, points: [] };
+  try {
+    const raw = sessionStorage.getItem(trailKey(contractId));
+    if (raw) return JSON.parse(raw) as Trail;
+  } catch { /* ignore */ }
+  return { nego: null, points: [] };
+}
 
 export function Theater({ lang }: { lang: Lang }) {
   const { contract, nego, setNego } = useKabla();
@@ -16,11 +33,15 @@ export function Theater({ lang }: { lang: Lang }) {
   const [busy, setBusy] = useState(false);
   const [pending, setPending] = useState<Record<string, "approve" | "reject">>({});
   const [err, setErr] = useState<string | null>(null);
-
+  const [trail, setTrail] = useState<Trail>(() => loadTrail(contract?.id));
   async function begin() {
     if (!contract) return;
     setBusy(true); setErr(null);
-    try { setNego(await api.negotiateStart(contract.id)); }
+    try {
+      const started = await api.negotiateStart(contract.id);
+      saveStart(started);
+      setNego(started);
+    }
     catch (e) { setErr(String(e)); }
     finally { setBusy(false); }
   }
@@ -38,9 +59,30 @@ export function Theater({ lang }: { lang: Lang }) {
     finally { setBusy(false); }
   }
 
+  // A reload mid-round: make sure the "before" copy of round 1 exists if this tab saw round 1.
+  useEffect(() => { if (nego) saveStart(nego); }, [nego]);
+
   useEffect(() => {
     if (!contract) return;
-    api.readiness(contract.id).then(setReady).catch(() => setReady(null));
+    let live = true;
+    const nid = nego?.id ?? null;
+    const round = nego?.round ?? 0;
+    api.readiness(contract.id).then((r) => {
+      // The room may have moved on before a slow answer arrives. The number still belongs to the round it was
+      // asked in, so the trail keeps it; only the headline numbers wait for the latest answer.
+      if (live) setReady(r);
+      setTrail((prev) => {
+        // A different negotiation than the one on record starts a new trail (keeping the "Start" point).
+        const fresh = nid !== null && prev.nego !== null && prev.nego !== nid;
+        const kept = fresh ? prev.points.filter((p) => p.round === 0) : prev.points;
+        const points = [...kept.filter((p) => p.round !== round), { round, written: r.as_written.score, after: r.after.score }]
+          .sort((a, b) => a.round - b.round);
+        const next = { nego: nid ?? prev.nego, points };
+        try { sessionStorage.setItem(trailKey(contract.id), JSON.stringify(next)); } catch { /* ignore */ }
+        return next;
+      });
+    }).catch(() => { if (live) setReady(null); });
+    return () => { live = false; };
   }, [contract, nego]);
 
   if (!contract) return <EmptyGate lang={lang} title={t(lang, "theater")} />;
@@ -52,6 +94,7 @@ export function Theater({ lang }: { lang: Lang }) {
   const openTopics = nego ? nego.topics.filter((topic) => topic.status === "open") : [];
   const decidedCount = openTopics.filter((topic) => pending[topic.topic]).length;
   const isOpen = nego?.state === "open";
+  const spotlight = isOpen ? openTopics.find((topic) => !pending[topic.topic]) ?? null : null;
   const stateWord = nego
     ? nego.state === "agreed" ? t(lang, "stateAgreed")
       : nego.state === "standoff" ? t(lang, "stateStandoff")
@@ -71,7 +114,7 @@ export function Theater({ lang }: { lang: Lang }) {
       <header className="pb-3 border-b hair flex flex-wrap items-end justify-between gap-3">
         <div>
           <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-gold">{t(lang, "playbill")}</p>
-          <h1 className="font-display italic text-3xl md:text-4xl mt-1 leading-none">{t(lang, "theater")}</h1>
+          <h1 className="font-display italic text-3xl md:text-4xl mt-1 leading-none theater-title">{t(lang, "theater")}</h1>
         </div>
         <ol className="flow self-end" aria-label={t(lang, "journey")}>
           {flow.map((key, i) => (
@@ -96,32 +139,47 @@ export function Theater({ lang }: { lang: Lang }) {
         }
       />
 
-      {!nego && (
-        <button type="button" onClick={begin} disabled={busy} className="stamp stamp-savanna mt-5 self-start">
-          {t(lang, "startRound")}
-        </button>
-      )}
+      <div className="mt-5">
+        <Stage
+          lang={lang}
+          nego={nego}
+          spotlight={spotlight ?? openTopics[0] ?? null}
+          stateWord={stateWord}
+          busy={busy}
+          onRaise={() => void begin()}
+        />
+      </div>
 
       {nego && (
         <>
           {held && (
             <p className="sticker mt-4 bg-flag-red text-paper -rotate-1">{t(lang, "heldLine")}</p>
           )}
-          <div className="mt-5 flex items-baseline justify-between gap-4">
-            <p className="label flex-1">{t(lang, "counterOffers")} · {t(lang, "act")} {nego.round}/{nego.max_rounds}</p>
-            {isOpen && (
-              <p className="font-mono text-[11px] whitespace-nowrap">
-                {tf(lang, "decided", { d: decidedCount, n: openTopics.length })}
-              </p>
-            )}
+
+          {!isOpen && <CurtainDown lang={lang} nego={nego} ready={ready} stateWord={stateWord} />}
+
+          <div className="mt-6 flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
+            <p className="label flex-1 min-w-[12rem]">{t(lang, "counterOffers")}</p>
+            <div className="rounds" role="group" aria-label={tf(lang, "roundOf", { round: nego.round, max: nego.max_rounds })}>
+              <span className="rounds-text">{tf(lang, "roundOf", { round: nego.round, max: nego.max_rounds })}</span>
+              <ol className="rounds-pips" aria-hidden="true">
+                {Array.from({ length: nego.max_rounds }, (_, i) => (
+                  <li key={i} data-state={i + 1 < nego.round || (!isOpen && i + 1 === nego.round) ? "done" : i + 1 === nego.round ? "now" : "todo"} />
+                ))}
+              </ol>
+              {isOpen && (
+                <span className="rounds-text">{tf(lang, "decided", { d: decidedCount, n: openTopics.length })}</span>
+              )}
+            </div>
           </div>
-          <div className="mt-3 grid md:grid-cols-2 gap-3">
+          <div className="mt-3 grid md:grid-cols-2 gap-4">
             {nego.topics.map((topic) => (
               <RoundCard
                 key={topic.topic}
                 topic={topic}
                 lang={lang}
                 disabled={busy}
+                spotlight={spotlight?.topic === topic.topic}
                 selected={pending[topic.topic]}
                 onDecide={(name, d) => setPending((p) => ({ ...p, [name]: d }))}
               />
@@ -137,10 +195,7 @@ export function Theater({ lang }: { lang: Lang }) {
               )}
             </div>
           )}
-          {nego.lawyer_note && (
-            <p className="mt-4 text-sm border-l-2 border-flag-amber pl-3">{nego.lawyer_note}</p>
-          )}
-          {!isOpen && <NextStamp to="/licence">{t(lang, "nextLicence")}</NextStamp>}
+          {isOpen && <p className="mt-3 text-xs opacity-70">{t(lang, "neverAgrees")}</p>}
           <details className="mt-5 border-t hair pt-2">
             <summary className="cursor-pointer font-mono text-[10px] uppercase tracking-[0.18em] opacity-60">
               {t(lang, "ledgerLog")} · {nego.ledger.length}
@@ -159,7 +214,7 @@ export function Theater({ lang }: { lang: Lang }) {
       {ready && (
         <div className="mt-5 pt-3 border-t hair space-y-3">
           <p className="label">{t(lang, "afterAct")}</p>
-          <SignReadiness lang={lang} data={ready} />
+          <SignReadiness lang={lang} data={ready} trail={trail.points} />
           <ChecklistGate lang={lang} items={ready.checklist} />
         </div>
       )}
