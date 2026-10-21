@@ -3,6 +3,7 @@ import { api } from "../api";
 import { Clerk } from "../components/HowTo";
 import { Room } from "../components/Room";
 import { t, type Lang } from "../i18n";
+import { plainVerifyReason } from "../plain";
 import { useArtist, useKabla } from "../state";
 
 export function Verify({ lang }: { lang: Lang }) {
@@ -18,7 +19,7 @@ export function Verify({ lang }: { lang: Lang }) {
 
   async function run() {
     const cert = parse();
-    if (!cert) { setErr("Paste a certificate JSON first."); return; }
+    if (!cert) { setErr(t(lang, "verifyNeedJson")); return; }
     setErr(null);
     try { setVerify(await api.verify({ certificate: cert })); }
     catch (e) { setErr(String(e)); }
@@ -35,7 +36,7 @@ export function Verify({ lang }: { lang: Lang }) {
         try {
           const p = await api.getPassport(artist);
           const c = p.certificate || p.certificates?.[0];
-          if (!c) { setErr("Issue a passport first, or paste JSON."); return; }
+          if (!c) { setErr(t(lang, "verifyNeedPassport")); return; }
           cert = c;
           setText(JSON.stringify(c, null, 2));
         } catch (e) { setErr(String(e)); return; }
@@ -66,7 +67,7 @@ export function Verify({ lang }: { lang: Lang }) {
             aria-label="Certificate JSON"
           />
           <div className="mt-3 flex flex-wrap gap-2">
-            <button type="button" onClick={run} className="stamp stamp-savanna">Verify</button>
+            <button type="button" onClick={run} className="stamp stamp-savanna">{t(lang, "verify")}</button>
             <button type="button" onClick={tamper} className="stamp stamp-red">{t(lang, "tamper")}</button>
           </div>
           {err && <p className="text-flag-red text-sm mt-3" role="alert">{err}</p>}
@@ -77,9 +78,15 @@ export function Verify({ lang }: { lang: Lang }) {
             <p className={`font-display italic text-4xl leading-none ${ok ? "text-savanna" : "text-flag-red"}`} role="status">
               {ok ? t(lang, "intact") : t(lang, "tampered")}
               <span className="block text-sm font-sans not-italic mt-2 opacity-80 text-ink dark:text-lamp">
-                {ok ? t(lang, "mayPass") : t(lang, "brokenRecord")}
-                {result.reason ? ` — ${result.reason}` : ""}
+                {ok ? t(lang, "mayPass") : t(lang, "brokenRecord")}{" "}
+                {plainVerifyReason(lang, !!ok, result.reason)}
               </span>
+              {result.reason && (
+                <details className="mt-3 text-xs font-sans not-italic text-left text-ink dark:text-lamp">
+                  <summary className="cursor-pointer underline opacity-80">{t(lang, "detailsReason")}</summary>
+                  <p className="mt-2 font-mono text-[11px] opacity-80 break-words">{result.reason}</p>
+                </details>
+              )}
             </p>
           ) : (
             <p className="font-mono text-[11px] uppercase tracking-widest opacity-60">{t(lang, "customs")}</p>

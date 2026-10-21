@@ -4,7 +4,8 @@ import { Clerk } from "../components/HowTo";
 import { NextStamp } from "../components/NextStamp";
 import { Room } from "../components/Room";
 import { ScoreRing } from "../components/ScoreRing";
-import { t, type Lang } from "../i18n";
+import { t, tOpt, type Lang } from "../i18n";
+import { plainBackerRisk, plainConsentGap, plainFlagTitle, reasonWords, rightName } from "../plain";
 import { useArtist } from "../state";
 
 /** Why this page exists: a backer sees the same owners, flags and score — rearranged, not rescored. */
@@ -40,7 +41,7 @@ export function Financier({ lang }: { lang: Lang }) {
             <dl className="ledger mt-2">
               {data.owners.map((o) => (
                 <div key={`${o.right}-${o.person}`}>
-                  <dt>{o.name} · {o.right}</dt>
+                  <dt>{o.name} · {rightName(lang, o.right)}</dt>
                   <dd>
                     {o.share}%{" "}
                     <span className={`seal ${o.confirmed ? "seal-green" : "seal-amber"} !w-5 !h-5 !text-[10px] ml-1 align-middle`} title={o.confirmed ? t(lang, "confirmed") : t(lang, "unconfirmed")}>
@@ -57,16 +58,29 @@ export function Financier({ lang }: { lang: Lang }) {
                   <span className={`seal ${f.severity === "red" ? "seal-red" : "seal-amber"} !w-6 !h-6 !text-[10px] shrink-0`}>
                     {f.clause}
                   </span>
-                  <span><span className="font-mono text-[11px] opacity-70">{f.rule_id}</span> — {f.risk}</span>
+                  <span>
+                    <strong>{plainFlagTitle(lang, f.rule_id, lang === "sw" ? f.title_sw : f.title_en)}.</strong>{" "}
+                    {plainBackerRisk(lang, f.rule_id, f.risk)}
+                  </span>
                 </li>
               ))}
             </ul>
+            {data.flags.length > 0 && (
+              <details className="mt-3 text-xs">
+                <summary className="cursor-pointer underline opacity-80">{t(lang, "detailsFold")}</summary>
+                <ul className="mt-2 space-y-1 font-mono text-[11px] opacity-75">
+                  {data.flags.map((f) => (
+                    <li key={`x-${f.contract_id}-${f.rule_id}-${f.clause}`}>{f.rule_id} · clause {f.clause} — {f.risk}</li>
+                  ))}
+                </ul>
+              </details>
+            )}
           </section>
           {/* Right column: stance, gaps, score. */}
           <section>
             <p className="label">{t(lang, "aiStance")}</p>
             <p className="mt-2 text-sm">
-              {data.ai_stance.value ?? "—"}
+              {data.ai_stance.value ? (tOpt(lang, `val_${data.ai_stance.value.replace(/-/g, "_")}`) ?? data.ai_stance.value) : "—"}
               {data.ai_stance.set_on && <span className="opacity-60"> · {t(lang, "youSetThis")} {data.ai_stance.set_on}</span>}
             </p>
             {data.consent_gaps.length > 0 && (
@@ -74,7 +88,7 @@ export function Financier({ lang }: { lang: Lang }) {
                 <p className="label mt-6">{t(lang, "consentGaps")}</p>
                 <ul className="mt-2 space-y-1 text-sm">
                   {data.consent_gaps.map((g) => (
-                    <li key={g.person}>{g.name} ({g.share}%) — {g.why}</li>
+                    <li key={g.person}>{g.name} ({g.share}%) — {plainConsentGap(lang, g.why)}</li>
                   ))}
                 </ul>
               </>
@@ -82,10 +96,10 @@ export function Financier({ lang }: { lang: Lang }) {
             <p className="label mt-6">{t(lang, "health")}</p>
             <div className="mt-3 flex flex-wrap gap-5 items-center">
               <ScoreRing value={data.score.score} label={t(lang, "health")} />
-              <ul className="text-[11px] font-mono space-y-0.5">
+              <ul className="text-xs space-y-1 max-w-xs">
                 {data.score.reasons.map((r) => (
                   <li key={r.event_id}>
-                    {r.points > 0 ? "+" : ""}{r.points} — {r.why}
+                    <b className="font-mono">{r.points > 0 ? "+" : ""}{r.points}</b> {reasonWords(lang, r)}
                   </li>
                 ))}
               </ul>

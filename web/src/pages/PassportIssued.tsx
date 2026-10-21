@@ -7,6 +7,7 @@ import { Room } from "../components/Room";
 import { ScoreRing } from "../components/ScoreRing";
 import { shortHash } from "../lib/format";
 import { t, type Lang } from "../i18n";
+import { plainStep, reasonWords } from "../plain";
 import { useArtist, useKabla } from "../state";
 
 /** Page 2 of the passport job: holding what was issued. Fixed order, top to bottom:
@@ -87,7 +88,7 @@ export function PassportIssued({ lang }: { lang: Lang }) {
           <div className="mt-6">
             <p className="label">{t(lang, "passportStampsLabel")}</p>
             <div className="mt-3">
-              <BadgeShelf names={(data.badges || []).map((b) => b.badge.name)} />
+              <BadgeShelf lang={lang} names={(data.badges || []).map((b) => b.badge.name)} />
             </div>
           </div>
         </section>
@@ -102,13 +103,24 @@ export function PassportIssued({ lang }: { lang: Lang }) {
               </button>
             </p>
             {why && (
-              <ul className="mt-4 space-y-2 border-t hair pt-4 max-h-80 overflow-y-auto pr-2">
-                {data.score.reasons.map((r) => (
-                  <li key={r.event_id} className="font-mono text-[11px] leading-snug">
-                    {r.event_id}: {r.points > 0 ? "+" : ""}{r.points} — {r.why}
-                  </li>
-                ))}
-              </ul>
+              <div className="mt-4 border-t hair pt-4 max-h-80 overflow-y-auto pr-2">
+                <ul className="space-y-2">
+                  {data.score.reasons.map((r) => (
+                    <li key={r.event_id} className="text-sm leading-snug flex gap-3">
+                      <b className="font-mono shrink-0">{r.points > 0 ? "+" : ""}{r.points}</b>
+                      <span>{reasonWords(lang, r)}</span>
+                    </li>
+                  ))}
+                </ul>
+                <details className="mt-4 text-xs">
+                  <summary className="cursor-pointer underline opacity-80">{t(lang, "detailsFold")}</summary>
+                  <ul className="mt-2 space-y-1 font-mono text-[11px] leading-snug opacity-80">
+                    {data.score.reasons.map((r) => (
+                      <li key={r.event_id}>{r.event_id}: {r.points > 0 ? "+" : ""}{r.points} — {r.why}</li>
+                    ))}
+                  </ul>
+                </details>
+              </div>
             )}
           </section>
 
@@ -116,7 +128,7 @@ export function PassportIssued({ lang }: { lang: Lang }) {
           <section className="panel border-gold/50 p-6 md:p-7">
             <p className="label">{t(lang, "next")}</p>
             <ul className="list-disc ml-5 text-sm mt-4 space-y-2">
-              {data.score.next_best_steps.map((s) => <li key={s}>{s}</li>)}
+              {data.score.next_best_steps.map((s) => <li key={s}>{plainStep(lang, s)}</li>)}
             </ul>
           </section>
         </div>
