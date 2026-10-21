@@ -47,7 +47,7 @@ export function LicenceDesk({ lang }: { lang: Lang }) {
         say={verdict ? tf(lang, "sayLicenceVerdict", { rule: verdict.rule_id }) : t(lang, "sayLicence")}
         cta={
           verdict
-            ? { label: t(lang, "ctaSealPassport"), to: "/passport" }
+            ? { label: t(lang, "ctaSealPassport"), to: "/financier" }
             : presets[0]
               ? { label: t(lang, "ctaEnvelopeA"), onClick: () => void run(presets[0]) }
               : { label: t(lang, "ctaGotIt") }
@@ -113,7 +113,7 @@ export function LicenceDesk({ lang }: { lang: Lang }) {
         </article>
       )}
       {err && <p className="text-flag-red mt-4" role="alert">{err}</p>}
-      <NextStamp to="/passport">{t(lang, "nextPassport")}</NextStamp>
+      <NextStamp to="/financier">{t(lang, "nextFinancier")}</NextStamp>
     </Room>
   );
 }

@@ -54,9 +54,34 @@ export const api = {
   tamperDemo: (certificate: object) => req<VerifyResult>("/verify/tamper-demo", { method: "POST", body: JSON.stringify({ certificate }) }),
   readiness: (id: string) => req<Readiness>(`/contracts/${id}/readiness`),
   /** Before stage. Consent is required by the API; nothing is fetched from any platform. */
-  createArtist: (body: { name: string; handles: Record<string, string>; consent: boolean; bio: string; lang: string }) =>
+  createArtist: (body: { name: string; handles: Record<string, string>; consent: boolean; bio: string; lang: string; audience?: AudienceInput }) =>
     req<Profile>("/artists", { method: "POST", body: JSON.stringify(body) }),
+  /** Self-reported audience numbers and their plain band. Typed by the musician, never fetched from a platform. */
+  audience: (id: string) => req<AudienceView>(`/artists/${encodeURIComponent(id)}/audience`),
+  /** Before stage: owners, splits, consents and the ready-check for a work. No contract needed. */
+  workCheck: (artist: string, workId = "w-asali") =>
+    req<WorkCheck>(`/works/${workId}/check?artist=${encodeURIComponent(artist)}`),
   verifySeal: (id: string) => req<{ intact: boolean; records: number; reason?: string; broken_at?: number }>(`/artists/${id}/seal/verify`),
+};
+
+export type AudienceInput = { followers: Record<string, number>; avg_likes?: number; note?: string };
+export type AudienceSummary = {
+  total_reach: number; social_followers: number; engagement_rate_pct: number | null; check_numbers: boolean;
+  band: "none" | "starting" | "growing" | "established"; held_back_by_engagement: boolean;
+  thresholds: { growing_reach: number; growing_reach_with_engagement: number; strong_engagement_pct: number; established_reach: number; low_engagement_pct: number };
+  self_reported: true; verified: false; label: string;
+};
+export type AudienceView = {
+  artist: string; self_reported: true; verified: false; label: string;
+  audience: { followers: Record<string, number>; avg_likes: number | null; note: string; summary: AudienceSummary } | null;
+};
+export type WorkCheck = {
+  work_id: string; title: string; artist: string; registered: boolean;
+  owners: { right: string; person: string; name: string; share: number; confirmed: boolean }[];
+  composition_total: number;
+  consents: { person: string; name: string; use_family: string; territory: string; date: string }[];
+  ai_tools: string[]; ai_stance: { value: string | null; set_on: string | null };
+  checklist: ChecklistItem[]; label: string; synthetic: boolean;
 };
 
 export type ProfileGap = { id: string; detail: string };
@@ -68,6 +93,8 @@ export type Profile = {
   redlines: { kind: string; value: string | number }[];
   consent: { given: boolean; at: string; text: string };
   seal: { seq: number; record_hash: string; payload_hash: string };
+  /** Typed by the musician; older saved profiles do not have it. */
+  audience?: { followers: Record<string, number>; avg_likes: number | null; note: string; summary: AudienceSummary };
 };
 
 export type Sample = { id: string; title: string; label: string; kind: string; artist: string; blurb: string };

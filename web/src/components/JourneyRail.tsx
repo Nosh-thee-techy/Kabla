@@ -7,19 +7,19 @@ type S = ReturnType<typeof useKabla>;
 /** Three stages of an artist's story: Before a contract, During it, After it. */
 const STEPS = [
   { to: "/onboard", key: "onboard" as const, group: "groupBefore" as const, done: (s: S) => !!s.profile },
+  { to: "/passport", key: "regStep" as const, group: "groupBefore" as const, done: (s: S) => !!s.passport },
+  { to: "/passport/issued", key: "passport" as const, group: "groupBefore" as const, done: (s: S) => !!s.passport },
   { to: "/desk", key: "desk" as const, group: "groupDuring" as const, done: () => true },
   { to: "/map", key: "map" as const, group: "groupDuring" as const, done: (s: S) => !!s.analysis },
   { to: "/simulate", key: "sim" as const, group: "groupDuring" as const, done: (s: S) => !!s.contract },
   { to: "/theater", key: "theater" as const, group: "groupDuring" as const, done: (s: S) => !!s.nego },
   { to: "/check", key: "signCheck" as const, group: "groupDuring" as const, done: (s: S) => !!s.nego },
   { to: "/licence", key: "licence" as const, group: "groupAfter" as const, done: (s: S) => !!s.licence },
-  { to: "/passport", key: "regStep" as const, group: "groupAfter" as const, done: (s: S) => !!s.passport },
-  { to: "/passport/issued", key: "passport" as const, group: "groupAfter" as const, done: (s: S) => !!s.passport },
   { to: "/financier", key: "financier" as const, group: "groupAfter" as const, done: (s: S) => !!s.passport },
   { to: "/verify", key: "verify" as const, group: "groupAfter" as const, done: (s: S) => !!s.verify },
 ];
 
-/** Numbered ledger line, grouped by stage: Before 01 · During 02-06 · After 07-11. */
+/** Numbered ledger line, grouped by stage: Before 01-03 (You, Register your work, Your work passport) · During 04-08 · After 09-11. */
 export function JourneyRail({ lang }: { lang: Lang }) {
   const store = useKabla();
   const { pathname } = useLocation();

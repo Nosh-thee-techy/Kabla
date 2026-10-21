@@ -29,7 +29,7 @@ export function Landing({ lang }: { lang: Lang }) {
         {account && (
           <p className="mt-3 text-sm flex flex-wrap items-center gap-x-3 gap-y-1">
             <span>{tf(lang, "lpWelcomeBack", { name: account.name })}</span>
-            <Link to={account.onboarded ? "/desk" : "/welcome"} className="underline">{t(lang, "lpContinue")}</Link>
+            <Link to={account.onboarded ? "/passport" : "/welcome"} className="underline">{t(lang, "lpContinue")}</Link>
           </p>
         )}
       </section>

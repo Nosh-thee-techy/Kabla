@@ -9,6 +9,7 @@ const STEPS = {
       "Pick a sample contract. Mawingu has the most traps. Or paste your own text.",
       "Kabla reads the contract and marks the risky parts. Nothing is signed.",
       "Next you see the contract with its warnings. Use the numbered bar at the top to move between steps.",
+      "If your work is not registered yet, a note tells you to register it first. It only warns you. It does not stop you.",
     ],
     map: [
       "The fairness line counts the warnings. Each warning points to one clause in the contract.",
@@ -33,12 +34,17 @@ const STEPS = {
     licence: [
       "Open one request: an advert in Kenya, AI training, or a film that needs Baraka's permission.",
       "Kabla says allowed, not allowed, or someone must say yes first. It tells you why.",
-      "Try all three. Then register your work to get a passport.",
+      "Try all three. Then open the financier view.",
+    ],
+    register: [
+      "This is the first thing to do, before any contract. Check who owns the song and how it is split.",
+      "The list warns you if something is missing, such as your limits, your AI rule, or someone's yes. It only warns. You decide.",
+      "Pressing the button means you agree to register this work. Selling is a separate tick. Nothing is minted on a chain.",
     ],
     passport: [
-      "Before you register, the list warns you if something is missing, such as your limits, your AI rule, who owns what, or someone's yes.",
-      "Pressing the register button means you agree to register this work. Selling is a separate tick.",
-      "Then you get a record code, badges and a rights score. Show it to a backer so they can check it.",
+      "This is your work passport. It is a signed record of who owns the song, made before any contract.",
+      "The Rights check is about who owns the work. The audience card is about who listens. They are two separate readings.",
+      "Next, take a contract to the Desk. Your passport waits here, and you can show it to a backer later.",
     ],
     verify: [
       "Paste a certificate, or press 'Tamper test' after you get a passport.",
@@ -48,10 +54,11 @@ const STEPS = {
     onboard: [
       "Tick the consent box first. Kabla keeps only what you type, and marks it as your own word, not proof.",
       "Put song titles in quotes with your share beside each, like \"Mwanga\" is 50% mine. Or use the demo artist.",
-      "Kabla never opens your accounts. It lists what is missing, then you go to the desk.",
+      "You can also type your audience numbers: followers, listeners and average likes. They are your own word, marked as self-reported and not verified.",
+      "Kabla never opens your accounts. It lists what is missing, then you go to Register your work.",
     ],
     financier: [
-      "This page rearranges your passport for a backer: who owns what, open warnings, your AI rule and your score.",
+      "This page rearranges your work passport for a backer: who owns what, open warnings, your AI rule and your Rights check, with your audience card beside it.",
       "It is not a credit score and not lending advice. Demo data only.",
       "Nothing new is decided here. Every warning is the same one you saw on the clause map.",
     ],
@@ -61,6 +68,7 @@ const STEPS = {
       "Chagua mkataba wa mfano. Mawingu ina mitego mingi zaidi. Au bandika maandishi yako.",
       "Kabla inasoma mkataba na kuweka alama sehemu hatari. Hakuna kinachosainiwa.",
       "Kisha unaona mkataba na maonyo yake. Tumia upau wenye namba juu kuhama kati ya hatua.",
+      "Kazi yako ikiwa bado haijasajiliwa, kumbusho linakuambia uisajili kwanza. Linaonya tu. Halikuzuii.",
     ],
     map: [
       "Mstari wa haki unahesabu maonyo. Kila onyo linaelekeza kwenye kifungu kimoja cha mkataba.",
@@ -85,12 +93,17 @@ const STEPS = {
     licence: [
       "Fungua ombi moja: tangazo la Kenya, mafunzo ya AI, au filamu inayohitaji ruhusa ya Baraka.",
       "Kabla inasema inaruhusiwa, hairuhusiwi, au mtu lazima aseme ndiyo kwanza. Inakueleza kwa nini.",
-      "Jaribu yote matatu. Kisha sajili kazi yako upate pasipoti.",
+      "Jaribu yote matatu. Kisha fungua mtazamo wa mfadhili.",
+    ],
+    register: [
+      "Hiki ndicho cha kwanza kufanya, kabla ya mkataba wowote. Angalia nani anamiliki wimbo na jinsi unavyogawanywa.",
+      "Orodha inaonya kama kuna kinachokosekana, kama vikomo vyako, kanuni yako ya AI, au ndiyo ya mtu. Inaonya tu. Wewe unaamua.",
+      "Kubonyeza kitufe kunamaanisha unakubali kusajili kazi hii. Kuuza ni alama tofauti. Hakuna kinachotengenezwa kwenye mnyororo.",
     ],
     passport: [
-      "Kabla ya kusajili, orodha inaonya kama kuna kinachokosekana, kama vikomo vyako, kanuni yako ya AI, nani anamiliki nini, au ndiyo ya mtu.",
-      "Kubonyeza kitufe cha kusajili kunamaanisha unakubali kusajili kazi hii. Kuuza ni alama tofauti.",
-      "Kisha unapata msimbo wa rekodi, beji na alama ya haki. Mwonyeshe mfadhili ili aukague.",
+      "Hii ni pasipoti ya kazi yako. Ni rekodi iliyosainiwa ya nani anamiliki wimbo, iliyotengenezwa kabla ya mkataba wowote.",
+      "Ukaguzi wa haki ni kuhusu nani anamiliki kazi. Kadi ya wasikilizaji ni kuhusu nani anasikiliza. Ni usomaji viwili tofauti.",
+      "Kisha, peleka mkataba mezani. Pasipoti yako inakusubiri hapa, na unaweza kumwonyesha mfadhili baadaye.",
     ],
     verify: [
       "Bandika cheti, au bonyeza 'Jaribio la kubadilisha' baada ya kupata pasipoti.",
@@ -100,10 +113,11 @@ const STEPS = {
     onboard: [
       "Weka alama kwenye kisanduku cha idhini kwanza. Kabla inahifadhi unachoandika tu, na inakiweka alama kuwa neno lako, si ushahidi.",
       "Weka majina ya nyimbo ndani ya nukuu na hisa yako kando, kama \"Mwanga\" ni 50% yangu. Au tumia msanii wa mfano.",
-      "Kabla haifungui akaunti zako. Inaorodhesha kinachokosekana, kisha unaenda mezani.",
+      "Unaweza pia kuandika namba za wasikilizaji wako: wafuasi, wasikilizaji na wastani wa likes. Ni neno lako mwenyewe, zimewekwa alama kuwa umeandika mwenyewe na hazijathibitishwa.",
+      "Kabla haifungui akaunti zako. Inaorodhesha kinachokosekana, kisha unaenda kusajili kazi yako.",
     ],
     financier: [
-      "Ukurasa huu unapanga pasipoti yako kwa mfadhili: nani anamiliki nini, maonyo yaliyo wazi, kanuni yako ya AI na alama yako.",
+      "Ukurasa huu unapanga pasipoti ya kazi yako kwa mfadhili: nani anamiliki nini, maonyo yaliyo wazi, kanuni yako ya AI na Ukaguzi wako wa haki, pamoja na kadi ya wasikilizaji kando yake.",
       "Si alama ya mkopo wala ushauri wa kukopesha. Data ya mfano tu.",
       "Hakuna uamuzi mpya hapa. Kila onyo ni lile lile uliloliona kwenye ramani ya vifungu.",
     ],

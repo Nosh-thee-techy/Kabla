@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import { api, type Profile } from "../api";
+import { AudienceFields, audienceBody, demoAudience, emptyAudience, type AudienceForm } from "../components/AudienceFields";
 import { Room } from "../components/Room";
 import { t, tf, type Lang } from "../i18n";
 import { useKabla } from "../state";
@@ -22,6 +23,7 @@ export function Onboarding({ lang, setLang }: { lang: Lang; setLang: (l: Lang) =
   const [handles, setHandles] = useState<Record<string, string>>({});
   const [bio, setBio] = useState("");
   const [consent, setConsent] = useState(false);
+  const [aud, setAud] = useState<AudienceForm>(emptyAudience);
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<string | null>(null);
   const [seal, setSeal] = useState<{ intact: boolean; records: number } | null>(null);
@@ -35,6 +37,7 @@ export function Onboarding({ lang, setLang }: { lang: Lang; setLang: (l: Lang) =
   const labels = ["wzS1", "wzS2", "wzS3", "wzReady"] as const;
 
   function fillDemo() {
+    setAud(demoAudience);
     setArtist("Zawadi");
     setHandles({ instagram: "@zawadi_synth", tiktok: "@zawadi.synth" });
     setBio("Singer-songwriter in Nairobi. \"Asali ya Jioni\" is 60% mine, 40% Baraka's. Income: streaming and live shows.");
@@ -51,7 +54,7 @@ export function Onboarding({ lang, setLang }: { lang: Lang; setLang: (l: Lang) =
     setBusy(true); setErr(null); setSeal(null);
     try {
       const p: Profile = await api.createArtist({
-        name: artist.trim() || name.trim() || "Artist", handles, consent, bio, lang,
+        name: artist.trim() || name.trim() || "Artist", handles, consent, bio, lang, audience: audienceBody(aud),
       });
       setProfile(p);
       setAccount({ ...account!, name: name.trim() || account!.name, onboarded: true });
@@ -135,6 +138,9 @@ export function Onboarding({ lang, setLang }: { lang: Lang; setLang: (l: Lang) =
                   </label>
                 ))}
               </div>
+              <div className="mt-6">
+                <AudienceFields lang={lang} value={aud} onChange={setAud} />
+              </div>
             </section>
           )}
 
@@ -171,6 +177,17 @@ export function Onboarding({ lang, setLang }: { lang: Lang; setLang: (l: Lang) =
                 <div><dt>{t(lang, "wzSumArtist")}</dt><dd>{profile.name}</dd></div>
                 <div><dt>{t(lang, "wzSumLang")}</dt><dd>{t(lang, lang === "en" ? "wzLangEn" : "wzLangSw")}</dd></div>
                 <div><dt>{t(lang, "wzSumLinks")}</dt><dd>{linkCount ? tf(lang, "wzLinksCount", { n: linkCount }) : t(lang, "wzNone")}</dd></div>
+                {profile.audience && (
+                  <div>
+                    <dt>{t(lang, "wzSumAudience")}</dt>
+                    <dd>
+                      {tf(lang, "audSumLine", {
+                        reach: profile.audience.summary.total_reach.toLocaleString("en-KE"),
+                        band: t(lang, `audBand_${profile.audience.summary.band}` as const),
+                      })}
+                    </dd>
+                  </div>
+                )}
                 {profile.facts.works.length === 0 && (
                   <div><dt>{t(lang, "onbWorks")}</dt><dd>{t(lang, "onbNoWorks")}</dd></div>
                 )}
@@ -210,7 +227,7 @@ export function Onboarding({ lang, setLang }: { lang: Lang; setLang: (l: Lang) =
           <div className="mt-6 flex flex-wrap items-center gap-3 pt-4 border-t hair">
             {step === 3 ? (
               <>
-                <button type="button" className="stamp stamp-terracotta" onClick={() => nav("/desk")}>{t(lang, "wzOpenDesk")}</button>
+                <button type="button" className="stamp stamp-terracotta" onClick={() => nav("/passport")}>{t(lang, "wzOpenDesk")}</button>
                 <Link to="/onboard" className="underline text-sm">{t(lang, "wzEditYou")}</Link>
               </>
             ) : (

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { api, type Profile, type ProfileGap } from "../api";
+import { AudienceFields, audienceBody, demoAudience, emptyAudience, type AudienceForm } from "../components/AudienceFields";
 import { Clerk } from "../components/HowTo";
 import { NextStamp } from "../components/NextStamp";
 import { Room } from "../components/Room";
@@ -27,11 +28,13 @@ export function Onboard({ lang }: { lang: Lang }) {
   const [handles, setHandles] = useState<Record<string, string>>({});
   const [bio, setBio] = useState("");
   const [consent, setConsent] = useState(false);
+  const [aud, setAud] = useState<AudienceForm>(emptyAudience);
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<string | null>(null);
   const [seal, setSeal] = useState<{ intact: boolean; records: number } | null>(null);
 
   function fillDemo() {
+    setAud(demoAudience);
     setName("Zawadi");
     setHandles({ instagram: "@zawadi_synth", tiktok: "@zawadi.synth" });
     setBio("Singer-songwriter in Nairobi. \"Asali ya Jioni\" is 60% mine, 40% Baraka's. Income: streaming and live shows.");
@@ -41,7 +44,7 @@ export function Onboard({ lang }: { lang: Lang }) {
     if (!consent) { setErr(t(lang, "onbNeedConsent")); return; }
     setBusy(true); setErr(null); setSeal(null);
     try {
-      const p: Profile = await api.createArtist({ name: name || "Artist", handles, consent, bio, lang });
+      const p: Profile = await api.createArtist({ name: name || "Artist", handles, consent, bio, lang, audience: audienceBody(aud) });
       setProfile(p);
     } catch (e) { setErr(String(e instanceof Error ? e.message : e)); }
     finally { setBusy(false); }
@@ -64,7 +67,7 @@ export function Onboard({ lang }: { lang: Lang }) {
         page="onboard"
         cue={profile ? "onboard:done" : "onboard"}
         say={t(lang, profile ? "sayOnboardDone" : "sayOnboard")}
-        cta={profile ? { label: t(lang, "ctaToDesk"), to: "/desk" } : { label: t(lang, "ctaOnbDemo"), onClick: fillDemo }}
+        cta={profile ? { label: t(lang, "ctaToDesk"), to: "/passport" } : { label: t(lang, "ctaOnbDemo"), onClick: fillDemo }}
       />
 
       <div className="mt-5 grid lg:grid-cols-2 gap-x-10 gap-y-6 items-start">
@@ -87,6 +90,7 @@ export function Onboard({ lang }: { lang: Lang }) {
               ))}
             </div>
           </fieldset>
+          <AudienceFields lang={lang} value={aud} onChange={setAud} />
           <label className="block">
             <span className="label">{t(lang, "onbBio")}</span>
             <p className="text-xs opacity-60 mt-1">{t(lang, "onbBioHint")}</p>
@@ -142,7 +146,18 @@ export function Onboard({ lang }: { lang: Lang }) {
                 {seal.intact ? t(lang, "onbSealOk") : t(lang, "onbSealBad")} ({seal.records})
               </p>
             )}
-            <NextStamp to="/desk">{t(lang, "onbNext")}</NextStamp>
+            {profile.audience && (
+              <>
+                <p className="label mt-5">{t(lang, "audTitle")} · {t(lang, "audSelf")}</p>
+                <p className="mt-2 text-sm">
+                  {tf(lang, "audSumLine", {
+                    reach: profile.audience.summary.total_reach.toLocaleString("en-KE"),
+                    band: t(lang, `audBand_${profile.audience.summary.band}` as const),
+                  })}
+                </p>
+              </>
+            )}
+            <NextStamp to="/passport">{t(lang, "onbNext")}</NextStamp>
           </section>
         )}
       </div>

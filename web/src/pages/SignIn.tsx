@@ -38,7 +38,7 @@ export function SignIn({ lang }: { lang: Lang }) {
               <p className="text-sm opacity-90">{tf(lang, "siBackLead", { name: account.name })}</p>
               <div className="mt-5 flex flex-wrap gap-3">
                 <button type="button" className="stamp stamp-terracotta"
-                        onClick={() => nav(account.onboarded ? "/desk" : "/welcome")}>
+                        onClick={() => nav(account.onboarded ? "/passport" : "/welcome")}>
                   {tf(lang, "siBackGo", { name: account.name })}
                 </button>
                 <button type="button" className="stamp stamp-ghost" onClick={() => { signOut(); nav("/"); }}>

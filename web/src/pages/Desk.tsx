@@ -5,7 +5,7 @@ import { Clerk } from "../components/HowTo";
 import { Room } from "../components/Room";
 import { AgentChat } from "../components/AgentChat";
 import { t, tf, type Lang } from "../i18n";
-import { useKabla } from "../state";
+import { useArtist, useKabla } from "../state";
 
 function folder(id: string): { tone: string; tag: "folderTrap" | "folderMixed" | "folderFair" } {
   if (id === "c001") return { tone: "bg-[#f3d4c4] text-ink border-terracotta dark:bg-[#5a2c22] dark:text-lamp dark:border-terracotta", tag: "folderTrap" };
@@ -19,7 +19,14 @@ export function Desk({ lang }: { lang: Lang }) {
   const [text, setText] = useState("");
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<string | null>(null);
+  // null while we ask. A warning only: the Desk never blocks a contract because a work is not registered.
+  const [registered, setRegistered] = useState<boolean | null>(null);
+  const artist = useArtist();
   const nav = useNavigate();
+
+  useEffect(() => {
+    api.workCheck(artist).then((w) => setRegistered(w.registered)).catch(() => setRegistered(null));
+  }, [artist]);
 
   useEffect(() => { api.samples().then((s) => setSamples(s.contracts)).catch((e) => setErr(String(e))); }, []);
 
@@ -70,6 +77,19 @@ export function Desk({ lang }: { lang: Lang }) {
           <Link to="/onboard" className="underline">{t(lang, "onbStart")}</Link>
         )}
       </p>
+
+      {registered === false && (
+        <div className="mt-4 border border-flag-amber/60 bg-flag-amber/10 px-4 py-3 flex flex-wrap items-center gap-x-5 gap-y-2" role="note" data-testid="desk-register-note">
+          <div className="flex-1 min-w-[16rem]">
+            <p className="text-sm font-semibold">{t(lang, "deskWarnTitle")}</p>
+            <p className="text-xs opacity-75 mt-0.5">{t(lang, "deskWarnOnly")}</p>
+          </div>
+          <Link to="/passport" className="stamp stamp-terracotta">{t(lang, "deskWarnBtn")} →</Link>
+        </div>
+      )}
+      {registered === true && (
+        <p className="mt-4 text-sm text-savanna dark:text-[#8FCFB8]" data-testid="desk-registered-note">{t(lang, "deskHaveWork")}</p>
+      )}
 
       <div className="mt-6 grid lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)] gap-x-10 gap-y-8">
         <section>

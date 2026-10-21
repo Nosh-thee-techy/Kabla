@@ -6,7 +6,8 @@ import { Room } from "../components/Room";
 import { ScoreRing } from "../components/ScoreRing";
 import { t, tOpt, type Lang } from "../i18n";
 import { plainBackerRisk, plainConsentGap, plainFlagTitle, reasonWords, rightName } from "../plain";
-import { useArtist } from "../state";
+import { AudienceCard } from "../components/AudienceCard";
+import { useArtist, useKabla } from "../state";
 
 /** Why this page exists: a backer sees the same owners, flags and score — rearranged, not rescored. */
 export function Financier({ lang }: { lang: Lang }) {
@@ -14,6 +15,7 @@ export function Financier({ lang }: { lang: Lang }) {
   const [err, setErr] = useState<string | null>(null);
 
 
+  const { profile } = useKabla();
   const artist = useArtist(); // open contract, else demo-fixture profile, else the demo artist
 
   useEffect(() => {
@@ -103,6 +105,10 @@ export function Financier({ lang }: { lang: Lang }) {
                   </li>
                 ))}
               </ul>
+            </div>
+            <div className="mt-6">
+              <AudienceCard lang={lang} profileId={profile?.id ?? artist} />
+              <p className="text-xs opacity-70 mt-2">{t(lang, "finAudienceNote")}</p>
             </div>
           </section>
         </div>
