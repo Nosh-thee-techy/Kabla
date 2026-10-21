@@ -405,6 +405,56 @@
   .ending-title { font-size: 1.45rem; }
 }
 
+/* ---------- One card at a time ---------- */
+/* The card being talked about is big and sharp. Cards waiting are blurred. Answered cards sit small at the bottom. */
+.deck { position: relative; display: flex; flex-direction: column; gap: 0.9rem; max-width: 48rem; margin-inline: auto; }
+.card[data-mood="spot"] {
+  padding: 1.15rem 1.3rem 3.7rem;
+  animation: spot-in 0.55s cubic-bezier(0.2, 0.9, 0.3, 1) both;
+  transform: none;
+}
+.card[data-mood="spot"] .card-head h3 { font-size: 1.7rem; }
+.card[data-mood="spot"] .card-vals dd { font-size: 1.2rem; }
+.card[data-mood="spot"] .card-advice { font-size: 0.95rem; }
+.card[data-mood="dim"] { opacity: 0.8; pointer-events: none; user-select: none; padding-bottom: 0.9rem; max-height: 8.2rem; }
+.card[data-mood="dim"] > :not(.card-queue) { filter: blur(4px); opacity: 0.55; }
+.card[data-mood="dim"] .tug,
+.card[data-mood="dim"] .card-advice,
+.card[data-mood="decided"] .tug,
+.card[data-mood="decided"] .card-advice,
+.card[data-mood="decided"] .card-vals { display: none; }
+.card[data-mood="dim"]:hover,
+.card[data-mood="dim"]:focus-within { opacity: 0.8; }
+.card-queue {
+  position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+  margin: 0; padding: 0.3rem 0.8rem; border: 1px solid rgb(243 230 200 / 0.4); border-radius: 999px;
+  background: rgb(26 19 13 / 0.85);
+  font: 600 10px/1 "IBM Plex Mono", ui-monospace, monospace; text-transform: uppercase; letter-spacing: 0.16em; color: #F3E6C8;
+}
+.card[data-mood="decided"] { padding: 0.75rem 1rem 0.8rem; border-left-width: 4px; }
+.card[data-mood="decided"] .card-head { filter: blur(1.2px); opacity: 0.75; }
+.card[data-mood="decided"] .card-head h3 { font-size: 1.05rem; }
+.card[data-mood="decided"] .card-meta { display: none; }
+.card[data-mood="decided"] .card-actions { position: static; margin-top: 0.5rem; }
+.card[data-mood="decided"] .ink-stamp { top: 50%; bottom: auto; right: 0.9rem; font-size: 0.8rem; margin-top: -0.9rem; }
+.card-undo {
+  padding: 0.2rem 0.55rem; background: transparent; color: #F3E6C8; cursor: pointer;
+  border: 1px solid rgb(243 230 200 / 0.4); border-radius: 3px;
+  font: 500 10px/1.2 "IBM Plex Mono", ui-monospace, monospace; text-transform: uppercase; letter-spacing: 0.1em;
+}
+.card-undo:hover:not(:disabled) { background: rgb(243 230 200 / 0.12); }
+.card-why { margin-top: 0.5rem; font-size: 0.75rem; }
+.card-why summary { cursor: pointer; opacity: 0.7; font: 500 10px/1.2 "IBM Plex Mono", ui-monospace, monospace; text-transform: uppercase; letter-spacing: 0.1em; }
+.card-why .card-policy { margin-top: 0.3rem; }
+/* Plain sentence first and easy to read; the engine's exact line sits in a small fold below it. */
+.card-why > .card-policy { font-size: 0.84rem; line-height: 1.45; opacity: 0.92; }
+.card-exact { margin-top: 0.4rem; }
+.card-exact summary { cursor: pointer; opacity: 0.6; font: 500 9px/1.2 "IBM Plex Mono", ui-monospace, monospace; text-transform: uppercase; letter-spacing: 0.1em; }
+@keyframes spot-in {
+  from { opacity: 0; transform: translateY(26px) scale(0.96); filter: blur(5px); }
+  to { opacity: 1; transform: none; filter: none; }
+}
+
 /* ---------- Keyframes ---------- */
 @keyframes shake { 0%, 100% { transform: translateX(0); } 20% { transform: translateX(-3px); } 40% { transform: translateX(3px); } 60% { transform: translateX(-2px); } 80% { transform: translateX(2px); } }
 @keyframes pop { from { opacity: 0; transform: translateY(6px) scale(0.96); } to { opacity: 1; transform: none; } }
