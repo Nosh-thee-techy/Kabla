@@ -4,6 +4,7 @@ import { Clerk } from "../components/HowTo";
 import { NextStamp } from "../components/NextStamp";
 import { Room } from "../components/Room";
 import { t, tf, type Lang } from "../i18n";
+import { placeName, plainCondition, plainLicenceHeadline, rightName, useName } from "../plain";
 import { useKabla } from "../state";
 
 export function LicenceDesk({ lang }: { lang: Lang }) {
@@ -27,12 +28,17 @@ export function LicenceDesk({ lang }: { lang: Lang }) {
   const label = verdict
     ? t(lang, verdict.verdict === "cleared" ? "cleared" : verdict.verdict === "not-cleared" ? "notCleared" : "needsConsent")
     : "";
+  const meaning = verdict
+    ? t(lang, verdict.verdict === "cleared" ? "verdictCleared" : verdict.verdict === "not-cleared" ? "verdictNot" : "verdictNeeds")
+    : "";
+  const original = verdict ? (lang === "sw" ? verdict.headline_sw : verdict.headline_en) : "";
+  const headline = verdict ? plainLicenceHeadline(lang, verdict) ?? original : "";
 
   return (
     <Room>
       <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-2 pb-3 border-b hair">
         <h1 className="font-display italic text-3xl md:text-4xl leading-none">{t(lang, "licence")}</h1>
-        <p className="font-mono text-[11px] opacity-60">Three envelopes for “Asali ya Jioni” · SYNTHETIC</p>
+        <p className="font-mono text-[11px] opacity-60">{t(lang, "licHeadNote")}</p>
       </div>
       <Clerk
         lang={lang}
@@ -54,31 +60,56 @@ export function LicenceDesk({ lang }: { lang: Lang }) {
         {presets.map((p) => (
           <li key={p.id}>
             <button type="button" onClick={() => run(p)} className="envelope w-full text-left rounded-sm px-4 pt-10 pb-4">
-              <span className="font-mono text-[10px] uppercase tracking-widest">Request {p.id}</span>
+              <span className="font-mono text-[10px] uppercase tracking-widest">{tf(lang, "licRequest", { id: p.id })}</span>
               <p className="font-display italic text-xl mt-0.5 leading-tight">{p.label}</p>
-              <p className="text-xs mt-1.5 opacity-70">{p.request.party} · {p.request.territory} · {p.request.months} months · {p.request.use}</p>
+              <p className="text-xs mt-1.5 opacity-80 leading-snug">
+                {tf(lang, "licAsk", {
+                  party: p.request.party,
+                  use: useName(lang, p.request.use),
+                  where: placeName(lang, p.request.territory),
+                  months: p.request.months,
+                })}
+              </p>
             </button>
           </li>
         ))}
       </ul>
       {verdict && (
         <article className={`panel mt-6 border-l-4 ${tone} p-5 max-w-3xl`}>
-          <p className="font-mono text-[10px] uppercase tracking-widest">{verdict.rule_id}</p>
-          <h2 className="font-display italic text-3xl md:text-4xl mt-1 leading-none">{label}</h2>
-          <p className="mt-3 text-sm text-ink dark:text-lamp">{lang === "sw" ? verdict.headline_sw : verdict.headline_en}</p>
+          <h2 className="font-display italic text-3xl md:text-4xl leading-none">{label}</h2>
+          <p className="mt-3 text-sm font-semibold text-ink dark:text-lamp">{meaning}</p>
+          <p className="mt-2 text-sm text-ink dark:text-lamp">{headline}</p>
           {verdict.missing.length > 0 && (
-            <ul className="mt-3 text-sm">
-              {verdict.missing.map((m) => (
-                <li key={m.person} className="flex items-center gap-2">
-                  <span className="seal seal-amber">{m.share}%</span>
-                  {m.name} · {m.right}
-                </li>
-              ))}
-            </ul>
+            <>
+              <p className="label mt-4">{t(lang, "licMissing")}</p>
+              <ul className="mt-2 text-sm">
+                {verdict.missing.map((m) => (
+                  <li key={m.person} className="flex items-center gap-2">
+                    <span className="seal seal-amber">{m.share}%</span>
+                    {m.name} · {rightName(lang, m.right)}
+                  </li>
+                ))}
+              </ul>
+            </>
           )}
-          {verdict.conditions.map((c) => (
-            <p key={c.key} className="mt-1.5 text-xs text-ink dark:text-lamp opacity-80">· {lang === "sw" ? c.text_sw : c.text_en}</p>
-          ))}
+          {verdict.conditions.length > 0 && (
+            <>
+              <p className="label mt-4">{t(lang, "licConditions")}</p>
+              {verdict.conditions.map((c) => (
+                <p key={c.key} className="mt-1.5 text-sm text-ink dark:text-lamp opacity-90">
+                  · {plainCondition(lang, c.key, lang === "sw" ? c.text_sw : c.text_en)}
+                </p>
+              ))}
+            </>
+          )}
+          <details className="mt-5 text-xs text-ink dark:text-lamp">
+            <summary className="cursor-pointer underline opacity-80">{t(lang, "detailsFold")}</summary>
+            <p className="mt-3 font-mono text-[11px] opacity-70">{verdict.rule_id}</p>
+            <p className="mt-1 opacity-80">{original}</p>
+            {verdict.conditions.map((c) => (
+              <p key={c.key} className="mt-1 opacity-70">· {lang === "sw" ? c.text_sw : c.text_en}</p>
+            ))}
+          </details>
         </article>
       )}
       {err && <p className="text-flag-red mt-4" role="alert">{err}</p>}
