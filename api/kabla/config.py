@@ -14,11 +14,20 @@ def _load_dotenv() -> None:
     env_file = REPO / ".env"
     if not env_file.exists():
         return
+    # Why not plain setdefault: .env starts as a copy of .env.example, whose keys are empty placeholders
+    # (OPENAI_API_KEY=). With setdefault the first (empty) line won and a real value added further down was
+    # silently ignored. Now empty values are skipped and the LAST non-empty line wins (same rule as
+    # scripts/omega_run.py); variables already set in the real environment still take priority.
+    values: dict[str, str] = {}
     for raw in env_file.read_text(encoding="utf-8").splitlines():
         line = raw.strip()
         if line and not line.startswith("#") and "=" in line:
             key, value = line.split("=", 1)
-            os.environ.setdefault(key.strip(), value.strip())
+            if value.strip():
+                values[key.strip()] = value.strip()
+    for key, value in values.items():
+        if not os.environ.get(key):
+            os.environ[key] = value
 
 
 def _repo_path(value: str) -> Path:

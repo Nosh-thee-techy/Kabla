@@ -91,12 +91,18 @@ def _call(prompt: str) -> str:
     s = get_settings()
     if s.llm_provider == "openai":
         key = os.environ.get("OPENAI_API_KEY")
-        resp = httpx.post("https://api.openai.com/v1/chat/completions", timeout=60,
-                          headers={"Authorization": f"Bearer {key}"},
-                          json={"model": s.llm_model or "gpt-4o-mini", "temperature": 0,
-                                "messages": [{"role": "user", "content": prompt}]})
+        # Any OpenAI-compatible server works (e.g. OpenRouter): set KABLA_LLM_URL to its /v1 base.
+        base = os.environ.get("KABLA_LLM_URL", "https://api.openai.com/v1").rstrip("/")
+        body = {"model": s.llm_model or "gpt-4o-mini", "temperature": 0, "max_tokens": 3000,
+                "messages": [{"role": "user", "content": prompt}]}
+        if "openrouter.ai" in base:
+            # Reasoning models otherwise put their planning before the JSON; only sent to OpenRouter because
+            # other servers may reject an unknown field. extract_with_llm also tolerates text around the JSON.
+            body["reasoning"] = {"enabled": False}
+        resp = httpx.post(f"{base}/chat/completions", timeout=90,
+                          headers={"Authorization": f"Bearer {key}"}, json=body)
         resp.raise_for_status()
-        return resp.json()["choices"][0]["message"]["content"]
+        return resp.json()["choices"][0]["message"]["content"] or ""
     key = os.environ.get("ANTHROPIC_API_KEY")
     resp = httpx.post("https://api.anthropic.com/v1/messages", timeout=60,
                       headers={"x-api-key": key or "", "anthropic-version": "2023-06-01"},

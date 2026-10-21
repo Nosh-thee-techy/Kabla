@@ -45,6 +45,8 @@ def test_live_mode_without_key_says_so(fresh_store, monkeypatch):
     from kabla.config import get_settings
 
     monkeypatch.setenv("KABLA_MODE", "live")
+    # Pin the provider: a developer's own .env may select another one (and hold its key).
+    monkeypatch.setenv("KABLA_LLM_PROVIDER", "anthropic")
     monkeypatch.delenv("ANTHROPIC_API_KEY", raising=False)
     get_settings.cache_clear()
     try:

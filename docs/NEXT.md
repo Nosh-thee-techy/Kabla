@@ -7,10 +7,13 @@ plugin, a chat bridge, and a browser click-through of every room.
 ## Needs the team
 
 - **Rotate the LLM key.** The OpenRouter key used for the 2026-10-21 live chat test was pasted into a chat window; replace it in `.env`
-  and restart `scripts/omega_run.py`. The agent chat is live (Nemotron 3 Super via OpenRouter, 5 of 5 turns) but the model only phrases.
-  **Not done:** `KABLA_MODE=live` (reading **pasted contracts** and a **pasted bio**) was not tried with this model, and the API's
-  extractor (`api/kabla/services/llm.py`) still calls api.openai.com / api.anthropic.com directly, so it needs a base-URL setting before an
-  OpenRouter key works there. Without live mode, pasted text outside the three samples gets a plain 422 message and nothing is decided.
+  and restart the API and `scripts/omega_run.py`. The agent chat is live (Nemotron 3 Super via OpenRouter, 5 of 5 turns) but the model only phrases.
+- **Live contract reading is tried, and imperfect.** `KABLA_MODE=live` + `KABLA_LLM_URL` (set in `.env` on this machine) lets Nemotron read
+  **pasted contract text**; MeTTa then flags it. Fed the three sample contracts as raw text it reproduced 24 of 30 reviewed fixture clauses
+  (`docs/evidence/live-extract.md`, `python scripts/live_extract_check.py`): a few misses, some wrong numbers (e.g. a reversion of 2 instead of
+  12 months), and one clause per contract dropped by the vocabulary check. A pasted 6-clause synthetic contract came back with five sensible flags.
+  So live reading needs the roadmap's "please confirm this clause" step before anyone relies on it. A **pasted bio** is read by the regex reader, not a model.
+  Without live mode, pasted text outside the three samples gets a plain 422 message and nothing is decided.
 - **Let the model choose Omega's tools?** Tried first, with Nemotron: it wandered (answers to the previous message, memory queries instead of
   answers, one needless clarifying question). Kabla's provider now routes by keyword and uses the model only to phrase. A stronger model,
   or a tighter Omega prompt, may make full tool choice reliable; re-run `scripts/omega_smoke.py` to find out.
@@ -20,8 +23,8 @@ plugin, a chat bridge, and a browser click-through of every room.
 
 ## Known limits to fix next
 
-- **State lives in memory.** A full page reload drops the open contract and the profile and sends the visitor back to Before.
-  Fix: keep them in the URL or sessionStorage.
+- **State is kept per tab, not per person.** A reload keeps the open contract, analysis, profile and passport (sessionStorage); a new tab
+  or visit starts clean at Before, and nothing is saved to an account. The browser check has a reload row (03b).
 - **Typed profiles hold facts and gaps only.** The Passport, Financier and Verify rooms still run on the synthetic work
   "Asali ya Jioni"; a new artist's profile does not yet carry their own catalogue through those rooms.
 - **Profile seals are a separate signed chain** from the passport ledger (the passport verifier expects certificates).

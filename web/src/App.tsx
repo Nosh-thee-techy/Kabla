@@ -19,7 +19,15 @@ import { KablaProvider } from "./state";
 const DUSK = new Set(["/theater", "/passport", "/financier", "/verify"]);
 
 export default function App() {
-  const [lang, setLang] = useState<Lang>("en");
+  // The language is a preference, so it survives reloads and new visits (localStorage, like the lamp).
+  const [lang, setLangState] = useState<Lang>(() => {
+    try { return localStorage.getItem("kabla-lang") === "sw" ? "sw" : "en"; }
+    catch { return "en"; }
+  });
+  const setLang = (l: Lang) => {
+    setLangState(l);
+    try { localStorage.setItem("kabla-lang", l); } catch { /* ignore */ }
+  };
   const [dark, setDark] = useState(() => {
     try { return localStorage.getItem("kabla-lamp") === "on"; }
     catch { return false; }

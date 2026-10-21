@@ -1,4 +1,4 @@
-﻿import { createContext, useContext, useState, type ReactNode } from "react";
+﻿import { createContext, useCallback, useContext, useState, type ReactNode } from "react";
 import type { Analysis, Contract, LicenceVerdict, Nego, Passport, Profile, VerifyResult } from "./api";
 
 type Store = {
@@ -20,14 +20,41 @@ type Store = {
 
 const Ctx = createContext<Store | null>(null);
 
+/** useState that survives a page reload.
+ *
+ *  Why sessionStorage and not localStorage: a visitor who reloads mid-demo keeps their place, but a new tab
+ *  or a new visit starts clean at Before (so a shared computer never shows someone else's profile).
+ *  Everything stored here is already server-side JSON (a contract, its analysis, a sealed profile, a passport);
+ *  nothing secret. Storage can be blocked or full (private mode), so every access is wrapped: if it fails the
+ *  app behaves exactly as before and simply forgets on reload. */
+function usePersisted<T>(key: string): [T | null, (v: T | null) => void] {
+  const full = `kabla:${key}`;
+  const [value, setValue] = useState<T | null>(() => {
+    try {
+      const raw = sessionStorage.getItem(full);
+      return raw ? (JSON.parse(raw) as T) : null;
+    } catch {
+      return null; // blocked storage or a corrupt value: start empty
+    }
+  });
+  const set = useCallback((v: T | null) => {
+    setValue(v);
+    try {
+      if (v === null) sessionStorage.removeItem(full);
+      else sessionStorage.setItem(full, JSON.stringify(v));
+    } catch { /* storage full or blocked: keep working in memory */ }
+  }, [full]);
+  return [value, set];
+}
+
 export function KablaProvider({ children }: { children: ReactNode }) {
-  const [contract, setContract] = useState<Contract | null>(null);
-  const [analysis, setAnalysis] = useState<Analysis | null>(null);
-  const [nego, setNego] = useState<Nego | null>(null);
-  const [licence, setLicence] = useState<LicenceVerdict | null>(null);
-  const [passport, setPassport] = useState<Passport | null>(null);
-  const [verify, setVerify] = useState<VerifyResult | null>(null);
-  const [profile, setProfile] = useState<Profile | null>(null);
+  const [contract, setContract] = usePersisted<Contract>("contract");
+  const [analysis, setAnalysis] = usePersisted<Analysis>("analysis");
+  const [nego, setNego] = usePersisted<Nego>("nego");
+  const [licence, setLicence] = usePersisted<LicenceVerdict>("licence");
+  const [passport, setPassport] = usePersisted<Passport>("passport");
+  const [verify, setVerify] = usePersisted<VerifyResult>("verify");
+  const [profile, setProfile] = usePersisted<Profile>("profile");
   return (
     <Ctx.Provider value={{
       contract, analysis, nego, licence, passport, verify, profile, setProfile,

@@ -40,7 +40,7 @@ extraction and wording (and not at all in the demo). **MeTTa decides.**
 - **Not legal advice.** Kabla is not a lawyer.
 - The score is **rights-health, not credit.** It never ranks artists.
 - **Synthetic data only.** Invented contracts, artists and amounts. No partner catalogues.
-- **Live extraction is not deterministic.** Demo mode (`KABLA_MODE=deterministic`) uses saved extractions so the flags are repeatable.
+- **Live extraction is not deterministic.** Demo mode (`KABLA_MODE=deterministic`) uses saved extractions so the flags are repeatable. Live reading of pasted text (`KABLA_MODE=live`) is **experimental**: with Nemotron 3 Super it reproduced 24 of 30 reviewed clauses on the sample contracts, with some wrong numbers (`docs/evidence/live-extract.md`), and needs a confirm-this-clause step before real use. Sample contracts always use the saved extractions, in either mode.
 
 ---
 

@@ -40,8 +40,7 @@ async function dismiss() {
   await later.first().waitFor({ state: "visible", timeout: 2500 }).catch(() => {});
   if (await later.first().isVisible().catch(() => false)) await later.first().click();
 }
-// Client-side navigation through the journey rail (page.goto would reload the app and drop its in-memory state,
-// which is itself a known limitation: state is kept in memory, not in the URL or storage).
+// Client-side navigation through the journey rail (clicking is what a visitor does; the reload case has its own row).
 async function nav(label) {
   await dismiss();
   await page.getByRole("navigation", { name: /Journey/i }).getByRole("link", { name: new RegExp(`^\\d+\\s*${label}`) }).click();
@@ -86,6 +85,16 @@ await room("03 during: clause map + MeTTa trail", async () => {
   const clause = page.locator("[data-clause], button:has-text('Clause'), li button").first();
   await clause.click({ timeout: 5000 }).catch(() => {});
   await see(/Why this flag|MeTTa trail/i);
+});
+
+// A reload mid-demo must keep the visitor's place (state is kept in sessionStorage, web/src/state.tsx).
+await room("03b reload keeps the open contract and profile", async () => {
+  await page.reload({ waitUntil: "domcontentloaded" });
+  await dismiss();
+  await see(/red/i);                               // still on the clause map with the analysis
+  await page.getByRole("navigation", { name: /Journey/i }).getByRole("link", { name: /^\d+\s*Desk/ }).click();
+  await dismiss();
+  await see(/Profile:/);                           // and the sealed Before profile is still there
 });
 
 await room("04 during: simulator", async () => {
@@ -165,8 +174,8 @@ ${results.every((r) => r.ok) ? "All rooms passed." : "Some rooms failed: see Not
 - Each row drives the real UI (click, type, tick) and waits for text that only the API/MeTTa answer can produce. It checks
   behaviour, not pixel layout. Rows 03 and 06 are light checks (a flagged clause opens a trail; an envelope returns a verdict).
 - Findings while writing it: (1) Karani's first-time card dims the room until "Later" or its button is pressed, so a user who
-  ignores it cannot click through; that is by design but easy to miss. (2) The open contract and the profile live in memory:
-  a full page reload sends the visitor back to the Before page. Both are listed in docs/NEXT.md.
+  ignores it cannot click through; that is by design but easy to miss. (2) The open contract, analysis and profile are kept in
+  sessionStorage, so a reload keeps the visitor's place (row 03b); a new tab or visit starts clean at Before.
 - Row 10 only checks that the chat panel sends and shows agent status. The agent's actual answers are in docs/evidence/omega-chat.md.
 `;
 writeFileSync(path.join(root, "docs", "E2E.md"), md, "utf8");
