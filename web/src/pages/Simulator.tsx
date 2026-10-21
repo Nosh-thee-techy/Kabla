@@ -5,7 +5,7 @@ import { Clerk } from "../components/HowTo";
 import { NextStamp } from "../components/NextStamp";
 import { Room } from "../components/Room";
 import { money, streams as fmt } from "../lib/format";
-import { t, type Lang } from "../i18n";
+import { t, tf, type Lang } from "../i18n";
 import { useKabla } from "../state";
 
 export function Simulator({ lang }: { lang: Lang }) {
@@ -30,7 +30,7 @@ export function Simulator({ lang }: { lang: Lang }) {
       </div>
       <Clerk lang={lang} page="sim" cue="sim" say={t(lang, "saySim")} cta={{ label: t(lang, "nextTheater"), to: "/theater" }} />
       <label className="block mt-5 max-w-2xl">
-        <span className="label">{fmt(n)} streams</span>
+        <span className="label">{tf(lang, "simPlays", { n: fmt(n) })}</span>
         <input
           type="range"
           min={0}
@@ -48,14 +48,16 @@ export function Simulator({ lang }: { lang: Lang }) {
             amount={sim.as_written.artist_keeps}
             max={max}
             tone="terracotta"
-            detail={`royalty ${money(sim.as_written.royalty_earned)} · recoup ${money(sim.as_written.recoup_debt)}`}
+            keep={t(lang, "simKeep")}
+            detail={tf(lang, "simDetail", { royalty: money(sim.as_written.royalty_earned), owed: money(sim.as_written.recoup_debt) })}
           />
           <Stage
             label={t(lang, "after")}
             amount={sim.counter.artist_keeps}
             max={max}
             tone="savanna"
-            detail={`royalty ${money(sim.counter.royalty_earned)} · recoup ${money(sim.counter.recoup_debt)}`}
+            keep={t(lang, "simKeep")}
+            detail={tf(lang, "simDetail", { royalty: money(sim.counter.royalty_earned), owed: money(sim.counter.recoup_debt) })}
           />
         </div>
       )}
@@ -65,14 +67,15 @@ export function Simulator({ lang }: { lang: Lang }) {
   );
 }
 
-function Stage({ label, amount, max, tone, detail }: {
-  label: string; amount: number; max: number; tone: "terracotta" | "savanna"; detail: string;
+function Stage({ label, keep, amount, max, tone, detail }: {
+  label: string; keep: string; amount: number; max: number; tone: "terracotta" | "savanna"; detail: string;
 }) {
   const bar = tone === "terracotta" ? "bg-terracotta" : "bg-savanna";
   return (
     <article className="panel p-4">
       <p className="label">{label}</p>
-      <p className="font-display italic text-3xl mt-2 leading-none">{money(amount)}</p>
+      <p className="text-[11px] opacity-60 mt-2">{keep}</p>
+      <p className="font-display italic text-3xl mt-0.5 leading-none">{money(amount)}</p>
       <div className="h-2 bg-ink/10 dark:bg-white/10 mt-3 overflow-hidden">
         <div className={`h-2 ${bar}`} style={{ width: `${(amount / max) * 100}%` }} />
       </div>

@@ -99,7 +99,8 @@ await room("03b reload keeps the open contract and profile", async () => {
 
 await room("04 during: simulator", async () => {
   await nav("Simulator");
-  await see(/Illustrative/i);
+  await see(/Example numbers/i);
+  await see(/What you keep/i);                   // the two result cards (as written / after) have loaded
 });
 
 await room("05 during: theater negotiation", async () => {

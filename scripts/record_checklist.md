@@ -9,4 +9,4 @@
 - [ ] Omega, if mentioned: say "Omega's agent loop runs with our plugin; our skills call the MeTTa engine, and the model only phrases the answer", and show the Desk chat panel answering (docs/evidence/omega-chat.md has the transcript). Never "built on Omega".
 - [ ] Does not name other products — say accountable and remembering; the model reads, the rules decide
 - [ ] Does not call the score a credit score
-- [ ] Simulator caption "illustrative" is readable
+- [ ] Simulator caption ("Example numbers with made-up rates") is readable
